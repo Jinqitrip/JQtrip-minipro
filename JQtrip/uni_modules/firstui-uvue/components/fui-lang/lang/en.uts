@@ -1,0 +1,26 @@
+// 美国英语
+export default {
+	actionsheet: {
+		cancel: 'Cancel'
+	} as UTSJSONObject,
+	dialog: {
+		title: 'Message',
+		cancel: 'Cancel',
+		confirm: 'OK'
+	} as UTSJSONObject,
+	swipeaction: {
+		delete: 'Delete'
+	} as UTSJSONObject,
+	loading: {
+		text: 'Loading'
+	} as UTSJSONObject,
+	pagination: {
+		prevText: 'Prev page',
+		nextText: 'Next page'
+	} as UTSJSONObject,
+	loadmore: {
+		initText: 'Pull-up loading',
+		text: 'Loading',
+		noneText: 'No more'
+	} as UTSJSONObject,
+} as UTSJSONObject

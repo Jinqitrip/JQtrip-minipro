@@ -1,0 +1,276 @@
+/*!
+* type：组件内props属性参数、事件回调参数、方法参数类型
+* fui-types - v1.0.0 (2023/11/11, 11:07:14 AM)
+*
+* 注意：当页面使用时，Object、Array等类型使用any接收，暂时需要转化为UTSJSONObject使用，不可直接使用“.”访问属性
+* @example：const param  = JSON.parse(JSON.stringify(e)) as UTSJSONObject
+* 在 uts 中，只适合转 type，不适合使用 interface。[interface 中使用? 编译报错，需要使用 type]
+*
+* 官网地址：https://firstui.cn/
+* 文档地址：https://unix.firstui.cn/
+*/
+
+/**
+* fui-text 文本组件 @onclick 事件 回调参数类型
+* @description this.$emit('onclick',FuiTextClickParam)
+* @param {string} text {string} text文本
+* @param {string} param {string} 自定义参数 
+*/
+export type FuiTextClickParam = {
+	text : string;
+	param : string;
+}
+
+/**
+* fui-number 数字组件 @onclick 事件 回调参数类型
+* @description this.$emit('onclick',FuiNumberClickParam)
+* @param {string} text {string} 数字文本内容
+* @param {string} param {string} 自定义参数 
+*/
+export type FuiNumberClickParam = {
+	text : string;
+	param : string;
+};
+
+
+/**
+* fui-footer 页脚组件 navigate 属性参数类型
+* @description props navigate：Arrary：FuiFooterNavigateParam[]
+* @param {string} text {string} 链接文本
+* @param {string} url {string} 当前应用内的跳转链接，可选
+* @param {string} openType {string} 跳转方式，可选值：navigate、redirect、switchTab、reLaunch、navigateBack等，可选
+* @param {number} delta {number} 返回的页面数，如果 delta 大于现有页面数，则返回到首页【仅openType=navigateBack 有效】，可选
+* @param {string} color {string} 链接文本字体颜色，可选
+* @param {number} size {number} 链接文本字体大小，单位rpx，可选
+*/
+export type FuiFooterNavigateParam = {
+	text : string;
+	url ?: string;
+	openType ?: string;
+	delta ?: number;
+	color ?: string;
+	size ?: number;
+}
+
+/**
+* fui-input-number 数字输入框组件 @change 事件 回调参数类型
+* @description this.$emit('change',FuiInputNumberChangeParam)
+* @param {number} value {number} 数字文本内容
+* @param {number} index {number} 索引值
+* @param {string} param {string} 自定义参数 
+*/
+export type FuiInputNumberChangeParam = {
+	value : number;
+	index : number;
+	param : string;
+}
+
+/**
+* fui-checkbox 复选框组件 @change 事件 回调参数类型（单独使用fui-checkbox组件）
+* @description this.$emit('change',FuiCheckboxChangeParam)
+* @param {boolean} checked {boolean} 是否选中
+* @param {string} value {string} checkbox 标识，值
+*/
+export type FuiCheckboxChangeParam = {
+	checked : boolean;
+	value : string;
+}
+
+
+/**
+* fui-actionsheet 上拉菜单组件 itemList 属性 参数类型
+* @description props itemList：Arrary：FuiActionSheetItemParam[]
+* @param {string} text {string} 菜单按钮文本
+* @param {string} color {string} 菜单按钮文本颜色（主题（theme）为 light 下使用），可选
+* @param {string} darkColor {string} 菜单按钮文本颜色（主题（theme）为 dark 下使用），可选
+* @param {string} param {string} 自定义参数，可选
+* @param {number} index {number} 按钮索引值，点击按钮时内部返回，无需传值
+*/
+export type FuiActionSheetItemParam = {
+	text : string;
+	color ?: string;
+	darkColor ?: string;
+	param ?: string;
+	index ?: number;
+}
+
+
+/**
+* fui-toast 轻提示 组件show方法 参数类型
+* @description Toast 轻提示组件show方法参数类型
+* @param {number} duration {number} 显示持续时间，单位ms，可选
+* @param {string} src {string} 提示图标，可选
+* @param {string} text {string} 提示信息，使用插槽自定义内容时可不传
+*/
+export type FuiToastShowParam = {
+	duration ?: number;
+	src ?: string;
+	text ?: string
+}
+
+
+/**
+* fui-dialog 对话框 组件 buttons属性 参数类型
+* @description Dialog 对话框组件 buttons属性 参数类型
+* @param {string} text {string} 按钮文本
+* @param {string} color {string} 按钮字体颜色，可选
+* @param {boolean} primary {boolean} 按钮字体颜色是否显示为primary主题色，color为空时有效，可选
+* @param {string} param {string} 自定义参数，可选
+* @param {number} index {number} 按钮索引值，点击按钮时内部返回，无需传值
+*/
+export type FuiDialogButtonsParam = {
+	text : string;
+	color ?: string;
+	primary ?: boolean;
+	param ?: string;
+	index ?: number;
+}
+
+/**
+* fui-dropdown-menu 下拉菜单 组件 menus属性 参数类型
+* @description DropdownMenu 下拉菜单组件 menus属性 参数类型
+* @param {string} text {string} 下拉菜单item项显示文本，必选
+* @param {string} value {string} 下拉菜单item项文本对应value值，可选
+* @param {string} src {string} 下拉菜单item项icon图片地址，可选
+* @param {boolean} checked {boolean} 是否选中，可选
+* @param {boolean} disabled {boolean} 是否禁用选择，可选
+* @param {string} param {string} 自定义参数，可选
+* @param {number} index {number} 索引值，点击菜单时内部返回，无需传值
+*/
+export type FuiDropdownMenuOptionParam = {
+	text : string;
+	value ?: string;
+	src ?: string;
+	checked ?: boolean;
+	disabled ?: boolean;
+	param ?: string;
+	index ?: number;
+}
+
+/**
+* SwipeAction 滑动菜单 组件 buttons属性 参数类型
+* @description SwipeAction 滑动菜单 组件 buttons属性 参数类型
+* @param {string} text {string} 按钮文本，必选
+* @param {string} background {string} 按钮背景色，不传或为空则默认使用danger主题色，可选
+* @param {number} size {number} 按钮字体大小，单位rpx，可选
+* @param {string} color {string} 按钮字体颜色，可选
+* @param {number} param {number} 自定义参数，可选
+* @param {number} index {number} 当前点击的按钮索引，点击事件返回，无需传值
+*/
+export type FuiSwipeActionButtonParam = {
+	text : string;
+	background ?: string;
+	size ?: number;
+	color ?: string;
+	param ?: number;
+	index ?: number;
+}
+
+/**
+* fui-pagination 分页器 组件 @change 事件 回调参数类型
+* @description Pagination 分页器组件 change 事件 回调参数类型
+* @param {string} type {string} 按钮类型（prev、next、pageNumber）
+* @param {number} current {number} 当前页码
+*/
+export type FuiPaginationChangeParam = {
+	type : string;
+	current : number;
+}
+
+/**
+* fui-segmented-control 分段器 组件props 属性 values 参数类型
+* @description props 属性 values 参数类型
+* @param {string} name {string} 分段器显示文本，必选
+* @param {boolean} disabled {boolean} 是否禁用当前项，可选
+* @param {number} value {number} 对应的值，可选
+* @param {string} param {string} 自定义参数，可选
+* @param {number} index {number} 当前点击项索引值，点击事件返回，无需传值，可选
+*/
+export type FuiSegmentedControlValueParam = {
+	name : string;
+	disabled ?: boolean;
+	value ?: number;
+	param ?: string;
+	index ?: number;
+}
+
+/**
+* fui-tabs 标签页 组件props 属性 tabs 参数类型
+* @description props 属性 tabs（item项） 参数类型
+* @param {string} name {string} 标签显示文本，必选
+* @param {string} src {string} 标签显示图标，图标尺寸默认为 40*40，单位rpx，可选
+* @param {string} selectedIcon {string} 当前选项图标src，可选，不传默认使用icon
+* @param {number} badge {number} 角标数值，可选
+* @param {boolean} isDot {boolean} 角标是否显示为圆点，可选
+* @param {boolean} disabled {boolean} 是否禁用当前项，可选
+* @param {number} index {number} 当前点击项索引值，change 事件返回，无需传值，可选
+*/
+export type FuiTabsItemParam = {
+	name : string;
+	icon ?: string;
+	selectedIcon ?: string;
+	badge ?: number;
+	isDot ?: boolean;
+	disabled ?: boolean;
+	index ?: number;
+}
+
+/**
+*  Collapse 折叠面板组件 @change 事件 回调参数类型
+* @description Collapse 折叠面板组件 change 事件 回调参数类型
+* @param {number} index {number} item项索引
+* @param {boolean} isOpen {boolean} 是否展开
+*/
+export type FuiCollapseChangeParam = {
+	index : number;
+	isOpen : boolean;
+}
+
+
+/**
+ * 【fui-validator 和 fui-form 组件】 FuiFormRulesValidatorParam 表单校验规则自定义方法参数类型
+ * @description 表单校验自定义方法参数类型
+ * @param {String} msg {String} 错误提示内容
+ * @param {Function} method (value : any) => boolean 校验方法
+ */
+export type FuiFormRulesValidatorParam = {
+	msg : string;
+	method : (value : any | null) => boolean;
+}
+
+/**
+ * 【fui-validator 和 fui-form 组件】FuiFormRulesParam 表单校验规则参数类型
+ * @description 表单校验规则参数类型
+ * @param {String} name {String} 元素的名称，与formData中key一致
+ * @param {Array} rule {string[]} 内置的校验方法名称集合，详细见下方说明
+ * @param {Array} msg {string[]} 对应rule规则方法的错误提示信息
+ * @param {Array} validator {FuiFormRulesValidatorParam[]} 表单校验规则自定义方法参数类型
+ */
+export type FuiFormRulesParam = {
+	name : string;
+	rule ?: string[];
+	msg ?: string[];
+	validator ?: FuiFormRulesValidatorParam[]
+}
+
+/**
+ * 【fui-validator 和 fui-form 组件】FuiFormErrorMsgParam 表单校验错误消息参数类型
+ * @description 表单校验错误消息参数类型
+ * @param {String} name {String} 元素的名称，与formData中key一致
+ * @param {String} msg {String} 错误提示信息
+ */
+export type FuiFormErrorMsgParam = {
+	name : string;
+	msg : string;
+}
+
+/**
+ * 【fui-validator 和 fui-form 组件】FuiFormValidatorResParam 表单校验结果参数类型
+ * @description 表单校验结果参数类型
+ * @param {Boolean} isPassed {Boolean} 是否校验通过
+ * @param {Array} errorMsg {FuiFormErrorMsgParam[]} 错误提示信息
+ */
+export type FuiFormValidatorResParam = {
+	isPassed : boolean;
+	errorMsg : FuiFormErrorMsgParam[];
+}

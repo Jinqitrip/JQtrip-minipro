@@ -1,0 +1,26 @@
+//泰语
+export default {
+	actionsheet: {
+		cancel: 'ยกเลิก'
+	} as UTSJSONObject,
+	dialog: {
+		title: 'ข้อความ',
+		cancel: 'ยกเลิก',
+		confirm: 'ตกลง',
+	} as UTSJSONObject,
+	swipeaction: {
+		delete: 'ลบ'
+	} as UTSJSONObject,
+	loading: {
+		text: 'กำลังโหลด'
+	} as UTSJSONObject,
+	pagination: {
+		prevText: 'Prev page',// to be translated
+		nextText: 'Next page'// to be translated
+	} as UTSJSONObject,
+	loadmore: {
+		initText: 'Pull-up loading', // to be translated
+		text: 'กำลังโหลด',
+		noneText: 'ไม่มีอีกแล้ว'
+	} as UTSJSONObject,
+} as UTSJSONObject
