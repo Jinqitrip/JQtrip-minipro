@@ -43,4 +43,6 @@
 	.uni-column {
 		flex-direction: column;
 	}
+	@import './common/fui-app.css';
+	@import './components/firstui/fui-theme/fui-theme.css';
 </style>
