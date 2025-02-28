@@ -14,7 +14,7 @@
     </view>
     <!-- 帖子列表区域 -->
     <scroll-view class="post-list" scroll-y="true">
-      <PostItem v-for="(post, index) in postList" :key="index" :postData="post" :isHovering="isHovering[index]"
+      <postitem v-for="(post, index) in postList" :key="index" :postData="post" :isHovering="isHovering[index]"
         @mouseenter="handleMouseEnter(index)" @mouseleave="handleMouseLeave(index)" />
     </scroll-view>
   </view>
@@ -23,40 +23,66 @@
 <script>
   import postitem from './postitem.vue';
   export default {
+    components: {
+      postitem
+    },
     data() {
       return {
         searchText: '',
-        postList: [],
+        postList: [{
+            "avatar": "/static/my.png",
+            "author": "卡壳",
+            "title": "游园武大",
+            "desc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "locationName": "武汉大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时",
+            "price": 300,
+            "image": "/static/order.png"
+          },
+          {
+            "avatar": "/static/my.png",
+            "author": "卡壳",
+            "title": "游园武大",
+            "desc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "locationName": "武汉大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时",
+            "price": 300,
+            "image": "/static/order.png"
+          }
+        ],
         isHovering: []
       };
     },
     onLoad() {
-      this.getPostList();
+      this.isHovering = new Array(this.postList.length).fill(false);
+      // this.getPostList();
     },
     methods: {
-      getPostList() {
-        uni.request({
-          url: '',
-          method: '',
-          success: (res) => {
-            if (res.statusCode === 200) {
-              this.postList = res.data;
-              this.isHovering = new Array(this.postList.length).fill(false);
-            } else {
-              uni.showToast({
-                title: '获取数据失败',
-                icon: 'none'
-              });
-            }
-          },
-          fail: (err) => {
-            uni.showToast({
-              title: '网络请求失败，请检查网络',
-              icon: 'none'
-            });
-          }
-        });
-      },
+      // getPostList() {
+      //   uni.request({
+      //     url: '',
+      //     method: '',
+      //     success: (res) => {
+      //       if (res.statusCode === 200) {
+      //         this.postList = res.data;
+      //         this.isHovering = new Array(this.postList.length).fill(false);
+      //       } else {
+      //         uni.showToast({
+      //           title: '获取数据失败',
+      //           icon: 'none'
+      //         });
+      //       }
+      //     },
+      //     fail: (err) => {
+      //       uni.showToast({
+      //         title: '网络请求失败，请检查网络',
+      //         icon: 'none'
+      //       });
+      //     }
+      //   });
+      // },
       handleMouseEnter(index) {
         this.isHovering[index] = true;
       },
