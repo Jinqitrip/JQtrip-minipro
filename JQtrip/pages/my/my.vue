@@ -1,41 +1,59 @@
 <template>
-  <wd-button>主要按钮</wd-button>
-  <wd-button type="success">成功按钮</wd-button>
-  <wd-button type="info">信息按钮</wd-button>
-  <wd-button type="warning">警告按钮</wd-button>
-  <wd-button type="error">危险按钮</wd-button>
-  <wd-icon name="add-circle" />
+	<wd-toast />
+	<wd-button @click="showToast">toast</wd-button>
+	<wd-cell title="标题文字" value="内容" />
+
+	<wd-cell-group>
+	  <wd-cell title="标题文字" value="内容" />
+	  <wd-cell title="标题文字" label="描述信息" value="内容" />
+	</wd-cell-group>
+	<wd-cell-group>
+	  <wd-cell title="标题文字" value="内容" icon="setting" />
+	  <wd-cell title="标题文字" value="内容">
+	    <template #icon>
+	      <view class="cell-icon"></view>
+	    </template>
+	  </wd-cell>
+	</wd-cell-group>
+	
+	<wd-cell-group title="交易管理" value="内容">
+	  <wd-cell title="标题文字" value="内容" />
+	  <wd-cell title="标题文字" label="描述信息" value="内容" />
+	</wd-cell-group>
+	
+	<wd-cell-group title="交易管理" border>
+	  <wd-cell title="标题文字" value="内容" />
+	  <wd-cell :border="false" title="标题文字" label="这一个cell不想要边框" value="内容" />
+	  <wd-cell title="标题文字" label="描述信息" value="内容"></wd-cell>
+	</wd-cell-group>
+	
+	<wd-toast />
+	<wd-cell title="标题文字" value="内容" clickable @click="showToast" />
+	
+	<wd-cell title="帮助与反馈" is-link to="/pages/index/index" />
+	<wd-cell title="设置" value="内容" is-link @click="jump"></wd-cell>
+	
+	<wd-cell title="帮助与反馈" is-link></wd-cell>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      orderItems: [
-        { icon: "payment", text: "待付款", type: 1, count: 2 },
-        { icon: "deliver", text: "待发货", type: 2, count: 1 },
-        { icon: "receive", text: "待收货", type: 3 },
-        { icon: "comment", text: "待评价", type: 4 }
-      ]
-    }
-  },
-  methods: {
-    login() {
-      // 登录逻辑
-    },
-    toOrder(type) {
-      uni.navigateTo({
-        url: `/pages/order/order?type=${type}`
-      })
-    },
-    navTo(page) {
-      uni.navigateTo({
-        url: `/pages/${page}/${page}`
-      })
-    }
-  }
-}
+<script lang="ts" setup>
+	import { useToast } from '@/uni_modules/wot-design-uni'
+	const toast = useToast()
+	
+	function showToast() {
+	  toast.show('点击')
+	}
+	
+		
+	function jump(){
+		
+		uni.navigateTo({
+			url:'/pages/index/index'
+			});
+	}
 </script>
+
+
 
 <style scoped>
 	page {
