@@ -30,7 +30,7 @@
 	function jump(){
 		
 		uni.navigateTo({
-			url:'/pages/index/index'
+			url:'/pages/my/account_manage'
 			});
 		console.log(423);
 	}

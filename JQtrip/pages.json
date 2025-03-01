@@ -35,6 +35,12 @@
 		"style": {
 		  "navigationBarTitleText": "订单详情"  
 		}
+	},
+	{
+		"path": "pages/my/account_manage",
+		"style": {
+		  "navigationBarTitleText": "账号管理"  
+		}
 	}
   ],
   "tabBar": {
