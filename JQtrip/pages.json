@@ -19,12 +19,6 @@
       }
     },
     {
-      "path": "pages/message/message",
-      "style": {
-        "navigationBarTitleText": "消息"
-      }
-    },
-    {
       "path": "pages/my/my",
       "style": {
         "navigationBarTitleText": "我的"  
@@ -47,12 +41,6 @@
         "text": "订单",
         "iconPath": "static/order.png",
         "selectedIconPath": "static/order_active.png"
-      },
-      {
-        "pagePath": "pages/message/message",
-        "text": "消息",
-        "iconPath": "static/message.png",
-        "selectedIconPath": "static/message_active.png"
       },
       {
         "pagePath": "pages/my/my",
