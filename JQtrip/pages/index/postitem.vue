@@ -3,20 +3,25 @@
     :style="{ boxShadow: isHovering? '0 4px 8px rgba(0, 0, 0, 0.1)' : '0 2px 4px rgba(0, 0, 0, 0.08)' }"
     @mouseenter="$emit('mouseenter')" @mouseleave="$emit('mouseleave')">
     <view class="post-header">
-      <image :src="postData.avatar" class="post-avatar" />
-      <text class="post-author">{{ postData.author }}</text>
+      <view class="post-bar">
+        <image :src="postData.authoravatar" class="post-avatar" />
+        <text class="post-author">{{ postData.author }}</text>
+      </view>
+      <view class="post-bar">
+        <image :src="postData.guideavatar" class="post-avatar" />
+        <text class="post-author">{{ postData.guide }}</text>
+      </view>
+
     </view>
-    <image :src="postData.image" class="post-img" />
+    <!-- <image :src="postData.image" class="post-img" /> -->
     <view class="post-content">
       <text class="post-title">{{ postData.title }}</text>
       <view class="post-desc">{{ postData.desc }}</view>
-      <view class="post-info">
+      <!-- <view class="post-info">
         <text>位置名称: {{ postData.locationName }}</text>
         <text>详细地址: {{ postData.address }}</text>
         <text>时间: {{ postData.time }}</text>
-      </view>
-      <text class="price">￥{{ postData.price }}</text>
-      <button onclick="navTobuy()">Buying</button>
+      </view> -->
     </view>
   </view>
 </template>
@@ -35,6 +40,7 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 90%;
+
     transition: all 0.3s ease;
   }
 
@@ -46,9 +52,14 @@
   .post-header {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    padding: 12px 12px;
     background-color: #f9f9f9;
     border-bottom: 1px solid #eeeeee;
+  }
+
+  .post-bar {
+    display: flex;
+    margin: 10px;
   }
 
   .post-avatar {
@@ -65,6 +76,7 @@
     font-size: 14px;
     color: #333333;
     font-weight: 500;
+
   }
 
   .post-img {

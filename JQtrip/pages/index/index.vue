@@ -1,20 +1,37 @@
 <template>
   <view class="container">
-    <!-- 搜索栏 -->
+    <!-- 顶部导航栏 -->
     <view class="search-container">
+      <view class="area-filter-box">
+        <picker @change="onAreaChange" :value="areaIndex" :range="areaList">
+          <view class="area-filter">
+            {{ areaList[areaIndex] }}
+          </view>
+        </picker>
+      </view>
+
       <view class="logobox">
         <image class="search-icon" src="/static/logo.png" mode="aspectFit"></image>
       </view>
+
       <view class="search-input-box">
         <input v-model="searchText" class="search-input" placeholder="搜索..." />
       </view>
+
       <view class="logobox">
         <image class="search-icon" src="/static/search_icon.png" mode="aspectFit"></image>
       </view>
     </view>
+
+    <view class="needpub">
+      <button class="needbutton" onclick="needbtnact">
+        start your trip!
+      </button>
+    </view>
+
     <!-- 帖子列表区域 -->
     <scroll-view class="post-list" scroll-y="true">
-      <postitem v-for="(post, index) in postList" :key="index" :postData="post" :isHovering="isHovering[index]"
+      <postitem v-for="(post, index) in filteredPostList" :key="index" :postData="post" :isHovering="isHovering[index]"
         @mouseenter="handleMouseEnter(index)" @mouseleave="handleMouseLeave(index)" />
     </scroll-view>
   </view>
@@ -30,34 +47,46 @@
       return {
         searchText: '',
         postList: [{
-            "avatar": "/static/my.png",
-            "author": "卡壳",
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "哈哈哈哈哈哈哈",
             "title": "游园武大",
             "desc": "本科生 校园地陪 图书馆宿舍无法进入",
             "locationName": "武汉大学",
             "address": "湖北省武汉市武昌区八一路299号",
-            "time": "2小时",
-            "price": 300,
-            "image": "/static/order.png"
+            "time": "2小时"
           },
           {
-            "avatar": "/static/my.png",
-            "author": "卡壳",
-            "title": "游园武大",
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "嘻嘻嘻嘻",
+            "title": "游园HUST",
             "desc": "本科生 校园地陪 图书馆宿舍无法进入",
-            "locationName": "武汉大学",
+            "locationName": "华中科技大学",
             "address": "湖北省武汉市武昌区八一路299号",
-            "time": "2小时",
-            "price": 300,
-            "image": "/static/order.png"
-          }
+            "time": "2小时"
+          },
+          {
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "徐云杰",
+            "title": "地大",
+            "desc": "本科生 校园地陪酒",
+            "locationName": "地质大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时"
+          },
         ],
-        isHovering: []
+        isHovering: [],
+        areaList: ['全部', '武汉大学', '华中科技大学'],
+        areaIndex: 0
       };
     },
     onLoad() {
       this.isHovering = new Array(this.postList.length).fill(false);
-      // this.getPostList();
     },
     methods: {
       // getPostList() {
@@ -88,6 +117,38 @@
       },
       handleMouseLeave(index) {
         this.isHovering[index] = false;
+      },
+      onAreaChange(e) {
+        this.areaIndex = e.detail.value;
+        // 过滤帖子
+        this.filterPosts();
+      },
+      filterPosts() {
+        if (this.areaIndex === 0) {
+          // 全部
+          this.filteredPostList = this.postList;
+        } else {
+          // 选择
+          const selectedArea = this.areaList[this.areaIndex];
+          this.filteredPostList = this.postList.filter(post => post.locationName === selectedArea);
+        }
+      }
+    },
+    computed: {
+      filteredPostList() {
+        let filteredList = this.postList;
+        // 地区筛选
+        if (this.areaIndex !== 0) {
+          const selectedArea = this.areaList[this.areaIndex];
+          filteredList = filteredList.filter(post => post.locationName === selectedArea);
+        }
+        // 文本筛选
+        if (this.searchText) {
+          filteredList = filteredList.filter(post => {
+            return post.title.includes(this.searchText) || post.desc.includes(this.searchText);
+          });
+        }
+        return filteredList;
       }
     }
   };
@@ -103,7 +164,7 @@
   .search-container {
     position: fixed;
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     top: 0;
     left: 0;
     right: 0;
@@ -114,6 +175,16 @@
     padding: 0 15px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     z-index: 100;
+  }
+
+  .area-filter-box {
+    margin-right: 5px;
+  }
+
+  .area-filter {
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
   }
 
   .logobox {
@@ -150,82 +221,30 @@
     margin-left: 5px;
   }
 
-  .extra-icons {
-    margin-left: 10px;
+  .needpub {
+    margin-top: 65px;
   }
 
-  .camera-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .post-list {
-    flex: 1;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    padding: 0 15px;
-  }
-
-  .post-item {
-    background-color: #fff;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    transition: all 0.2s ease;
-  }
-
-  .post-header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-  }
-
-  .post-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-
-  .post-author {
-    font-size: 14px;
-    color: #333;
-  }
-
-  .post-img {
+  .needbutton {
+    background-color: #acaf00;
+    border: none;
+    color: white;
     width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-  }
-
-  .post-content {
-    padding: 10px;
-  }
-
-  .post-title {
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
     font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px;
+    cursor: pointer;
+    box-shadow: 0px 9px #999;
   }
 
-  .post-desc {
-    color: #666;
-    margin-bottom: 10px;
-    font-size: 14px;
+  .needbutton:hover {
+    background-color: #af5700;
   }
 
-  .post-info {
-    display: flex;
-    flex-direction: column;
-    font-size: 12px;
-    color: #999;
-    margin-bottom: 5px;
-  }
-
-  .price {
-    color: #007aff;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: right;
+  .needbutton:active {
+    background-color: #af5700;
+    box-shadow: 0px 5px #666;
+    transform: translateY(4px);
   }
 </style>
