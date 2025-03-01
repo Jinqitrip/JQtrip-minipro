@@ -1,41 +1,42 @@
 <template>
-  <wd-button>主要按钮</wd-button>
-  <wd-button type="success">成功按钮</wd-button>
-  <wd-button type="info">信息按钮</wd-button>
-  <wd-button type="warning">警告按钮</wd-button>
-  <wd-button type="error">危险按钮</wd-button>
-  <wd-icon name="add-circle" />
+	<wd-card type="rectangle">
+		<view style="height: 40px" class="content">
+			<image src="/static/my.png" width="40" height="40" alt="joy"
+				style="width: 40px; height: 40px; border-radius: 4px; margin-right: 12px" />
+			<view>
+				<view class="custom-main">用户名</view>
+				<view class="custom-sub">ID</view>
+			</view>
+		</view>
+	</wd-card>
+
+	<wd-cell title="账号管理" is-link @click.native="jump"></wd-cell>
+	<wd-cell title="邀请新用户" is-link to="/pages/index/index"></wd-cell>
+	<wd-cell title="联系客服" is-link to="/pages/index/index"></wd-cell>
+	<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>
+
+
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      orderItems: [
-        { icon: "payment", text: "待付款", type: 1, count: 2 },
-        { icon: "deliver", text: "待发货", type: 2, count: 1 },
-        { icon: "receive", text: "待收货", type: 3 },
-        { icon: "comment", text: "待评价", type: 4 }
-      ]
-    }
-  },
-  methods: {
-    login() {
-      // 登录逻辑
-    },
-    toOrder(type) {
-      uni.navigateTo({
-        url: `/pages/order/order?type=${type}`
-      })
-    },
-    navTo(page) {
-      uni.navigateTo({
-        url: `/pages/${page}/${page}`
-      })
-    }
-  }
-}
+<script lang="ts" setup>
+	import { useToast } from '@/uni_modules/wot-design-uni'
+	const toast = useToast()
+	
+	function showToast() {
+	  toast.show('点击')
+	}
+	
+		
+	function jump(){
+		
+		uni.navigateTo({
+			url:'/pages/my/account_manage'
+			});
+		console.log(423);
+	}
 </script>
+
+
 
 <style scoped>
 	page {
@@ -66,5 +67,50 @@ export default {
 		width: 48rpx;
 		height: 48rpx;
 		margin-right: 24rpx;
+	}
+	
+	.wot-theme-dark {
+	  .title-tip {
+	    color: rgba(232, 230, 227, 0.8);
+	  }
+	
+	  .custom-main {
+	    color: $-dark-color;
+	  }
+	
+	  .custom-sub {
+	    color: $-dark-color-gray;
+	  }
+	}
+	
+	.content,
+	.title {
+	  display: flex;
+	  flex-direction: row;
+	  justify-content: flex-start;
+	  align-items: center;
+	}
+	
+	.content {
+	  justify-content: flex-start;
+	}
+	
+	.title {
+	  justify-content: space-between;
+	}
+	
+	.title-tip {
+	  color: rgba(0, 0, 0, 0.25);
+	  font-size: 12px;
+	}
+	
+	.custom-main {
+	  color: rgba(0, 0, 0, 0.85);
+	  font-size: 16px;
+	}
+	
+	.custom-sub {
+	  color: rgba(0, 0, 0, 0.25);
+	  font-size: 12px;
 	}
 </style>

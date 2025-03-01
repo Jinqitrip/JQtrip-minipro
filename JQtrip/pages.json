@@ -19,17 +19,29 @@
       }
     },
     {
-      "path": "pages/message/message",
-      "style": {
-        "navigationBarTitleText": "消息"
-      }
-    },
-    {
       "path": "pages/my/my",
       "style": {
         "navigationBarTitleText": "我的"  
       }
-    }
+    },
+	{
+		"path": "pages/order/order-select",
+		"style": {
+		  "navigationBarTitleText": "选择"  
+		}
+	},
+	{
+		"path": "pages/order/order_detail",
+		"style": {
+		  "navigationBarTitleText": "订单详情"  
+		}
+	},
+	{
+		"path": "pages/my/account_manage",
+		"style": {
+		  "navigationBarTitleText": "账号管理"  
+		}
+	}
   ],
   "tabBar": {
     "color": "#000000",
@@ -47,12 +59,6 @@
         "text": "订单",
         "iconPath": "static/order.png",
         "selectedIconPath": "static/order_active.png"
-      },
-      {
-        "pagePath": "pages/message/message",
-        "text": "消息",
-        "iconPath": "static/message.png",
-        "selectedIconPath": "static/message_active.png"
       },
       {
         "pagePath": "pages/my/my",
