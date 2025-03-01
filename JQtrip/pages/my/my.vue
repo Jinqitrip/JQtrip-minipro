@@ -1,39 +1,21 @@
 <template>
-	<wd-toast />
-	<wd-button @click="showToast">toast</wd-button>
-	<wd-cell title="标题文字" value="内容" />
+	<wd-card type="rectangle">
+		<view style="height: 40px" class="content">
+			<image src="/static/my.png" width="40" height="40" alt="joy"
+				style="width: 40px; height: 40px; border-radius: 4px; margin-right: 12px" />
+			<view>
+				<view class="custom-main">用户名</view>
+				<view class="custom-sub">ID</view>
+			</view>
+		</view>
+	</wd-card>
 
-	<wd-cell-group>
-	  <wd-cell title="标题文字" value="内容" />
-	  <wd-cell title="标题文字" label="描述信息" value="内容" />
-	</wd-cell-group>
-	<wd-cell-group>
-	  <wd-cell title="标题文字" value="内容" icon="setting" />
-	  <wd-cell title="标题文字" value="内容">
-	    <template #icon>
-	      <view class="cell-icon"></view>
-	    </template>
-	  </wd-cell>
-	</wd-cell-group>
-	
-	<wd-cell-group title="交易管理" value="内容">
-	  <wd-cell title="标题文字" value="内容" />
-	  <wd-cell title="标题文字" label="描述信息" value="内容" />
-	</wd-cell-group>
-	
-	<wd-cell-group title="交易管理" border>
-	  <wd-cell title="标题文字" value="内容" />
-	  <wd-cell :border="false" title="标题文字" label="这一个cell不想要边框" value="内容" />
-	  <wd-cell title="标题文字" label="描述信息" value="内容"></wd-cell>
-	</wd-cell-group>
-	
-	<wd-toast />
-	<wd-cell title="标题文字" value="内容" clickable @click="showToast" />
-	
-	<wd-cell title="帮助与反馈" is-link to="/pages/index/index" />
-	<wd-cell title="设置" value="内容" is-link @click="jump"></wd-cell>
-	
-	<wd-cell title="帮助与反馈" is-link></wd-cell>
+	<wd-cell title="账号管理" is-link @click="jump"></wd-cell>
+	<wd-cell title="邀请新用户" is-link to="/pages/index/index"></wd-cell>
+	<wd-cell title="联系客服" is-link to="/pages/index/index"></wd-cell>
+	<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>
+
+
 </template>
 
 <script lang="ts" setup>
@@ -84,5 +66,50 @@
 		width: 48rpx;
 		height: 48rpx;
 		margin-right: 24rpx;
+	}
+	
+	.wot-theme-dark {
+	  .title-tip {
+	    color: rgba(232, 230, 227, 0.8);
+	  }
+	
+	  .custom-main {
+	    color: $-dark-color;
+	  }
+	
+	  .custom-sub {
+	    color: $-dark-color-gray;
+	  }
+	}
+	
+	.content,
+	.title {
+	  display: flex;
+	  flex-direction: row;
+	  justify-content: flex-start;
+	  align-items: center;
+	}
+	
+	.content {
+	  justify-content: flex-start;
+	}
+	
+	.title {
+	  justify-content: space-between;
+	}
+	
+	.title-tip {
+	  color: rgba(0, 0, 0, 0.25);
+	  font-size: 12px;
+	}
+	
+	.custom-main {
+	  color: rgba(0, 0, 0, 0.85);
+	  font-size: 16px;
+	}
+	
+	.custom-sub {
+	  color: rgba(0, 0, 0, 0.25);
+	  font-size: 12px;
 	}
 </style>
