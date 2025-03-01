@@ -32,6 +32,7 @@
 		uni.navigateTo({
 			url:'/pages/index/index'
 			});
+		console.log(423);
 	}
 </script>
 

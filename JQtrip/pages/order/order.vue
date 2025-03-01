@@ -21,8 +21,8 @@
           </template>
         </wd-card>
 		
-        <wd-card>
-          <view class="content">
+        <wd-card @click="junp_to_order">
+          <view class="content" @click="junp_to_order">
             <image
               src="/static/logo.png"
               alt="joy"
@@ -91,7 +91,13 @@
       }
     },
     methods: {
-      
+      jump_to_order(){
+		  uni.navigateTo({
+		  	url:"/pages/order/order-select"
+		  });
+		  console.log(321);
+	  }
+	  
     }
   }
 </script>
