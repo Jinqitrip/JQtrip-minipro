@@ -23,7 +23,19 @@
       "style": {
         "navigationBarTitleText": "我的"  
       }
-    }
+    },
+	{
+		"path": "pages/order/order-select",
+		"style": {
+		  "navigationBarTitleText": "选择"  
+		}
+	},
+	{
+		"path": "pages/order/order_detail",
+		"style": {
+		  "navigationBarTitleText": "订单详情"  
+		}
+	}
   ],
   "tabBar": {
     "color": "#000000",

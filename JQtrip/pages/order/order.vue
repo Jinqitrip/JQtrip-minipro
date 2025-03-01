@@ -21,8 +21,8 @@
           </template>
         </wd-card>
 		
-        <wd-card @click="junp_to_order">
-          <view class="content" @click="junp_to_order">
+        <wd-card @click.native="jump_to_order">
+          <view class="content" @click.native="jump_to_order">
             <image
               src="/static/logo.png"
               alt="joy"

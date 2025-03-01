@@ -10,7 +10,7 @@
 		</view>
 	</wd-card>
 
-	<wd-cell title="账号管理" is-link @click="jump"></wd-cell>
+	<wd-cell title="账号管理" is-link @click.native="jump"></wd-cell>
 	<wd-cell title="邀请新用户" is-link to="/pages/index/index"></wd-cell>
 	<wd-cell title="联系客服" is-link to="/pages/index/index"></wd-cell>
 	<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>
