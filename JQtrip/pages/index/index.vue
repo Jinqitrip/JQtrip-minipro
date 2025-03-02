@@ -138,16 +138,8 @@
       handleMouseEnter(index) {
         this.isHovering[index] = true;
       },
-      {
-        "authoravatar": "/static/my.png",
-        "author": "邹某",
-        "guideavatar": "/static/my.png",
-        "guide": "嘻嘻嘻嘻",
-        "title": "游园HUST",
-        "desc": "本科生 校园地陪 图书馆宿舍无法进入",
-        "locationName": "华中科技大学",
-        "address": "湖北省武汉市武昌区八一路299号",
-        "time": "2小时"
+      handleMouseLeave(index) {
+        this.isHovering[index] = false;
       },
       onAreaChange(e) {
         this.areaIndex = e.detail.value;
@@ -169,103 +161,101 @@
         }
         return filteredList;
       }
-      return filteredList;
     }
-  }
-};
+  };
 </script>
 
 <style>
-.container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+  .container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
-.search-container {
-  position: fixed;
-  display: flex;
-  flex-direction: row-reverse;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-}
+  .search-container {
+    position: fixed;
+    display: flex;
+    flex-direction: row-reverse;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
 
-.area-filter-box {
-  margin-right: 5px;
-}
+  .area-filter-box {
+    margin-right: 5px;
+  }
 
-.area-filter {
-  padding: 5px 10px;
-  background-color: #f5f5f5;
-  border-radius: 5px;
-}
+  .area-filter {
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+  }
 
-.logobox {
-  display: flex;
-  width: 10%;
-}
+  .logobox {
+    display: flex;
+    width: 10%;
+  }
 
-.search-input-box {
-  /* flex: 1; */
-  display: flex;
-  width: 50%;
-  flex-direction: row;
-  align-items: left;
-  text-align: left;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  padding: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 5px;
-}
+  .search-input-box {
+    /* flex: 1; */
+    display: flex;
+    width: 50%;
+    flex-direction: row;
+    align-items: left;
+    text-align: left;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+  }
 
-.search-input {
-  flex: 1;
-  height: 35px;
-  border: none;
-  outline: none;
-  background-color: transparent;
-}
+  .search-input {
+    flex: 1;
+    height: 35px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+  }
 
-.search-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: 5px;
-}
+  .search-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+  }
 
-.needpub {
-  margin-top: 65px;
-}
+  .needpub {
+    margin-top: 65px;
+  }
 
-.needbutton {
-  background-color: #acaf00;
-  border: none;
-  color: white;
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0px 9px #999;
-}
+  .needbutton {
+    background-color: #acaf00;
+    border: none;
+    color: white;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0px 9px #999;
+  }
 
-.needbutton:hover {
-  background-color: #af5700;
-}
+  .needbutton:hover {
+    background-color: #af5700;
+  }
 
-.needbutton:active {
-  background-color: #af5700;
-  box-shadow: 0px 5px #666;
-  transform: translateY(4px);
-}
+  .needbutton:active {
+    background-color: #af5700;
+    box-shadow: 0px 5px #666;
+    transform: translateY(4px);
+  }
 </style>
