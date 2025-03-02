@@ -1,5 +1,6 @@
 <template>
   <view class="container">
+
     <!-- 顶部导航栏 -->
     <view class="search-container">
       <view class="area-filter-box">
@@ -38,24 +39,104 @@
 </template>
 
 <script>
-import postitem from './postitem.vue';
-export default {
-  components: {
-    postitem
-  },
-  data() {
-    return {
-      searchText: '',
-      postList: [{
-        "authoravatar": "/static/my.png",
-        "author": "邹某",
-        "guideavatar": "/static/my.png",
-        "guide": "哈哈哈哈哈哈哈",
-        "title": "游园武大",
-        "desc": "本科生 校园地陪 图书馆宿舍无法进入",
-        "locationName": "武汉大学",
-        "address": "湖北省武汉市武昌区八一路299号",
-        "time": "2小时"
+  import postitem from './postitem.vue';
+  export default {
+    components: {
+      postitem
+    },
+    data() {
+      return {
+        searchText: '',
+        postList: [{
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "哈哈哈哈哈哈哈",
+            "title": "游园武大",
+            "desc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "locationName": "武汉大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时"
+          },
+          {
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "嘻嘻嘻嘻",
+            "title": "游园HUST",
+            "desc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "locationName": "华中科技大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时"
+          },
+          {
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "徐云杰",
+            "title": "地大",
+            "desc": "本科生 校园地陪酒",
+            "locationName": "中国地质大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时"
+          },
+          {
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "徐云杰",
+            "title": "地大",
+            "desc": "本科生 校园地陪酒",
+            "locationName": "中国地质大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时"
+          },
+          {
+            "authoravatar": "/static/my.png",
+            "author": "邹某",
+            "guideavatar": "/static/my.png",
+            "guide": "徐云杰",
+            "title": "地大",
+            "desc": "本科生 校园地陪酒",
+            "locationName": "中国地质大学",
+            "address": "湖北省武汉市武昌区八一路299号",
+            "time": "2小时"
+          },
+        ],
+        isHovering: [],
+        areaIndex: '0',
+        areaList: ['全部', '武汉大学', '华中科技大学', '中国地质大学'],
+      };
+    },
+    onLoad() {
+      this.isHovering = new Array(this.postList.length).fill(false);
+    },
+    methods: {
+      // getPostList() {
+      //   uni.request({
+      //     url: '',
+      //     method: '',
+      //     success: (res) => {
+      //       if (res.statusCode === 200) {
+      //         this.postList = res.data;
+      //         this.isHovering = new Array(this.postList.length).fill(false);
+      //       } else {
+      //         uni.showToast({
+      //           title: '获取数据失败',
+      //           icon: 'none'
+      //         });
+      //       }
+      //     },
+      //     fail: (err) => {
+      //       uni.showToast({
+      //         title: '网络请求失败，请检查网络',
+      //         icon: 'none'
+      //       });
+      //     }
+      //   });
+      // },
+      handleMouseEnter(index) {
+        this.isHovering[index] = true;
       },
       {
         "authoravatar": "/static/my.png",
@@ -68,85 +149,25 @@ export default {
         "address": "湖北省武汉市武昌区八一路299号",
         "time": "2小时"
       },
-      {
-        "authoravatar": "/static/my.png",
-        "author": "邹某",
-        "guideavatar": "/static/my.png",
-        "guide": "徐云杰",
-        "title": "地大",
-        "desc": "本科生 校园地陪酒",
-        "locationName": "地质大学",
-        "address": "湖北省武汉市武昌区八一路299号",
-        "time": "2小时"
+      onAreaChange(e) {
+        this.areaIndex = e.detail.value;
       },
-      ],
-      isHovering: [],
-      areaList: ['全部', '武汉大学', '华中科技大学'],
-      areaIndex: 0
-    };
-  },
-  onLoad() {
-    this.isHovering = new Array(this.postList.length).fill(false);
-  },
-  methods: {
-    // getPostList() {
-    //   uni.request({
-    //     url: '',
-    //     method: '',
-    //     success: (res) => {
-    //       if (res.statusCode === 200) {
-    //         this.postList = res.data;
-    //         this.isHovering = new Array(this.postList.length).fill(false);
-    //       } else {
-    //         uni.showToast({
-    //           title: '获取数据失败',
-    //           icon: 'none'
-    //         });
-    //       }
-    //     },
-    //     fail: (err) => {
-    //       uni.showToast({
-    //         title: '网络请求失败，请检查网络',
-    //         icon: 'none'
-    //       });
-    //     }
-    //   });
-    // },
-    handleMouseEnter(index) {
-      this.isHovering[index] = true;
     },
-    handleMouseLeave(index) {
-      this.isHovering[index] = false;
-    },
-    onAreaChange(e) {
-      this.areaIndex = e.detail.value;
-      // 过滤帖子
-      this.filterPosts();
-    },
-    filterPosts() {
-      if (this.areaIndex === 0) {
-        // 全部
-        this.filteredPostList = this.postList;
-      } else {
-        // 选择
-        const selectedArea = this.areaList[this.areaIndex];
-        this.filteredPostList = this.postList.filter(post => post.locationName === selectedArea);
-      }
-    }
-  },
-  computed: {
-    filteredPostList() {
-      let filteredList = this.postList;
-      // 地区筛选
-      if (this.areaIndex !== 0) {
-        const selectedArea = this.areaList[this.areaIndex];
-        filteredList = filteredList.filter(post => post.locationName === selectedArea);
-      }
-      // 文本筛选
-      if (this.searchText) {
-        filteredList = filteredList.filter(post => {
-          return post.title.includes(this.searchText) || post.desc.includes(this.searchText);
-        });
+    computed: {
+      filteredPostList() {
+        let filteredList = this.postList;
+        // 地区筛选
+        if (this.areaIndex !== '0') {
+          const selectedArea = this.areaList[this.areaIndex];
+          filteredList = filteredList.filter(post => post.locationName === selectedArea);
+        }
+        // 文本筛选
+        if (this.searchText) {
+          filteredList = filteredList.filter(post => {
+            return post.title.includes(this.searchText) || post.desc.includes(this.searchText);
+          });
+        }
+        return filteredList;
       }
       return filteredList;
     }
