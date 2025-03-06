@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { baseUrl } from '@/config';
 export default {
   data() {
     return {
@@ -42,8 +43,8 @@ export default {
           const { code } = loginRes;
 		  console.log(code);
           // 发送code到后台换取openId, sessionKey, unionId
-          /* uni.request({
-            url: 'https://你的服务器地址/api/login', // 你的登录API地址
+          uni.request({
+            url: baseUrl, // 你的登录API地址
             method: 'POST',
             data: {
               code
@@ -69,7 +70,7 @@ export default {
                 icon: 'none'
               });
             }
-          }); */
+          }); 
         },
         fail: (err) => {
           console.log('uni.login 接口调用失败，将无法正常使用开放接口等服务', err);
