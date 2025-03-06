@@ -41,6 +41,12 @@
 		"style": {
 		  "navigationBarTitleText": "账号管理"  
 		}
+	},
+	{
+		"path": "pages/my/login_wx",
+		"style": {
+		  "navigationBarTitleText": "微信登录"  
+		}
 	}
   ],
   "tabBar": {

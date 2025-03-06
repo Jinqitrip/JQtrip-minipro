@@ -1,5 +1,5 @@
 <template>
-	<wd-card type="rectangle">
+	<wd-card type="rectangle" @click.native="jump_to_login">
 		<view style="height: 40px" class="content">
 			<image src="/static/my.png" width="40" height="40" alt="joy"
 				style="width: 40px; height: 40px; border-radius: 4px; margin-right: 12px" />
@@ -31,6 +31,14 @@ function jump() {
 
 	uni.navigateTo({
 		url: '/pages/my/account_manage'
+	});
+	console.log(423);
+}
+
+function jump_to_login() {
+
+	uni.navigateTo({
+		url: '/pages/my/login_wx'
 	});
 	console.log(423);
 }
