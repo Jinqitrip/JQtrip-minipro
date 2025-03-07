@@ -52,7 +52,9 @@ export default {
             success: (res) => {
               if (res.data && res.data.success) {
 				//  载入全局变量
-                { this.$userData.openId, this.$userData.sessionKey, this.$userData.unionId } = res.data;
+                this.$userData.openId = res.data.openId;
+                this.$userData.sessionKey = res.data.sessionKey;
+                this.$userData.unionId = res.data.unionId;
 				this.$userData.userInfo = this.userInfo;
 				
                 // 将用户信息和session存储到本地
