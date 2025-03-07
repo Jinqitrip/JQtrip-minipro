@@ -1,5 +1,12 @@
 import App from './App'
 
+Vue.prototype.$userData = {
+	userInfo: '',
+	openId: '',
+	sessionKey: '',
+	unionId: ''
+}
+
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'

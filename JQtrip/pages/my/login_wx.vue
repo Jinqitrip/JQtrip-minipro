@@ -51,12 +51,16 @@ export default {
             },
             success: (res) => {
               if (res.data && res.data.success) {
-                const { openId, sessionKey, unionId } = res.data;
+				//  载入全局变量
+                { this.$userData.openId, this.$userData.sessionKey, this.$userData.unionId } = res.data;
+				this.$userData.userInfo = this.userInfo;
+				
                 // 将用户信息和session存储到本地
                 uni.setStorageSync('userInfo', this.userInfo);
-                uni.setStorageSync('openId', openId);
-                uni.setStorageSync('sessionKey', sessionKey);
-                uni.setStorageSync('unionId', unionId);
+                uni.setStorageSync('openId', this.$userData.openId);
+                uni.setStorageSync('sessionKey', this.$userData.sessionKey);
+                uni.setStorageSync('unionId', this.$userData.unionId);
+				
               } else {
                 uni.showToast({
                   title: '登录失败',
