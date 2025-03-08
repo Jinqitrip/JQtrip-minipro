@@ -29,7 +29,7 @@
         </view>
     </wd-card>
 
-    <TnSteps v-model="currentStep" mode="dotIcon" style="width: 85%;margin: auto">
+    <TnSteps v-model="currentStep" mode="dotIcon" style="width: 85%;margin: auto" disabled>
         <TnStepsItem v-for="(item, index) in stepsData" :key="index" :title="item.title" :icon="item.icon"
             :active-icon="item.activeIcon" />
     </TnSteps>
