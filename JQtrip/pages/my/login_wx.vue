@@ -16,23 +16,17 @@ export default {
   methods: {
     // 获取用户信息
     getUserInfo(e) {
-      if (e.mp.detail.userInfo) {
-        this.userInfo = e.mp.detail.userInfo;
-        this.hasUserInfo = true;
-        this.login();
-      } else {
-        uni.showModal({
-          title: '警告',
-          content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!',
-          showCancel: false,
-          confirmText: '返回授权',
-          success: function(res) {
-            if (res.confirm) {
-              console.log('用户点击了“返回授权”');
-            }
-          }
-        });
-      }
+		uni.login({
+		  provider: 'weixin',
+		  success: (res) => {
+		    if (res.code) {
+		      // 将 code 发送至后端换取 openid 和 session_key
+		      this.sendCodeToServer(res.code);
+		    } else {
+		      console.log('登录失败:', res.errMsg);
+		    }
+		  }
+		});
     },
     // 登录并获取用户信息
     login() {
