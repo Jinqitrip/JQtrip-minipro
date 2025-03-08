@@ -1,7 +1,13 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			console.log('App Launch');
+			
+			//获取用户信息
+			this.$userData.openId = uni.getStorageSync('openId');
+			this.$userData.sessionKey = uni.getStorageSync('sessionKey');
+			this.$userData.unionId = uni.getStorageSync('unionId');
+			this.$userData.userInfo = uni.getStorageSync('userInfo');
 		},
 		onShow: function() {
 			console.log('App Show')

@@ -2,8 +2,8 @@
     <page-wraper>
         <view>
             <demo-block title="基本使用" transparent>
-                <wd-card v-for="order in order_list" @click.native="jump_to_order(order)">
-                    <view class="content">
+                <wd-card v-for="order in order_list" @click="jump_to_order(order)">
+                    <view class="content" @click="jump_to_order(order)">
                         <image :src="order.order_image" alt="joy"
                             style="width: 70px; height: 70px; border-radius: 4px; margin-right: 12px" />
                         <view>
