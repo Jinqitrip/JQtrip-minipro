@@ -1,6 +1,6 @@
 <template>
   <view>
-    <button open-type="getUserInfo" @getuserinfo="getUserInfo">微信登录</button>
+    <button @click="login">微信登录</button>
   </view>
 </template>
 
@@ -14,20 +14,6 @@ export default {
     }
   },
   methods: {
-    // 获取用户信息
-    getUserInfo(e) {
-		uni.login({
-		  provider: 'weixin',
-		  success: (res) => {
-		    if (res.code) {
-		      // 将 code 发送至后端换取 openid 和 session_key
-		      this.sendCodeToServer(res.code);
-		    } else {
-		      console.log('登录失败:', res.errMsg);
-		    }
-		  }
-		});
-    },
     // 登录并获取用户信息
     login() {
       uni.login({
@@ -37,8 +23,8 @@ export default {
           const { code } = loginRes;
 		  console.log(code);
           // 发送code到后台换取openId, sessionKey, unionId
-          uni.request({
-            url: baseUrl, // 你的登录API地址
+            uni.request({
+            url: baseUrl+"/v1/auth/wxLogin", // 你的登录API地址
             method: 'POST',
             data: {
               code
