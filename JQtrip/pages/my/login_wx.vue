@@ -27,7 +27,7 @@ export default {
             url: baseUrl+"/v1/auth/wxLogin", // 你的登录API地址
             method: 'POST',
             data: {
-              code
+              "code":code
             },
             success: (res) => {
               if (res.data && res.data.success) {
