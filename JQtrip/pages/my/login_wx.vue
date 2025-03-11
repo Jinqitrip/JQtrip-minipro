@@ -1,6 +1,7 @@
 <template>
   <view>
     <button @click="login">微信登录</button>
+	<TnIcon custom-class="home" :custom-style="style" />
   </view>
 </template>
 
