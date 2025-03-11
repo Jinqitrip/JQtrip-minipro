@@ -1,7 +1,5 @@
 <template>
-  <view class="post-item"
-    :style="{ boxShadow: isHovering? '0 4px 8px rgba(0, 0, 0, 0.1)' : '0 2px 4px rgba(0, 0, 0, 0.08)' }"
-    @mouseenter="$emit('mouseenter')" @mouseleave="$emit('mouseleave')">
+  <view class="post-item">
     <view class="post-header">
       <view class="post-bar">
         <image :src="postData.authoravatar" class="post-avatar" />
@@ -11,24 +9,37 @@
         <image :src="postData.guideavatar" class="post-avatar" />
         <text class="post-author">{{ postData.guide }}</text>
       </view>
-
     </view>
     <!-- <image :src="postData.image" class="post-img" /> -->
     <view class="post-content">
       <text class="post-title">{{ postData.title }}</text>
-      <view class="post-desc">{{ postData.desc }}</view>
-      <!-- <view class="post-info">
+      <view class="post-desc">{{ postData.briefdesc }}</view>
+      <view v-if="isExpanded" class="post-info">
+        <text>描述：{{ postData.desc }}</text>
         <text>位置名称: {{ postData.locationName }}</text>
         <text>详细地址: {{ postData.address }}</text>
         <text>时间: {{ postData.time }}</text>
-      </view> -->
+      </view>
+      <view class="expand-button" @click="toggleExpand">
+        <text>{{ isExpanded ? '收起' : '展开' }}</text>
+      </view>
     </view>
   </view>
 </template>
 
 <script>
   export default {
-    props: ['postData', 'isHovering']
+    props: ['postData'],
+    data() {
+      return {
+        isExpanded: false
+      };
+    },
+    methods: {
+      toggleExpand() {
+        this.isExpanded = !this.isExpanded;
+      }
+    }
   };
 </script>
 
@@ -40,13 +51,6 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 90%;
-
-    transition: all 0.3s ease;
-  }
-
-  .post-item:hover {
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-    transform: translateY(-3px);
   }
 
   .post-header {
@@ -76,7 +80,6 @@
     font-size: 14px;
     color: #333333;
     font-weight: 500;
-
   }
 
   .post-img {
@@ -88,6 +91,7 @@
 
   .post-content {
     padding: 16px;
+    position: relative;
   }
 
   .post-title {
@@ -116,10 +120,11 @@
     margin-bottom: 4px;
   }
 
-  .price {
-    color: #ff6600;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: right;
+  .expand-button {
+    color: lightblue;
+    cursor: pointer;
+    position: absolute;
+    bottom: 10px;
+    left: 16px;
   }
 </style>

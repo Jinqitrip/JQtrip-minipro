@@ -1,6 +1,5 @@
 <template>
   <view class="container">
-
     <!-- 顶部导航栏 -->
     <view class="search-container">
       <view class="area-filter-box">
@@ -24,16 +23,22 @@
       </view>
     </view>
 
-    <view class="needpub">
-      <button class="needbutton" onclick="needbtnact">
-        start your trip!
-      </button>
+    <!-- 需求跳转 -->
+    <view class="needframe">
+      <view class="center">
+        <view class="title">添加你的游览需求</view>
+        <view class="addzone">
+          <img @click="gotodemand" src="/static/plusicon.png" class="plusicon">
+        </view>
+        <!-- <button class="needbtn">
+          start your trip!
+        </button> -->
+      </view>
     </view>
 
     <!-- 帖子列表区域 -->
     <scroll-view class="post-list" scroll-y="true">
-      <postitem v-for="(post, index) in filteredPostList" :key="index" :postData="post" :isHovering="isHovering[index]"
-        @mouseenter="handleMouseEnter(index)" @mouseleave="handleMouseLeave(index)" />
+      <postitem v-for="(post, index) in filteredPostList" :key="index" :postData="post" />
     </scroll-view>
   </view>
 </template>
@@ -53,7 +58,8 @@
             "guideavatar": "/static/my.png",
             "guide": "哈哈哈哈哈哈哈",
             "title": "游园武大",
-            "desc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "briefdesc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "desc": "11111111111111111111111111111111",
             "locationName": "武汉大学",
             "address": "湖北省武汉市武昌区八一路299号",
             "time": "2小时"
@@ -64,7 +70,8 @@
             "guideavatar": "/static/my.png",
             "guide": "嘻嘻嘻嘻",
             "title": "游园HUST",
-            "desc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "briefdesc": "本科生 校园地陪 图书馆宿舍无法进入",
+            "desc": "11111111111111111111111111111111",
             "locationName": "华中科技大学",
             "address": "湖北省武汉市武昌区八一路299号",
             "time": "2小时"
@@ -75,7 +82,8 @@
             "guideavatar": "/static/my.png",
             "guide": "徐云杰",
             "title": "地大",
-            "desc": "本科生 校园地陪酒",
+            "briefdesc": "本科生 校园地陪酒",
+            "desc": "11111111111111111111111111111111",
             "locationName": "中国地质大学",
             "address": "湖北省武汉市武昌区八一路299号",
             "time": "2小时"
@@ -86,7 +94,8 @@
             "guideavatar": "/static/my.png",
             "guide": "徐云杰",
             "title": "地大",
-            "desc": "本科生 校园地陪酒",
+            "briefdesc": "本科生 校园地陪酒",
+            "desc": "11111111111111111111111111111111",
             "locationName": "中国地质大学",
             "address": "湖北省武汉市武昌区八一路299号",
             "time": "2小时"
@@ -97,53 +106,28 @@
             "guideavatar": "/static/my.png",
             "guide": "徐云杰",
             "title": "地大",
-            "desc": "本科生 校园地陪酒",
+            "briefdesc": "本科生 校园地陪酒",
+            "desc": "11111111111111111111111111111111",
             "locationName": "中国地质大学",
             "address": "湖北省武汉市武昌区八一路299号",
             "time": "2小时"
-          },
+          }
         ],
-        isHovering: [],
         areaIndex: '0',
         areaList: ['全部', '武汉大学', '华中科技大学', '中国地质大学'],
+        currentPost: null,
+        showDetail: false
       };
     },
-    onLoad() {
-      this.isHovering = new Array(this.postList.length).fill(false);
-    },
     methods: {
-      // getPostList() {
-      //   uni.request({
-      //     url: '',
-      //     method: '',
-      //     success: (res) => {
-      //       if (res.statusCode === 200) {
-      //         this.postList = res.data;
-      //         this.isHovering = new Array(this.postList.length).fill(false);
-      //       } else {
-      //         uni.showToast({
-      //           title: '获取数据失败',
-      //           icon: 'none'
-      //         });
-      //       }
-      //     },
-      //     fail: (err) => {
-      //       uni.showToast({
-      //         title: '网络请求失败，请检查网络',
-      //         icon: 'none'
-      //       });
-      //     }
-      //   });
-      // },
-      handleMouseEnter(index) {
-        this.isHovering[index] = true;
-      },
-      handleMouseLeave(index) {
-        this.isHovering[index] = false;
-      },
       onAreaChange(e) {
         this.areaIndex = e.detail.value;
       },
+      gotodemand() {
+        uni.navigateTo({
+          url: '/pages/index/demandfill'
+        });
+      }
     },
     computed: {
       filteredPostList() {
@@ -181,7 +165,6 @@
     right: 0;
     height: 50px;
     background-color: #ffffff;
-    display: flex;
     align-items: center;
     padding: 0 15px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -204,7 +187,6 @@
   }
 
   .search-input-box {
-    /* flex: 1; */
     display: flex;
     width: 50%;
     flex-direction: row;
@@ -232,30 +214,81 @@
     margin-left: 5px;
   }
 
-  .needpub {
-    margin-top: 65px;
+  .needframe {
+    height: 240px;
+    margin-top: 70px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.3);
+    background: #3A92AF;
+    background: linear-gradient(to top right, #00ffff 0%, #ffffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3A92AF', endColorstr='#5CA05A', GradientType=1);
+    color: #fff;
+    font-family: 'Open Sans', Helvetica, sans-serif;
   }
 
-  .needbutton {
-    background-color: #acaf00;
-    border: none;
-    color: white;
-    width: 100%;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
+  .center {
+    height: 200px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    background: #fff;
+    box-shadow: 8px 10px 15px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .title {
     font-size: 16px;
+    color: #676767;
+    line-height: 50px;
+    height: 50px;
+    border-bottom: 1px solid #D8D8D8;
+    text-align: center;
+  }
+
+  .addzone {
+    /* z-index: 1; */
+    box-sizing: border-box;
+    width: 100px;
+    height: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border: 1px dashed #A4A4A4;
+    border-radius: 3px;
+    text-align: center;
+  }
+
+
+  .plusicon {
+    width: 98px;
+    height: 98px;
+    /* margin: 15px; */
+  }
+
+  .needbtn {
+    margin-top: 5px;
+    width: 140px;
+    height: 40px;
+    background: #ffff7f;
+    border-radius: 3px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 14px;
     cursor: pointer;
-    box-shadow: 0px 9px #999;
+    transition: all .2s ease-in-out;
+    margin: auto;
   }
 
-  .needbutton:hover {
-    background-color: #af5700;
+  .needbtn:hover {
+    box-shadow: 0 2px 0 0 #498C25, 0 2px 10px 0 #6ECE3B;
   }
 
-  .needbutton:active {
-    background-color: #af5700;
-    box-shadow: 0px 5px #666;
-    transform: translateY(4px);
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
   }
 </style>
