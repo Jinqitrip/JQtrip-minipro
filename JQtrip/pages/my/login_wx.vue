@@ -44,6 +44,9 @@ export default {
                 uni.setStorageSync('sessionKey', this.$userData.sessionKey);
                 uni.setStorageSync('unionId', this.$userData.unionId);
 				
+				console.log(res);
+				console.log(this.userInfo)
+				
               } else {
                 uni.showToast({
                   title: '登录失败',

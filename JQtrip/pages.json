@@ -63,20 +63,20 @@
     "list": [{
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "/static/house-door.svg",
-        "selectedIconPath": "/static/house-door-fill.svg"
+        "iconPath": "/static/house-door.png",
+        "selectedIconPath": "/static/house-door-fill.png"
       },
       {
         "pagePath": "pages/order/order",
         "text": "订单",
-        "iconPath": "/static/file-text.svg",
-        "selectedIconPath": "/static/file-text-fill.svg"
+        "iconPath": "/static/file-text.png",
+        "selectedIconPath": "/static/file-text-fill.png"
       },
       {
         "pagePath": "pages/my/my",
         "text": "我的",
-        "iconPath": "/static/person.svg",
-        "selectedIconPath": "/static/person-fill.svg"
+        "iconPath": "/static/person.png",
+        "selectedIconPath": "/static/person-fill.png"
       }
     ]
   }

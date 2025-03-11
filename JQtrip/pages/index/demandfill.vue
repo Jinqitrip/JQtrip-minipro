@@ -2,16 +2,8 @@
   <view class="container">
     <form @submit="submitForm">
       <view class="form-item">
-        <label>姓名：</label>
-        <input v-model="formData.name" type="text" placeholder="请输入姓名" />
-      </view>
-      <view class="form-item">
         <label>人数：</label>
         <input v-model="formData.personCount" type="number" placeholder="请输入人数" />
-      </view>
-      <view class="form-item">
-        <label>用户手机号：</label>
-        <input v-model="formData.phoneNumber" type="tel" placeholder="请输入手机号" />
       </view>
       <view class="form-item">
         <label>想去哪儿：</label>
@@ -43,9 +35,7 @@
     data() {
       return {
         formData: {
-          name: '',
           personCount: '',
-          phoneNumber: '',
           destination: '',
           purpose: '',
           specialRequirements: '',
