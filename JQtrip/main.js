@@ -6,7 +6,7 @@ import { createSSRApp } from 'vue'
 export function createApp() {
   const app = createSSRApp(App);
   app.config.globalProperties.$userData = {
-  	"userInfo": '',
+  	"userInfo": {},
   	"openId": '',
   	"sessionKey": '',
   	"unionId": ''

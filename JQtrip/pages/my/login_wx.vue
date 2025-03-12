@@ -17,6 +17,26 @@ export default {
   methods: {
     // 登录并获取用户信息
     login() {
+		uni.getUserInfo({
+		  provider: 'weixin',
+		  success: function (infoRes) {
+			console.log(infoRes.userInfo)
+		
+			this.$userData.userInfo = infoRes.userInfo;
+			
+			uni.setStorageSync('userInfo', this.$userData.userInfo);
+		
+			
+			
+		  },
+		  fail: () => {
+		  	uni.showToast({
+		  	  title: '用户信息获取失败',
+		  	  icon: 'none'
+		  	});
+		  }
+		});
+
       uni.login({
         provider: 'weixin',
         success: (loginRes) => {
@@ -32,20 +52,18 @@ export default {
             },
             success: (res) => {
               if (res.data && res.data.success) {
-				//  载入全局变量
-                this.$userData.openId = res.data.openId;
-                this.$userData.sessionKey = res.data.sessionKey;
-                this.$userData.unionId = res.data.unionId;
-				this.$userData.userInfo = this.userInfo;
-				
-                // 将用户信息和session存储到本地
-                uni.setStorageSync('userInfo', this.userInfo);
-                uni.setStorageSync('openId', this.$userData.openId);
-                uni.setStorageSync('sessionKey', this.$userData.sessionKey);
-                uni.setStorageSync('unionId', this.$userData.unionId);
-				
-				console.log(res);
-				console.log(this.userInfo)
+
+
+					//  载入全局变量
+					this.$userData.openId = res.data.openId;
+					this.$userData.sessionKey = res.data.sessionKey;
+					
+					// 将用户信息和session存储到本地
+					uni.setStorageSync('openId', this.$userData.openId);
+					uni.setStorageSync('sessionKey', this.$userData.sessionKey);
+					
+					console.log(res);
+					
 				
               } else {
                 uni.showToast({
