@@ -66,9 +66,7 @@ export default {
 								uni.reLaunch({
 									url: '/pages/my/my',
 									success() {
-										let page = getCurrentPages().pop();
-										if (!page) return;
-										page.onLoad();
+
 									},
 									fail() {
 										uni.showToast({
