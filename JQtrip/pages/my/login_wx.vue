@@ -21,9 +21,10 @@ export default {
 				provider: 'weixin',
 				success: (infoRes) => {
 					console.log(infoRes.userInfo)
-
+					this.$userData.userInfo = infoRes.userInfo;
 					this.$userData.nickName = infoRes.userInfo.nickName;
 					this.$userData.avatarUrl = infoRes.userInfo.avatarUrl;
+					uni.setStorageSync('userInfo', this.$userData.userInfo);
 					uni.setStorageSync('nickName', this.$userData.nickName);
 					uni.setStorageSync('avatarUrl', this.$userData.avatarUrl);
 

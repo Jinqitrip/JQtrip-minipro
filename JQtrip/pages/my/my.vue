@@ -1,11 +1,16 @@
 <template>
 	<wd-card type="rectangle">
 		<view style="height: 40px" class="content" @click="jump_to_login">
-			<image src="/static/my.png" width="40" height="40" alt="joy"
+			<image v-if="$userData.avatarUrl!=''" :src="$userData.avatarUrl" width="40" height="40" alt="joy"
 				style="width: 40px; height: 40px; border-radius: 4px; margin-right: 12px" />
-			<view>
-				<view class="custom-main">用户名</view>
+			<image v-if="$userData.avatarUrl==''" src="/static/my.png" width="40" height="40" alt="joy"
+				style="width: 40px; height: 40px; border-radius: 4px; margin-right: 12px" />
+			<view v-if="$userData.nickName!=''">
+				<view class="custom-main" > {{$userData.nickName}} </view>
 				<view class="custom-sub">ID</view>
+			</view>
+			<view v-if="$userData.nickName==''">
+				<view class="custom-main" > 请登录 </view>
 			</view>
 		</view>
 	</wd-card>
