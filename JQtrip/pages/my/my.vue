@@ -64,10 +64,13 @@ export default {
 
 		// 跳转到登录页面
 		jump_to_login() {
-			uni.navigateTo({
-				url: '/pages/my/login_wx'
-			})
-			console.log(423)
+			if (this.$userData.nickName == "") {
+				uni.navigateTo({
+					url: '/pages/my/login_wx'
+				})
+			} else {
+				return;
+			}
 		}
 	}
 }

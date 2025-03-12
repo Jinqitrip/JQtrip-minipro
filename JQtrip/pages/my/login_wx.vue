@@ -1,13 +1,13 @@
 <template>
 	<view>
 		<button @click="login">微信登录</button>
-		<TnIcon custom-class="home" :custom-style="style" />
 	</view>
 </template>
 
 <script>
 import { baseUrl } from '@/config';
 export default {
+
 	data() {
 		return {
 			userInfo: null,
@@ -62,6 +62,21 @@ export default {
 								uni.setStorageSync('sessionKey', this.$userData.sessionKey);
 
 								console.log(res);
+								
+								uni.reLaunch({
+									url: '/pages/my/my',
+									success() {
+										let page = getCurrentPages().pop();
+										if (!page) return;
+										page.onLoad();
+									},
+									fail() {
+										uni.showToast({
+											title: '登录失败',
+											icon: 'none'
+										});
+									}
+								})
 
 
 							} else {
