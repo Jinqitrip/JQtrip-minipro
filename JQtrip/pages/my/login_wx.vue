@@ -1,6 +1,7 @@
 <template>
   <view>
-    <button open-type="getUserInfo" @getuserinfo="getUserInfo">微信登录</button>
+    <button @click="login">微信登录</button>
+	<TnIcon custom-class="home" :custom-style="style" />
   </view>
 </template>
 
@@ -14,22 +15,28 @@ export default {
     }
   },
   methods: {
-    // 获取用户信息
-    getUserInfo(e) {
-		uni.login({
-		  provider: 'weixin',
-		  success: (res) => {
-		    if (res.code) {
-		      // 将 code 发送至后端换取 openid 和 session_key
-		      this.sendCodeToServer(res.code);
-		    } else {
-		      console.log('登录失败:', res.errMsg);
-		    }
-		  }
-		});
-    },
     // 登录并获取用户信息
     login() {
+		uni.getUserInfo({
+		  provider: 'weixin',
+		  success: function (infoRes) {
+			console.log(infoRes.userInfo)
+		
+			this.$userData.userInfo = infoRes.userInfo;
+			
+			uni.setStorageSync('userInfo', this.$userData.userInfo);
+		
+			
+			
+		  },
+		  fail: () => {
+		  	uni.showToast({
+		  	  title: '用户信息获取失败',
+		  	  icon: 'none'
+		  	});
+		  }
+		});
+
       uni.login({
         provider: 'weixin',
         success: (loginRes) => {
@@ -37,25 +44,26 @@ export default {
           const { code } = loginRes;
 		  console.log(code);
           // 发送code到后台换取openId, sessionKey, unionId
-          uni.request({
-            url: baseUrl, // 你的登录API地址
+            uni.request({
+            url: baseUrl+"/v1/auth/wxLogin", // 你的登录API地址
             method: 'POST',
             data: {
-              code
+              "code":code
             },
             success: (res) => {
               if (res.data && res.data.success) {
-				//  载入全局变量
-                this.$userData.openId = res.data.openId;
-                this.$userData.sessionKey = res.data.sessionKey;
-                this.$userData.unionId = res.data.unionId;
-				this.$userData.userInfo = this.userInfo;
-				
-                // 将用户信息和session存储到本地
-                uni.setStorageSync('userInfo', this.userInfo);
-                uni.setStorageSync('openId', this.$userData.openId);
-                uni.setStorageSync('sessionKey', this.$userData.sessionKey);
-                uni.setStorageSync('unionId', this.$userData.unionId);
+
+
+					//  载入全局变量
+					this.$userData.openId = res.data.openId;
+					this.$userData.sessionKey = res.data.sessionKey;
+					
+					// 将用户信息和session存储到本地
+					uni.setStorageSync('openId', this.$userData.openId);
+					uni.setStorageSync('sessionKey', this.$userData.sessionKey);
+					
+					console.log(res);
+					
 				
               } else {
                 uni.showToast({
