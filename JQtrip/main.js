@@ -9,7 +9,9 @@ export function createApp() {
   	"userInfo": {},
   	"openId": '',
   	"sessionKey": '',
-  	"unionId": ''
+  	"unionId": '',
+	"avatarUrl": '',
+	"nickName": ''
   } ;
   return {
     app

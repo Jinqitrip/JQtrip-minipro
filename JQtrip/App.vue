@@ -8,6 +8,8 @@
 			this.$userData.sessionKey = uni.getStorageSync('sessionKey');
 			this.$userData.unionId = uni.getStorageSync('unionId');
 			this.$userData.userInfo = uni.getStorageSync('userInfo');
+			this.$userData.avatarUrl = uni.getStorageSync('avatarUrl');
+			this.$userData.nickName = uni.getStorageSync('nickName');
 		},
 		onShow: function() {
 			console.log('App Show')
