@@ -1,16 +1,16 @@
 <template>
 	<wd-card type="rectangle">
 		<view style="height: 40px" class="content" @click="jump_to_login">
-			<image v-if="$userData.avatarUrl!=''" :src="$userData.avatarUrl" width="40" height="40" alt="joy"
+			<image v-if="$userData.avatarUrl !== ''" :src="$userData.avatarUrl" width="40" height="40" alt="joy"
 				style="width: 40px; height: 40px; border-radius: 4px; margin-right: 12px" />
-			<image v-if="$userData.avatarUrl==''" src="/static/my.png" width="40" height="40" alt="joy"
+			<image v-if="$userData.avatarUrl === ''" src="/static/my.png" width="40" height="40" alt="joy"
 				style="width: 40px; height: 40px; border-radius: 4px; margin-right: 12px" />
-			<view v-if="$userData.nickName!=''">
-				<view class="custom-main" > {{$userData.nickName}} </view>
+			<view v-if='$userData.nickName !== ""'>
+				<view class="custom-main"> {{ $userData.nickName }} </view>
 				<view class="custom-sub">ID</view>
 			</view>
-			<view v-if="$userData.nickName==''">
-				<view class="custom-main" > 请登录 </view>
+			<view v-if='$userData.nickName === ""'>
+				<view class="custom-main"> 请登录 </view>
 			</view>
 		</view>
 	</wd-card>
@@ -19,33 +19,57 @@
 	<wd-cell title="邀请新用户" is-link to="/pages/index/index"></wd-cell>
 	<wd-cell title="联系客服" is-link to="/pages/index/index"></wd-cell>
 	<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>
+	<wd-cell title="测试" is-link @click="test"></wd-cell>
 
 
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { useToast } from '@/uni_modules/wot-design-uni'
-const toast = useToast()
 
-function showToast() {
-	toast.show('点击')
-}
+export default {
+	data() {
 
+		return {
+			toast: null as any,// 初始化 toast 实例
+		}
+	},
 
-function jump() {
+	created() {
+		this.toast = useToast() // 在 created 钩子中初始化
+	},
+	onLoad() {
+		console.log(this.nickName);
+	},
 
-	uni.navigateTo({
-		url: '/pages/my/account_manage'
-	});
-	console.log(423);
-}
+	methods: {
+		// 展示提示
+		showToast() {
+			this.toast.show('点击')
+		},
 
-function jump_to_login() {
+		// 跳转到账号管理页面
+		jump() {
+			uni.navigateTo({
+				url: '/pages/my/account_manage'
+			})
+			console.log(423)
+		},
 
-	uni.navigateTo({
-		url: '/pages/my/login_wx'
-	});
-	console.log(423);
+		// 测试方法
+		test() {
+			console.log(this.$userData);
+			console.log(this.$userData.nickName);
+		},
+
+		// 跳转到登录页面
+		jump_to_login() {
+			uni.navigateTo({
+				url: '/pages/my/login_wx'
+			})
+			console.log(423)
+		}
+	}
 }
 </script>
 
