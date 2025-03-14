@@ -136,7 +136,14 @@ const note = ref("")
 
 // 提交
 const submit = () => {
-	console.log(note._rawValue)
+	var data = {
+		"date" : popupCalendarValue._rawValue,
+		"time" : time._rawValue,
+		"people" : peopleCount._rawValue,
+		"special_tags" : selectedTagsLabels.value,
+		"note" : note._rawValue
+	};
+	console.log(data);
 }
 
 </script>
