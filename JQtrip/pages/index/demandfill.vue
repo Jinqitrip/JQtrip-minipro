@@ -1,107 +1,379 @@
 <template>
   <view class="container">
-    <form @submit="submitForm">
-      <view class="form-item">
-        <label>人数：</label>
-        <input v-model="formData.personCount" type="number" placeholder="请输入人数" />
+    <!-- 信息总览卡片 -->
+    <view class="summary-card">
+      <view class="summary-left">
+        <view class="summary-item">
+          <text class="label">日期：</text>
+          <text class="value">{{ popupCalendarValue }}</text>
+        </view>
+        <view class="summary-item">
+          <text class="label">时间：</text>
+          <text class="value">{{ time }}</text>
+        </view>
+        <view class="summary-item">
+          <text class="label">人数：</text>
+          <text class="value">{{ peopleCount }}人</text>
+        </view>
       </view>
-      <view class="form-item">
-        <label>想去哪儿：</label>
-        <input v-model="formData.destination" type="text" placeholder="请输入想去的地方" />
+      <view class="summary-right" v-if="selectedTags.length > 0">
+        <text class="tag" v-for="tag in selectedTagsLabels" :key="tag">{{ tag }}</text>
       </view>
-      <view class="form-item">
-        <label>游览目的：</label>
-        <input v-model="formData.purpose" type="text" placeholder="请输入游览目的" />
+      <view v-else class="placeholder">未选择特殊需求</view>
+    </view>
+
+
+    <wd-datetime-picker type="time" v-model="time" label="时间选择" @confirm="handleConfirm" />
+    <wd-datetime-picker type="date" v-model="popupCalendarValue" label="日期选择" disabled
+      @click.native="openCalendarPopup" />
+
+
+    <view class="people-section">
+      <!-- 人数选择器 -->
+      <view class="people-picker">
+        <text class="title">参观人数</text>
+        <view class="counter">
+          <wd-input-number class="custom-input-number" v-model="peopleCount" />
+        </view>
       </view>
-      <view class="form-item">
-        <label>游览特殊需求：</label>
-        <textarea v-model="formData.specialRequirements" placeholder="请输入游览特殊需求"></textarea>
+
+      <!-- 智能备注系统 -->
+      <view class="remark-section">
+        <text class="remark-title">特殊需求：</text>
+        <view class="quick-tags">
+          <t-tag v-for="tag in remarkTags" :key="tag.value"
+            :type="selectedTags.includes(tag.value) ? 'primary' : 'plain'" @click="toggleTag(tag.value)"
+            class="remark-tag">
+            {{ tag.label }}
+          </t-tag>
+        </view>
       </view>
-      <view class="form-item">
-        <label>预计游览时间：</label>
-        <input v-model="formData.expectedTime" type="text" placeholder="请输入预计游览时间" />
-      </view>
-      <view class="form-item">
-        <label>预计付费：</label>
-        <input v-model="formData.expectedPayment" type="number" placeholder="请输入预计付费金额" />
-      </view>
-      <button type="submit">提交</button>
-    </form>
+    </view>
+
+    <TnNumberBox v-model="numberValue" width="300" height="80" font-size="40" />
+
+	<wd-textarea v-model="note" placeholder="请填写备注" />
+
+	<TnButton font-size="36" custom-class="popup-calendar-button" @click="submit">
+	  提交
+	</TnButton>
   </view>
+
+  <TnPopup v-model="showCalendarPopup" open-direction="bottom">
+    <view class="tn-pt">
+      <TnCalendar v-model="popupCalendarValue" />
+    </view>
+    <view class="tn-mt tn-w-full tn-pb">
+      <TnButton font-size="36" custom-class="popup-calendar-button" @click="closeCalendarPopup">
+        选择所选日期
+      </TnButton>
+    </view>
+  </TnPopup>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        formData: {
-          personCount: '',
-          destination: '',
-          purpose: '',
-          specialRequirements: '',
-          expectedTime: '',
-          expectedPayment: ''
-        }
-      };
-    },
-    onLoad() {
-      // 从本地缓存中获取之前保存的表单数据
-      const savedFormData = uni.getStorageSync('formData');
-      if (savedFormData) {
-        this.formData = savedFormData;
-      }
-    },
-    watch: {
-      formData: {
-        deep: true,
-        handler(newValue) {
-          // 监听表单数据的变化，将数据保存到本地缓存中
-          uni.setStorageSync('formData', newValue);
-        }
-      }
-    },
-    methods: {
-      submitForm() {
-        console.log('表单数据：', this.formData); //test
-        // 提交表单后清除本地缓存
-        uni.removeStorageSync('formData');
-        uni.navigateBack();
-      }
-    }
-  };
+<script setup>
+import { ref, computed } from 'vue';
+import TnDateTimePicker from '@/uni_modules/tuniaoui-vue3/components/date-time-picker/src/date-time-picker.vue'
+import TnCalendar from '@/uni_modules/tuniaoui-vue3/components/calendar/src/calendar.vue'
+import TnPopup from '@/uni_modules/tuniaoui-vue3/components/popup/src/popup.vue'
+import TnButton from '@/uni_modules/tuniaoui-vue3/components/button/src/button.vue'
+
+const showPopup = ref(false)
+const selectDate = ref('')
+
+const activeTimeLabel = computed(() => {
+  const slot = timeSlots.value.find(t => t.value === activeTime.value)
+  return slot ? slot.label : ''
+})
+
+const selectedTagsLabels = computed(() => {
+  return remarkTags.value
+    .filter(tag => selectedTags.value.includes(tag.value))
+    .map(tag => tag.label)
+})
+
+// 日期数据
+const now = new Date();
+const year = now.getFullYear();
+const month = ('0' + (now.getMonth() + 1)).slice(-2);
+const day = ('0' + now.getDate()).slice(-2);
+const today = year + "/" + month + "/" + day;
+const popupCalendarValue = ref(today)
+const showCalendarPopup = ref(false)
+const openCalendarPopup = () => {
+  showCalendarPopup.value = true
+}
+const closeCalendarPopup = () => {
+  showCalendarPopup.value = false
+}
+
+// 时间，默认九点
+const time = ref("09:00");
+
+// 人数选择
+const peopleCount = ref(1);
+const maxPeople = 20;
+const remaining = computed(() => maxPeople - peopleCount.value);
+const showGroupTip = computed(() => peopleCount.value >= 10);
+
+// 智能备注
+const remarkTags = ref([
+  { value: 'pickup', label: '🚗 需要接送' },
+  { value: 'accessibility', label: '♿ 无障碍需求' },
+  { value: 'photo', label: '📷 摄影服务' }
+]);
+
+const selectedTags = ref([]);
+
+const toggleTag = (tag) => {
+  const index = selectedTags.value.indexOf(tag);
+  index === -1 ? selectedTags.value.push(tag)
+    : selectedTags.value.splice(index, 1);
+};
+
+// 手动备注
+const note = ref("")
+
+// 提交
+const submit = () => {
+	console.log(note._rawValue)
+}
+
 </script>
 
-<style scoped>
-  .container {
-    padding: 20px;
+<style lang="scss" scoped>
+.summary-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 30rpx;
+  min-height: 160rpx;
+
+  .summary-left {
+    flex: 1;
+
+    .summary-item {
+      margin-bottom: 16rpx;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .label {
+        color: #666;
+        font-size: 28rpx;
+      }
+
+      .value {
+        color: #333;
+        font-size: 32rpx;
+        font-weight: 500;
+      }
+    }
   }
 
-  .form-item {
-    margin-bottom: 20px;
+  .summary-right {
+    width: 240rpx;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    align-content: flex-start;
+
+    .tag {
+      background: #e8f4ff;
+      color: #2196f3;
+      padding: 8rpx 16rpx;
+      border-radius: 8rpx;
+      font-size: 24rpx;
+    }
   }
 
-  label {
+  .placeholder {
+    flex: 1;
+    text-align: center;
+    color: #999;
+    font-size: 28rpx;
+    line-height: 160rpx;
+  }
+}
+
+.container {
+  padding: 20rpx;
+}
+
+.date-scroll {
+  white-space: nowrap;
+  margin-bottom: 30rpx;
+
+  .date-card {
+    display: inline-block;
+    width: 200rpx;
+    padding: 20rpx;
+    margin-right: 20rpx;
+    border-radius: 12rpx;
+    background: #f5f5f5;
+    text-align: center;
+
+    &.active {
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+    }
+
+    .date-day {
+      display: block;
+      font-size: 36rpx;
+      font-weight: bold;
+    }
+
+    .weather-icon {
+      margin-top: 10rpx;
+    }
+  }
+}
+
+.time-section {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+
+  .recommend-star {
+    margin-left: 10rpx;
+  }
+}
+
+.people-picker {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+
+  .title {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 20rpx;
+    font-size: 32rpx;
   }
 
-  input,
-  textarea {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 14px;
+  .counter {
+    display: flex;
+    align-items: center;
+    gap: 40rpx;
+    margin-bottom: 20rpx;
+
+    .count {
+      font-size: 48rpx;
+      font-weight: bold;
+    }
   }
 
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007aff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  .group-tip {
+    color: #ff9800;
+    margin-top: 15rpx;
+    display: block;
   }
+}
+
+.people-section {
+  display: flex;
+  gap: 40rpx;
+  align-items: flex-start;
+  margin-bottom: 30rpx;
+
+  .people-picker {
+    flex: 1;
+    background: #fff;
+    padding: 30rpx;
+    border-radius: 16rpx;
+  }
+
+  .remark-section {
+    flex: 1;
+    background: #fff;
+    padding: 30rpx;
+    border-radius: 16rpx;
+
+    .remark-title {
+      display: block;
+      color: #666;
+      font-size: 28rpx;
+      margin-bottom: 20rpx;
+    }
+
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20rpx;
+    }
+
+    .remark-tag {
+      padding: 10rpx 14rpx;
+      font-size: 32rpx;
+      border-radius: 24rpx !important;
+      line-height: 1.5;
+      transition: all 0.3s ease;
+      min-width: 160rpx;
+      text-align: center;
+      border: 1px solid currentColor !important;
+
+      // 选中状态
+      &[type="primary"] {
+        border-color: var(--tuniaoui-primary-color, #2196f3) !important;
+      }
+
+      // 未选中状态
+      &[type="plain"] {
+        border-color: #ddd !important;
+      }
+    }
+  }
+}
+
+.popup-calendar-button {
+  margin: 0rpx 30rpx;
+  width: calc(100% - 60rpx) !important;
+  padding: 20rpx 30rpx !important;
+}
+
+.people-picker {
+  /* 原有样式保持不变 */
+
+  /* 调整数字输入框容器 */
+  :deep(.wd-input-number) {
+    border-radius: 16rpx;
+    background: #f8f9fa;
+  }
+
+  /* 增大按钮尺寸 */
+  :deep(.wd-input-number__button) {
+    width: 80rpx !important;
+    height: 80rpx !important;
+    font-size: 50rpx !important;
+
+    &::after {
+      border-radius: 12rpx;
+    }
+  }
+
+  /* 输入区域样式 */
+  :deep(.wd-input-number__input) {
+    font-size: 44rpx !important;
+    color: #2c3e50;
+    min-width: 120rpx;
+  }
+
+  /* 悬停效果 */
+  :deep(.wd-input-number__button--plus):active,
+  :deep(.wd-input-number__button--minus):active {
+    background: #e0e0e0;
+  }
+
+  /* 禁用状态样式 */
+  :deep(.is-disabled) {
+    opacity: 0.5;
+    background: #f5f5f5 !important;
+  }
+
+}
 </style>
