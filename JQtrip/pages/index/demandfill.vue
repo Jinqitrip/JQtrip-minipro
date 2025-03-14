@@ -24,47 +24,40 @@
 
 
     <wd-datetime-picker type="time" v-model="time" label="时间选择" @confirm="handleConfirm" />
+    <wd-datetime-picker type="date" v-model="popupCalendarValue" label="日期选择" disabled
+      @click.native="openCalendarPopup" />
 
 
-    <!-- 人数选择器 -->
-    <view class="people-picker">
-      <text class="title">参观人数</text>
-
-      <view class="counter">
-        <wd-input-number class="custom-input-number" v-model="peopleCount" @change="handleChange" />
-
-      </view>
-    </view>
-
-    <!-- 智能备注系统 -->
-    <view class="remark-section">
-      <view class="quick-tags">
-        <t-tag v-for="tag in remarkTags" :key="tag.value" :type="selectedTags.includes(tag.value) ? 'primary' : 'plain'"
-          @click="toggleTag(tag.value)">
-          {{ tag.label }}
-        </t-tag>
+    <view class="people-section">
+      <!-- 人数选择器 -->
+      <view class="people-picker">
+        <text class="title">参观人数</text>
+        <view class="counter">
+          <wd-input-number class="custom-input-number" v-model="peopleCount" />
+        </view>
       </view>
 
+      <!-- 智能备注系统 -->
+      <view class="remark-section">
+        <text class="remark-title">特殊需求：</text>
+        <view class="quick-tags">
+          <t-tag v-for="tag in remarkTags" :key="tag.value"
+            :type="selectedTags.includes(tag.value) ? 'primary' : 'plain'" @click="toggleTag(tag.value)"
+            class="remark-tag">
+            {{ tag.label }}
+          </t-tag>
+        </view>
+      </view>
     </view>
 
     <TnNumberBox v-model="numberValue" width="300" height="80" font-size="40" />
 
+	<wd-textarea v-model="note" placeholder="请填写备注" />
 
+	<TnButton font-size="36" custom-class="popup-calendar-button" @click="submit">
+	  提交
+	</TnButton>
   </view>
-
-
-
-  <DemoContainer title="配合popup使用">
-    <view class="calendar-container">
-
-      <view class="calendar-item">
-        <TnButton size="lg" bg-color="gradient-bg__cool-6" text-color="tn-white" @click="openCalendarPopup">
-          选择日期
-        </TnButton>
-      </view>
-    </view>
-  </DemoContainer>
-
 
   <TnPopup v-model="showCalendarPopup" open-direction="bottom">
     <view class="tn-pt">
@@ -137,6 +130,14 @@ const toggleTag = (tag) => {
   index === -1 ? selectedTags.value.push(tag)
     : selectedTags.value.splice(index, 1);
 };
+
+// 手动备注
+const note = ref("")
+
+// 提交
+const submit = () => {
+	console.log(note._rawValue)
+}
 
 </script>
 
@@ -274,19 +275,57 @@ const toggleTag = (tag) => {
   }
 }
 
-.remark-section {
-  .quick-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20rpx;
-    margin-bottom: 30rpx;
+.people-section {
+  display: flex;
+  gap: 40rpx;
+  align-items: flex-start;
+  margin-bottom: 30rpx;
+
+  .people-picker {
+    flex: 1;
+    background: #fff;
+    padding: 30rpx;
+    border-radius: 16rpx;
   }
 
-  .voice-input {
-    text-align: center;
+  .remark-section {
+    flex: 1;
+    background: #fff;
+    padding: 30rpx;
+    border-radius: 16rpx;
 
-    .t-button {
-      color: #2196f3;
+    .remark-title {
+      display: block;
+      color: #666;
+      font-size: 28rpx;
+      margin-bottom: 20rpx;
+    }
+
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20rpx;
+    }
+
+    .remark-tag {
+      padding: 10rpx 14rpx;
+      font-size: 32rpx;
+      border-radius: 24rpx !important;
+      line-height: 1.5;
+      transition: all 0.3s ease;
+      min-width: 160rpx;
+      text-align: center;
+      border: 1px solid currentColor !important;
+
+      // 选中状态
+      &[type="primary"] {
+        border-color: var(--tuniaoui-primary-color, #2196f3) !important;
+      }
+
+      // 未选中状态
+      &[type="plain"] {
+        border-color: #ddd !important;
+      }
     }
   }
 }
