@@ -1,5 +1,28 @@
 <template>
   <view class="container">
+	      <!-- 信息总览卡片 -->
+	      <view class="summary-card">
+	        <view class="summary-left">
+	          <view class="summary-item">
+	            <text class="label">日期：</text>
+	            <text class="value">{{ popupCalendarValue }}</text>
+	          </view>
+	          <view class="summary-item">
+	            <text class="label">时段：</text>
+	            <text class="value">{{ activeTimeLabel }}</text>
+	          </view>
+	          <view class="summary-item">
+	            <text class="label">人数：</text>
+	            <text class="value">{{ peopleCount }}人</text>
+	          </view>
+	        </view>
+	        <view class="summary-right" v-if="selectedTags.length > 0">
+	          <text class="tag" v-for="tag in selectedTagsLabels" :key="tag">{{ tag }}</text>
+	        </view>
+	        <view v-else class="placeholder">请选择日期和时间</view>
+	      </view>
+	
+		  
     <!-- 智能日期卡片 -->
     <scroll-view scroll-x class="date-scroll">
       <view 
@@ -18,41 +41,19 @@
         />
       </view>
     </scroll-view>
+   
+   
+    <wd-datetime-picker type="time" v-model="time" label="时间选择" @confirm="handleConfirm" />
 
-    <!-- 时段快捷入口 -->
-    <view class="time-section">
-      <t-button
-        v-for="time in timeSlots"
-        :key="time.value"
-        :type="activeTime === time.value ? 'primary' : 'default'"
-        size="small"
-        @click="handleTimeSelect(time.value)"
-      >
-        {{ time.label }}
-        <text v-if="time.recommend" class="recommend-star">⭐</text>
-      </t-button>
-    </view>
 
     <!-- 人数选择器 -->
     <view class="people-picker">
       <text class="title">参观人数</text>
+	  
       <view class="counter">
-        <t-button 
-          type="text" 
-          icon="minus" 
-          @click="handlePeopleChange(-1)"
-          :disabled="peopleCount <= 1"
-        />
-        <text class="count">{{ peopleCount }}</text>
-        <t-button 
-          type="text" 
-          icon="plus" 
-          @click="handlePeopleChange(1)"
-          :disabled="peopleCount >= maxPeople"
-        />
+		  <wd-input-number class="custom-input-number" v-model="peopleCount" @change="handleChange" />
+
       </view>
-      <text class="remaining">剩余 {{ remaining }} 个名额</text>
-      <text v-if="showGroupTip" class="group-tip">🎉 满10人可享团体优惠</text>
     </view>
 
     <!-- 智能备注系统 -->
@@ -77,12 +78,10 @@
 	
 	  <TnNumberBox v-model="numberValue" width="300" height="80" font-size="40" />
 
-	<wd-input-number v-model="value" @change="handleChange" />
 
   </view>
   
   
-  <wd-datetime-picker type="time" v-model="time" label="时间选择" @confirm="handleConfirm" />
   
 <DemoContainer title="配合popup使用">
       <view class="calendar-container">
@@ -130,8 +129,30 @@ import TnButton from '@/uni_modules/tuniaoui-vue3/components/button/src/button.v
 const showPopup = ref(false)
 const selectDate = ref('')
 
-// 在弹出框中选择日期
-const popupCalendarValue = ref('')
+const activeTimeLabel = computed(() => {
+  const slot = timeSlots.value.find(t => t.value === activeTime.value)
+  return slot ? slot.label : ''
+})
+
+const selectedTagsLabels = computed(() => {
+  return remarkTags.value
+    .filter(tag => selectedTags.value.includes(tag.value))
+    .map(tag => tag.label)
+})
+
+// 日期数据
+const now = new Date();
+const year = now.getFullYear();
+const month = ('0' + (now.getMonth() + 1)).slice(-2);
+const day = ('0' + now.getDate()).slice(-2);
+const today = year+"/"+month+"/"+day;
+const activeDate = ref('');
+const dateList = ref([
+  { value: '2023-10-01', day: '10/1', week: '周一', weather: 'sunny' },
+  { value: '2023-10-02', day: '10/2', week: '周二', weather: 'cloudy' },
+  { value: '2023-10-03', day: '10/3', week: '周三', weather: 'rain' }
+]);
+const popupCalendarValue = ref(today)
 const showCalendarPopup = ref(false)
 const openCalendarPopup = () => {
   showCalendarPopup.value = true
@@ -139,15 +160,6 @@ const openCalendarPopup = () => {
 const closeCalendarPopup = () => {
   showCalendarPopup.value = false
 }
-
-
-// 日期数据
-const activeDate = ref('');
-const dateList = ref([
-  { value: '2023-10-01', day: '10/1', week: '周一', weather: 'sunny' },
-  { value: '2023-10-02', day: '10/2', week: '周二', weather: 'cloudy' },
-  { value: '2023-10-03', day: '10/3', week: '周三', weather: 'rain' }
-]);
 
 // 时段选择
 const activeTime = ref('');
@@ -200,6 +212,59 @@ const startVoiceInput = async () => {
 </script>
 
 <style lang="scss" scoped>
+.summary-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+  display: flex;
+  gap: 30rpx;
+  min-height: 160rpx;
+
+  .summary-left {
+    flex: 1;
+    .summary-item {
+      margin-bottom: 16rpx;
+      &:last-child { margin-bottom: 0; }
+      
+      .label {
+        color: #666;
+        font-size: 28rpx;
+      }
+      .value {
+        color: #333;
+        font-size: 32rpx;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .summary-right {
+    width: 240rpx;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    align-content: flex-start;
+    
+    .tag {
+      background: #e8f4ff;
+      color: #2196f3;
+      padding: 8rpx 16rpx;
+      border-radius: 8rpx;
+      font-size: 24rpx;
+    }
+  }
+
+  .placeholder {
+    flex: 1;
+    text-align: center;
+    color: #999;
+    font-size: 28rpx;
+    line-height: 160rpx;
+  }
+}
+	
 .container {
   padding: 20rpx;
 }
@@ -297,4 +362,47 @@ const startVoiceInput = async () => {
   width: calc(100% - 60rpx) !important;
   padding: 20rpx 30rpx !important;
 }
+
+.people-picker {
+  /* 原有样式保持不变 */
+  
+  /* 调整数字输入框容器 */
+  :deep(.wd-input-number) {
+    border-radius: 16rpx;
+    background: #f8f9fa;
+  }
+
+  /* 增大按钮尺寸 */
+  :deep(.wd-input-number__button) {
+    width: 80rpx !important;
+    height: 80rpx !important;
+    font-size: 50rpx !important;
+    
+    &::after {
+      border-radius: 12rpx;
+    }
+  }
+
+  /* 输入区域样式 */
+  :deep(.wd-input-number__input) {
+    font-size: 44rpx !important;
+    color: #2c3e50;
+    min-width: 120rpx;
+  }
+
+  /* 悬停效果 */
+  :deep(.wd-input-number__button--plus):active,
+  :deep(.wd-input-number__button--minus):active {
+    background: #e0e0e0;
+  }
+
+  /* 禁用状态样式 */
+  :deep(.is-disabled) {
+    opacity: 0.5;
+    background: #f5f5f5 !important;
+  }
+
+}
+
+
 </style>
