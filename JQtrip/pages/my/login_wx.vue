@@ -62,7 +62,7 @@ export default {
 								uni.setStorageSync('sessionKey', this.$userData.sessionKey);
 
 								console.log(res);
-								
+
 								uni.reLaunch({
 									url: '/pages/my/my',
 									success() {

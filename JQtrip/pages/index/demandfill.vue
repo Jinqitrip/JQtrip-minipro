@@ -1,57 +1,37 @@
 <template>
   <view class="container">
-	      <!-- 信息总览卡片 -->
-	      <view class="summary-card">
-	        <view class="summary-left">
-	          <view class="summary-item">
-	            <text class="label">日期：</text>
-	            <text class="value">{{ popupCalendarValue }}</text>
-	          </view>
-	          <view class="summary-item">
-	            <text class="label">时段：</text>
-	            <text class="value">{{ activeTimeLabel }}</text>
-	          </view>
-	          <view class="summary-item">
-	            <text class="label">人数：</text>
-	            <text class="value">{{ peopleCount }}人</text>
-	          </view>
-	        </view>
-	        <view class="summary-right" v-if="selectedTags.length > 0">
-	          <text class="tag" v-for="tag in selectedTagsLabels" :key="tag">{{ tag }}</text>
-	        </view>
-	        <view v-else class="placeholder">请选择日期和时间</view>
-	      </view>
-	
-		  
-    <!-- 智能日期卡片 -->
-    <scroll-view scroll-x class="date-scroll">
-      <view 
-        v-for="(date, index) in dateList"
-        :key="index"
-        class="date-card"
-        :class="{ active: activeDate === date.value }"
-        @click="handleDateSelect(date.value)"
-      >
-        <text class="date-day">{{ date.day }}</text>
-        <text class="date-week">{{ date.week }}</text>
-        <wnt-icon 
-          :name="getWeatherIcon(date.weather)" 
-          size="sm"
-          class="weather-icon"
-        />
+    <!-- 信息总览卡片 -->
+    <view class="summary-card">
+      <view class="summary-left">
+        <view class="summary-item">
+          <text class="label">日期：</text>
+          <text class="value">{{ popupCalendarValue }}</text>
+        </view>
+        <view class="summary-item">
+          <text class="label">时间：</text>
+          <text class="value">{{ time }}</text>
+        </view>
+        <view class="summary-item">
+          <text class="label">人数：</text>
+          <text class="value">{{ peopleCount }}人</text>
+        </view>
       </view>
-    </scroll-view>
-   
-   
+      <view class="summary-right" v-if="selectedTags.length > 0">
+        <text class="tag" v-for="tag in selectedTagsLabels" :key="tag">{{ tag }}</text>
+      </view>
+      <view v-else class="placeholder">未选择特殊需求</view>
+    </view>
+
+
     <wd-datetime-picker type="time" v-model="time" label="时间选择" @confirm="handleConfirm" />
 
 
     <!-- 人数选择器 -->
     <view class="people-picker">
       <text class="title">参观人数</text>
-	  
+
       <view class="counter">
-		  <wd-input-number class="custom-input-number" v-model="peopleCount" @change="handleChange" />
+        <wd-input-number class="custom-input-number" v-model="peopleCount" @change="handleChange" />
 
       </view>
     </view>
@@ -59,60 +39,39 @@
     <!-- 智能备注系统 -->
     <view class="remark-section">
       <view class="quick-tags">
-        <t-tag
-          v-for="tag in remarkTags"
-          :key="tag.value"
-          :type="selectedTags.includes(tag.value) ? 'primary' : 'plain'"
-          @click="toggleTag(tag.value)"
-        >
+        <t-tag v-for="tag in remarkTags" :key="tag.value" :type="selectedTags.includes(tag.value) ? 'primary' : 'plain'"
+          @click="toggleTag(tag.value)">
           {{ tag.label }}
         </t-tag>
       </view>
-      <view class="voice-input">
-        <t-button type="text" @click="startVoiceInput">
-          <wnt-icon name="voice" size="lg" />
-          <text>语音备注</text>
-        </t-button>
-      </view>
+
     </view>
-	
-	  <TnNumberBox v-model="numberValue" width="300" height="80" font-size="40" />
+
+    <TnNumberBox v-model="numberValue" width="300" height="80" font-size="40" />
 
 
   </view>
-  
-  
-  
-<DemoContainer title="配合popup使用">
-      <view class="calendar-container">
-        <view class="calendar-item">
-          当前选中的日期:
-          <text class="tn-gray_text">{{ popupCalendarValue }}</text>
-        </view>
-        <view class="calendar-item">
-          <TnButton
-            size="lg"
-            bg-color="gradient-bg__cool-6"
-            text-color="tn-white"
-            @click="openCalendarPopup"
-          >
-            选择日期
-          </TnButton>
-        </view>
+
+
+
+  <DemoContainer title="配合popup使用">
+    <view class="calendar-container">
+
+      <view class="calendar-item">
+        <TnButton size="lg" bg-color="gradient-bg__cool-6" text-color="tn-white" @click="openCalendarPopup">
+          选择日期
+        </TnButton>
       </view>
-    </DemoContainer>
-	
-	
+    </view>
+  </DemoContainer>
+
+
   <TnPopup v-model="showCalendarPopup" open-direction="bottom">
     <view class="tn-pt">
       <TnCalendar v-model="popupCalendarValue" />
     </view>
     <view class="tn-mt tn-w-full tn-pb">
-      <TnButton
-        font-size="36"
-        custom-class="popup-calendar-button"
-        @click="closeCalendarPopup"
-      >
+      <TnButton font-size="36" custom-class="popup-calendar-button" @click="closeCalendarPopup">
         选择所选日期
       </TnButton>
     </view>
@@ -145,13 +104,7 @@ const now = new Date();
 const year = now.getFullYear();
 const month = ('0' + (now.getMonth() + 1)).slice(-2);
 const day = ('0' + now.getDate()).slice(-2);
-const today = year+"/"+month+"/"+day;
-const activeDate = ref('');
-const dateList = ref([
-  { value: '2023-10-01', day: '10/1', week: '周一', weather: 'sunny' },
-  { value: '2023-10-02', day: '10/2', week: '周二', weather: 'cloudy' },
-  { value: '2023-10-03', day: '10/3', week: '周三', weather: 'rain' }
-]);
+const today = year + "/" + month + "/" + day;
 const popupCalendarValue = ref(today)
 const showCalendarPopup = ref(false)
 const openCalendarPopup = () => {
@@ -161,12 +114,8 @@ const closeCalendarPopup = () => {
   showCalendarPopup.value = false
 }
 
-// 时段选择
-const activeTime = ref('');
-const timeSlots = ref([
-  { value: '09:00', label: '09:00-11:00', recommend: true },
-  { value: '14:00', label: '14:00-16:00', recommend: false }
-]);
+// 时间，默认九点
+const time = ref("09:00");
 
 // 人数选择
 const peopleCount = ref(1);
@@ -180,35 +129,15 @@ const remarkTags = ref([
   { value: 'accessibility', label: '♿ 无障碍需求' },
   { value: 'photo', label: '📷 摄影服务' }
 ]);
+
 const selectedTags = ref([]);
-
-// 方法
-const handleDateSelect = (date) => {
-  activeDate.value = date;
-};
-
-const handleTimeSelect = (time) => {
-  activeTime.value = time;
-};
-
-const handlePeopleChange = (delta) => {
-  peopleCount.value = Math.max(1, Math.min(maxPeople, peopleCount.value + delta))
-};
 
 const toggleTag = (tag) => {
   const index = selectedTags.value.indexOf(tag);
-  index === -1 ? selectedTags.value.push(tag) 
-              : selectedTags.value.splice(index, 1);
+  index === -1 ? selectedTags.value.push(tag)
+    : selectedTags.value.splice(index, 1);
 };
 
-const getWeatherIcon = (weather) => {
-  const icons = { sunny: 'sun', cloudy: 'cloud', rain: 'rain' };
-  return icons[weather] || 'sun';
-};
-
-const startVoiceInput = async () => {
-  // 实现语音输入逻辑
-};
 </script>
 
 <style lang="scss" scoped>
@@ -217,21 +146,26 @@ const startVoiceInput = async () => {
   border-radius: 24rpx;
   padding: 30rpx;
   margin: 20rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
   display: flex;
   gap: 30rpx;
   min-height: 160rpx;
 
   .summary-left {
     flex: 1;
+
     .summary-item {
       margin-bottom: 16rpx;
-      &:last-child { margin-bottom: 0; }
-      
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
       .label {
         color: #666;
         font-size: 28rpx;
       }
+
       .value {
         color: #333;
         font-size: 32rpx;
@@ -246,7 +180,7 @@ const startVoiceInput = async () => {
     flex-wrap: wrap;
     gap: 12rpx;
     align-content: flex-start;
-    
+
     .tag {
       background: #e8f4ff;
       color: #2196f3;
@@ -264,7 +198,7 @@ const startVoiceInput = async () => {
     line-height: 160rpx;
   }
 }
-	
+
 .container {
   padding: 20rpx;
 }
@@ -272,7 +206,7 @@ const startVoiceInput = async () => {
 .date-scroll {
   white-space: nowrap;
   margin-bottom: 30rpx;
-  
+
   .date-card {
     display: inline-block;
     width: 200rpx;
@@ -281,18 +215,18 @@ const startVoiceInput = async () => {
     border-radius: 12rpx;
     background: #f5f5f5;
     text-align: center;
-    
+
     &.active {
       background: #e3f2fd;
       border: 1px solid #2196f3;
     }
-    
+
     .date-day {
       display: block;
       font-size: 36rpx;
       font-weight: bold;
     }
-    
+
     .weather-icon {
       margin-top: 10rpx;
     }
@@ -303,7 +237,7 @@ const startVoiceInput = async () => {
   display: flex;
   gap: 20rpx;
   margin-bottom: 30rpx;
-  
+
   .recommend-star {
     margin-left: 10rpx;
   }
@@ -314,25 +248,25 @@ const startVoiceInput = async () => {
   padding: 30rpx;
   border-radius: 16rpx;
   margin-bottom: 30rpx;
-  
+
   .title {
     display: block;
     margin-bottom: 20rpx;
     font-size: 32rpx;
   }
-  
+
   .counter {
     display: flex;
     align-items: center;
     gap: 40rpx;
     margin-bottom: 20rpx;
-    
+
     .count {
       font-size: 48rpx;
       font-weight: bold;
     }
   }
-  
+
   .group-tip {
     color: #ff9800;
     margin-top: 15rpx;
@@ -347,10 +281,10 @@ const startVoiceInput = async () => {
     gap: 20rpx;
     margin-bottom: 30rpx;
   }
-  
+
   .voice-input {
     text-align: center;
-    
+
     .t-button {
       color: #2196f3;
     }
@@ -365,7 +299,7 @@ const startVoiceInput = async () => {
 
 .people-picker {
   /* 原有样式保持不变 */
-  
+
   /* 调整数字输入框容器 */
   :deep(.wd-input-number) {
     border-radius: 16rpx;
@@ -377,7 +311,7 @@ const startVoiceInput = async () => {
     width: 80rpx !important;
     height: 80rpx !important;
     font-size: 50rpx !important;
-    
+
     &::after {
       border-radius: 12rpx;
     }
@@ -403,6 +337,4 @@ const startVoiceInput = async () => {
   }
 
 }
-
-
 </style>
