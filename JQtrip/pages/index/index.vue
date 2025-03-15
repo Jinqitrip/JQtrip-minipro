@@ -23,18 +23,28 @@
       </view>
     </view>
 
-    <!-- 需求跳转 -->
-    <view class="needframe">
-      <view class="center">
-        <view class="title">添加你的游览需求</view>
-        <view class="addzone">
-          <img @click="gotodemand" src="/static/plusicon.png" class="plusicon">
-        </view>
-        <!-- <button class="needbtn">
-          start your trip!
-        </button> -->
+  <!-- 添加需求模块 -->
+  <view class="demand-card" @click="handleAddDemand">
+    <view class="demand-content">
+      <image class="add-icon" src="/static/plus-circle-filled.svg"></image>
+      <text class="demand-title">创建个性游览需求</text>
+      <text class="demand-subtitle">点击定制专属旅程体验</text>
+    </view>
+    <image class="decorative-pattern" src="/static/wave-pattern.png"></image>
+  </view>
+
+  <!-- 登录提示模态框 -->
+  <view v-if="showLoginModal" class="login-modal-mask">
+    <view class="login-modal">
+      <image class="modal-icon" src="/static/login-required.png"></image>
+      <text class="modal-title">需要登录</text>
+      <text class="modal-desc">登录后可以创建和查看个性化需求</text>
+      <view class="button-group">
+        <view class="modal-btn cancel-btn" @click="showLoginModal = false">稍后再说</view>
+        <view class="modal-btn confirm-btn" @click="gotoLogin">立即登录</view>
       </view>
     </view>
+  </view>
 
     <!-- 帖子列表区域 -->
     <scroll-view class="post-list" scroll-y="true">
@@ -116,7 +126,8 @@
         areaIndex: '0',
         areaList: ['全部', '武汉大学', '华中科技大学', '中国地质大学'],
         currentPost: null,
-        showDetail: false
+        showDetail: false,
+		showLoginModal: false
       };
     },
     methods: {
@@ -127,7 +138,18 @@
         uni.navigateTo({
           url: '/pages/index/demandfill'
         });
+      },
+    handleAddDemand() {
+      if (!this.isLoggedIn) {
+        this.showLoginModal = true;
+        return;
       }
+      this.gotoDemand();
+    },
+    gotoLogin() {
+      uni.navigateTo({ url: '/pages/my/login_wx' });
+      this.showLoginModal = false;
+    }
     },
     computed: {
       filteredPostList() {
@@ -291,4 +313,144 @@
     flex-direction: column;
     margin-top: 10px;
   }
+  
+/* 添加需求卡片样式 */
+.demand-card {
+  position: relative;
+  height: 180rpx;
+  margin: 30rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #7FD2F6 0%, #5AA7EB 100%);
+  box-shadow: 0 8rpx 24rpx rgba(90, 167, 235, 0.3);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.demand-card:active {
+  transform: scale(0.98);
+}
+
+.demand-content {
+  position: absolute;
+  z-index: 2;
+  padding: 40rpx;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.add-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 20rpx;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0,0,0,0.1));
+}
+
+.demand-title {
+  font-size: 36rpx;
+  color: #FFFFFF;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.demand-subtitle {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.9);
+}
+
+.decorative-pattern {
+  position: absolute;
+  right: -40rpx;
+  bottom: -40rpx;
+  width: 240rpx;
+  height: 240rpx;
+  opacity: 0.1;
+}
+
+/* 登录提示模态框样式 */
+.login-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.login-modal {
+  width: 600rpx;
+  
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 50rpx;
+  text-align: center;
+  animation: modalShow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes modalShow {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 32rpx;
+}
+
+.modal-title {
+  display: block;
+  font-size: 36rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.modal-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 48rpx;
+}
+
+.button-group {
+  display: flex;
+  gap: 30rpx;
+  justify-content: center;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn {
+  background: #F5F5F5;
+  color: #666;
+}
+
+.cancel-btn:active {
+  background: #E0E0E0;
+}
+
+.confirm-btn {
+  background: #5AA7EB;
+  color: #FFFFFF;
+}
+
+.confirm-btn:active {
+  background: #4A97DB;
+}
 </style>
