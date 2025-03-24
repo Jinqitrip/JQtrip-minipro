@@ -52,11 +52,11 @@
 
     <TnNumberBox v-model="numberValue" width="300" height="80" font-size="40" />
 
-	<wd-textarea v-model="note" placeholder="请填写备注" />
+    <wd-textarea v-model="note" placeholder="请填写备注" />
 
-	<TnButton font-size="36" custom-class="popup-calendar-button" @click="submit">
-	  提交
-	</TnButton>
+    <TnButton font-size="36" custom-class="popup-calendar-button" @click="submit">
+      提交
+    </TnButton>
   </view>
 
   <TnPopup v-model="showCalendarPopup" open-direction="bottom">
@@ -89,7 +89,7 @@ export default {
     const year = now.getFullYear()
     const month = ('0' + (now.getMonth() + 1)).slice(-2)
     const day = ('0' + now.getDate()).slice(-2)
-    
+
     return {
       showPopup: false,
       selectDate: '',
@@ -123,7 +123,7 @@ export default {
     },
     toggleTag(tag) {
       const index = this.selectedTags.indexOf(tag)
-      index === -1 
+      index === -1
         ? this.selectedTags.push(tag)
         : this.selectedTags.splice(index, 1)
     },
@@ -135,11 +135,35 @@ export default {
         special_tags: this.selectedTagsLabels,
         note: this.note
       }
-      
+
       console.log({
         openID: this.$userData.openId,
         data
       })
+
+      uni.request({
+        url: baseUrl + "/v1/orders", // 你的登录API地址
+        method: 'POST',
+        data: {
+          "openID": this.$userData.openId,
+          data
+        },
+        success: (res) => {
+          console.log(res.data);
+          uni.showToast({
+            title: '提交成功',
+            icon: 'none'
+          });
+          uni.navigateBack();
+
+        },
+        fail: () => {
+          uni.showToast({
+            title: '请求失败',
+            icon: 'none'
+          });
+        }
+      });
     }
   }
 }
