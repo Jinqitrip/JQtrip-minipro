@@ -140,11 +140,13 @@
         });
       },
     handleAddDemand() {
-      if (!this.isLoggedIn) {
+      if (this.$userData.openId=="") {
         this.showLoginModal = true;
         return;
       }
-      this.gotoDemand();
+      uni.navigateTo({
+        url: '/pages/index/demandfill'
+      });
     },
     gotoLogin() {
       uni.navigateTo({ url: '/pages/my/login_wx' });
