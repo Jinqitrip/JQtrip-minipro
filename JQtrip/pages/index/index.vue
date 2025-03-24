@@ -47,81 +47,81 @@
   </view>
 
     <!-- 帖子列表区域 -->
-    <scroll-view class="post-list" scroll-y="true">
-      <postitem v-for="(post, index) in filteredPostList" :key="index" :postData="post" />
-    </scroll-view>
+    <view class="post-list-container">
+      <view class="post-item-small" v-for="(post, index) in filteredPostList" :key="index"
+        @click="goToPostDetail(post)">
+        <!-- 确保图片完整显示 -->
+        <image :src="post.images && post.images[0] || '/static/order.png'" class="post-small-img" mode="aspectFit">
+        </image>
+        <view class="post-abb-desc">
+          <text class="post-small-title">{{ post.title }}</text>
+          <text class="post-small-author">{{ post.author }}</text>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
 <script>
-  import postitem from './postitem.vue';
   export default {
-    components: {
-      postitem
-    },
     data() {
       return {
         searchText: '',
         postList: [{
-            "authoravatar": "/static/my.png",
-            "author": "邹某",
-            "guideavatar": "/static/my.png",
-            "guide": "哈哈哈哈哈哈哈",
-            "title": "游园武大",
-            "briefdesc": "本科生 校园地陪 图书馆宿舍无法进入",
-            "desc": "11111111111111111111111111111111",
-            "locationName": "武汉大学",
-            "address": "湖北省武汉市武昌区八一路299号",
-            "time": "2小时"
+            id: 4,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Andy",
+            title: "游园武大",
+            briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
+            desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
           },
           {
-            "authoravatar": "/static/my.png",
-            "author": "邹某",
-            "guideavatar": "/static/my.png",
-            "guide": "嘻嘻嘻嘻",
-            "title": "游园HUST",
-            "briefdesc": "本科生 校园地陪 图书馆宿舍无法进入",
-            "desc": "11111111111111111111111111111111",
-            "locationName": "华中科技大学",
-            "address": "湖北省武汉市武昌区八一路299号",
-            "time": "2小时"
+            id: 3,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Andy",
+            title: "游园武大",
+            briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
+            desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
+          }, {
+            id: 1,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Andy",
+            title: "游园武大",
+            briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
+            desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
           },
           {
-            "authoravatar": "/static/my.png",
-            "author": "邹某",
-            "guideavatar": "/static/my.png",
-            "guide": "徐云杰",
-            "title": "地大",
-            "briefdesc": "本科生 校园地陪酒",
-            "desc": "11111111111111111111111111111111",
-            "locationName": "中国地质大学",
-            "address": "湖北省武汉市武昌区八一路299号",
-            "time": "2小时"
+            id: 2,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Cindy",
+            title: "游园武大",
+            briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
+            desc: "11111111111111111111111111111111",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/home.png"]
           },
-          {
-            "authoravatar": "/static/my.png",
-            "author": "邹某",
-            "guideavatar": "/static/my.png",
-            "guide": "徐云杰",
-            "title": "地大",
-            "briefdesc": "本科生 校园地陪酒",
-            "desc": "11111111111111111111111111111111",
-            "locationName": "中国地质大学",
-            "address": "湖北省武汉市武昌区八一路299号",
-            "time": "2小时"
-          },
-          {
-            "authoravatar": "/static/my.png",
-            "author": "邹某",
-            "guideavatar": "/static/my.png",
-            "guide": "徐云杰",
-            "title": "地大",
-            "briefdesc": "本科生 校园地陪酒",
-            "desc": "11111111111111111111111111111111",
-            "locationName": "中国地质大学",
-            "address": "湖北省武汉市武昌区八一路299号",
-            "time": "2小时"
-          }
         ],
         areaIndex: '0',
         areaList: ['全部', '武汉大学', '华中科技大学', '中国地质大学'],
@@ -152,6 +152,12 @@
       uni.navigateTo({ url: '/pages/my/login_wx' });
       this.showLoginModal = false;
     }
+      },
+      goToPostDetail(post) {
+        uni.navigateTo({
+          url: `/pages/index/postdetail?postData=${JSON.stringify(post)}`
+        });
+      }
     },
     computed: {
       filteredPostList() {
@@ -273,7 +279,6 @@
   }
 
   .addzone {
-    /* z-index: 1; */
     box-sizing: border-box;
     width: 100px;
     height: 100px;
@@ -285,32 +290,27 @@
     text-align: center;
   }
 
-
   .plusicon {
     width: 98px;
     height: 98px;
-    /* margin: 15px; */
   }
 
-  .needbtn {
-    margin-top: 5px;
-    width: 140px;
-    height: 40px;
-    background: #ffff7f;
-    border-radius: 3px;
-    text-align: center;
-    line-height: 40px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all .2s ease-in-out;
-    margin: auto;
+  .post-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
   }
 
-  .needbtn:hover {
-    box-shadow: 0 2px 0 0 #498C25, 0 2px 10px 0 #6ECE3B;
+  .post-item-small {
+    width: calc(50% - 5px);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  .post-list {
+  .post-abb-desc {
     display: flex;
     flex-direction: column;
     margin-top: 10px;
@@ -455,4 +455,24 @@
 .confirm-btn:active {
   background: #4A97DB;
 }
+  }
+
+  .post-small-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .post-small-title {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px;
+  }
+
+  .post-small-author {
+    font-size: 12px;
+    color: #666;
+    padding: 0 5px 5px 5px;
+  }
 </style>
