@@ -39,16 +39,12 @@
 
         <view class="info-grid">
             <view class="info-item">
-                <text class="info-label">服务时长</text>
-                <text class="info-value">3小时</text>
-            </view>
-            <view class="info-item">
                 <text class="info-label">服务人数</text>
-                <text class="info-value">1-5人</text>
+                <text class="info-value">{{order.people}}</text>
             </view>
             <view class="info-item">
                 <text class="info-label">联系方式</text>
-                <text class="info-value">138****5678</text>
+                <text class="info-value">{{ guild.phone || '暂无' }}</text>
             </view>
         </view>
 
@@ -68,6 +64,8 @@ import { defineComponent } from 'vue'
 import TnSteps from '@/uni_modules/tuniaoui-vue3/components/steps/src/steps.vue'
 import TnStepsItem from '@/uni_modules/tuniaoui-vue3/components/steps/src/steps-item.vue'
 
+import { baseUrl } from '@/config';
+
 export default defineComponent({
     components: {
         TnSteps,
@@ -82,8 +80,12 @@ export default defineComponent({
                 price: "200",
                 time: "2025/3/1 14:00",
                 step: 1,
+				people: NaN,
                 detail: "专业导游服务包含：\n· 景点深度讲解\n· 游览路线规划\n· 文化历史介绍\n· 全程陪同服务\n· 基础摄影指导"
             },
+			guild:{
+				
+			},
             stepsData: [
                 {
                     title: '已下单',
@@ -100,6 +102,11 @@ export default defineComponent({
                     icon: 'success-circle',
                     activeIcon: 'success-circle-fill',
                 },
+				{
+				    title: '待评价',
+				    icon: 'success-circle',
+				    activeIcon: 'success-circle-fill',
+				},
                 {
                     title: '已完成',
                     icon: 'success-circle',
@@ -114,12 +121,24 @@ export default defineComponent({
         }
     },
     onLoad(option: any) {
+		const data = JSON.parse(option.index)
         try {
-            const data = JSON.parse(option.index)
             this.order = Object.assign({}, this.order, data)
         } catch (e) {
             console.error('数据解析失败:', e)
         }
+		uni.request({
+		    url: baseUrl + "/v1/orders/" + data.id, 
+		    method: 'GET',
+		    success: (res) => {
+		        console.log(res.data);
+				this.order.people = res.data.data.people;
+				this.order.detail = res.data.data.note;
+		    },
+		    fail: () => {
+		        console.log("fuck")
+		    }
+		})
     },
     methods: {
         jump_to_select(order) {

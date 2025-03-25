@@ -144,7 +144,7 @@ export default {
       })
 
       uni.request({
-        url: baseUrl + "/v1/orders", // 你的登录API地址
+        url: baseUrl + "/v1/orders", 
         method: 'POST',
         data: {
           "openID": this.$userData.openId,

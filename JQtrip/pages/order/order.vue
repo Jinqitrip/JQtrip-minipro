@@ -2,8 +2,8 @@
     <page-wraper>
         <view>
             <demo-block title="基本使用" transparent>
-                <wd-card v-for="order in order_list" @click="request_orders()">
-                    <view class="content" @click="request_orders">
+                <wd-card v-for="order in order_list" @click="jump_to_order(order)">
+                    <view class="content" @click="jump_to_order(order)">
                         <image :src="order.order_image" alt="joy"
                             style="width: 70px; height: 70px; border-radius: 4px; margin-right: 12px" />
                         <view>
@@ -34,43 +34,72 @@ import { baseUrl } from '@/config';
 export default {
     data() {
         return {
-            order_list: [{
-                "title": "AA专业导游",
-                "order_image": "/static/logo.png",
-                "location": "南二门",
-                "price": "200",
-                "time": "2025/3/1 14:00",
-                "step": 0
-            },
-            {
-                "title": "AB专业导游",
-                "order_image": "/static/logo.png",
-                "location": "弘毅门",
-                "price": "200",
-                "time": "2025/3/1 15:00",
-                "step": 1
-            },
-            {
-                "title": "AC专业导游",
-                "order_image": "/static/logo.png",
-                "location": "珞珈门",
-                "price": "200",
-                "time": "2025/3/1 16:00",
-                "step": 2
-            },
-            {
-                "title": "AD专业导游",
-                "order_image": "/static/logo.png",
-                "location": "珞南门",
-                "price": "200",
-                "time": "2025/3/1 17:00",
-                "step": 3
-            },
-            ]
+            order_list: []
         };
     },
-    onLoad: () => {
-
+    onLoad() {
+		uni.request({
+		    url: baseUrl + "/v1/orders/user/" + this.$userData.openId, // 你的登录API地址
+		    method: 'GET',
+		    success: (res) => {
+		        console.log(res.data);
+		        var item;
+		        for (item in res.data) {
+		            console.log(res.data[item]);
+		            var data = res.data[item];
+		            var order = {
+		                "title": "",
+		                "order_image": "/static/logo.png",
+		                "location": "",
+		                "price": "",
+		                "time": data.data.date + " " + data.data.time,
+		                "step": 0,
+		                "id": data._id
+		            }
+		
+		            order.title = (function () {
+		                if (data.title) {
+		                    return data.title;
+		                }
+		                return "未匹配的服务"
+		            })()
+		
+		            order.location = (function () {
+		                if (data.location) {
+		                    return data.location;
+		                }
+		                return "未确定"
+		            })()
+		
+		            order.price = (function () {
+		                if (data.price) {
+		                    return data.price;
+		                }
+		                return "待议"
+		            })()
+		
+		            order.step = (function () {
+		                if (data.status == 'pending') {
+		                    return 0;
+		                } else if (data.status == 'selecting') {
+		                    return 1;
+		                }
+		                else if (data.status == 'upcoming') {
+		                    return 2;
+		                }
+		                else if (data.status == 'reviewing') {
+		                    return 3;
+		                }
+		                return 4;
+		            })()
+		
+		            this.order_list.push(order);
+		        }
+		    },
+		    fail: () => {
+		        console.log("fuck")
+		    }
+		})
     },
     methods: {
         jump_to_order(order) {
@@ -104,21 +133,21 @@ export default {
                                 return data.title;
                             }
                             return "未匹配的服务"
-                        })
+                        })()
 
                         order.location = (function () {
                             if (data.location) {
                                 return data.location;
                             }
                             return "未确定"
-                        })
+                        })()
 
                         order.price = (function () {
                             if (data.price) {
                                 return data.price;
                             }
                             return "待议"
-                        })
+                        })()
 
                         order.step = (function () {
                             if (data.status == 'pending') {
@@ -133,7 +162,7 @@ export default {
                                 return 3;
                             }
                             return 4;
-                        })
+                        })()
 
                         this.order_list.push(order);
                     }
