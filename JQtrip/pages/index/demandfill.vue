@@ -52,11 +52,11 @@
 
     <TnNumberBox v-model="numberValue" width="300" height="80" font-size="40" />
 
-	<wd-textarea v-model="note" placeholder="请填写备注" />
+    <wd-textarea v-model="note" placeholder="请填写备注" />
 
-	<TnButton font-size="36" custom-class="popup-calendar-button" @click="submit">
-	  提交
-	</TnButton>
+    <TnButton font-size="36" custom-class="popup-calendar-button" @click="submit">
+      提交
+    </TnButton>
   </view>
 
   <TnPopup v-model="showCalendarPopup" open-direction="bottom">
@@ -71,75 +71,106 @@
   </TnPopup>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
+<script>
 import TnDateTimePicker from '@/uni_modules/tuniaoui-vue3/components/date-time-picker/src/date-time-picker.vue'
 import TnCalendar from '@/uni_modules/tuniaoui-vue3/components/calendar/src/calendar.vue'
 import TnPopup from '@/uni_modules/tuniaoui-vue3/components/popup/src/popup.vue'
 import TnButton from '@/uni_modules/tuniaoui-vue3/components/button/src/button.vue'
 
-const showPopup = ref(false)
-const selectDate = ref('')
+import { baseUrl } from '@/config';
 
-const activeTimeLabel = computed(() => {
-  const slot = timeSlots.value.find(t => t.value === activeTime.value)
-  return slot ? slot.label : ''
-})
+export default {
+  components: {
+    TnDateTimePicker,
+    TnCalendar,
+    TnPopup,
+    TnButton
+  },
+  data() {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = ('0' + (now.getMonth() + 1)).slice(-2)
+    const day = ('0' + now.getDate()).slice(-2)
 
-const selectedTagsLabels = computed(() => {
-  return remarkTags.value
-    .filter(tag => selectedTags.value.includes(tag.value))
-    .map(tag => tag.label)
-})
+    return {
+      showPopup: false,
+      selectDate: '',
+      popupCalendarValue: year + "/" + month + "/" + day,
+      showCalendarPopup: false,
+      time: "09:00",
+      peopleCount: 1,
+      maxPeople: 20,
+      remarkTags: [
+        { value: 'pickup', label: '🚗 需要接送' },
+        { value: 'accessibility', label: '♿ 无障碍需求' },
+        { value: 'photo', label: '📷 摄影服务' }
+      ],
+      selectedTags: [],
+      note: ""
+    }
+  },
+  computed: {
+    selectedTagsLabels() {
+      return this.remarkTags
+        .filter(tag => this.selectedTags.includes(tag.value))
+        .map(tag => tag.label)
+    }
+  },
+  methods: {
+    openCalendarPopup() {
+      this.showCalendarPopup = true
+    },
+    closeCalendarPopup() {
+      this.showCalendarPopup = false
+    },
+    toggleTag(tag) {
+      const index = this.selectedTags.indexOf(tag)
+      index === -1
+        ? this.selectedTags.push(tag)
+        : this.selectedTags.splice(index, 1)
+    },
+    submit() {
+      const data = {
+        date: this.popupCalendarValue,
+        time: this.time,
+        people: this.peopleCount,
+        special_tags: this.selectedTagsLabels,
+        note: this.note
+      }
 
-// 日期数据
-const now = new Date();
-const year = now.getFullYear();
-const month = ('0' + (now.getMonth() + 1)).slice(-2);
-const day = ('0' + now.getDate()).slice(-2);
-const today = year + "/" + month + "/" + day;
-const popupCalendarValue = ref(today)
-const showCalendarPopup = ref(false)
-const openCalendarPopup = () => {
-  showCalendarPopup.value = true
+      console.log({
+        openID: this.$userData.openId,
+        data
+      })
+
+      uni.request({
+        url: baseUrl + "/v1/orders", 
+        method: 'POST',
+        data: {
+          "openID": this.$userData.openId,
+          data
+        },
+        success: (res) => {
+          console.log(res.data);
+          uni.showToast({
+            title: '提交成功',
+            icon: 'none'
+          });
+          uni.navigateBack();
+
+        },
+        fail: () => {
+          uni.showToast({
+            title: '请求失败',
+            icon: 'none'
+          });
+        }
+      });
+    }
+  }
 }
-const closeCalendarPopup = () => {
-  showCalendarPopup.value = false
-}
-
-// 时间，默认九点
-const time = ref("09:00");
-
-// 人数选择
-const peopleCount = ref(1);
-const maxPeople = 20;
-const remaining = computed(() => maxPeople - peopleCount.value);
-const showGroupTip = computed(() => peopleCount.value >= 10);
-
-// 智能备注
-const remarkTags = ref([
-  { value: 'pickup', label: '🚗 需要接送' },
-  { value: 'accessibility', label: '♿ 无障碍需求' },
-  { value: 'photo', label: '📷 摄影服务' }
-]);
-
-const selectedTags = ref([]);
-
-const toggleTag = (tag) => {
-  const index = selectedTags.value.indexOf(tag);
-  index === -1 ? selectedTags.value.push(tag)
-    : selectedTags.value.splice(index, 1);
-};
-
-// 手动备注
-const note = ref("")
-
-// 提交
-const submit = () => {
-	console.log(note._rawValue)
-}
-
 </script>
+
 
 <style lang="scss" scoped>
 .summary-card {
