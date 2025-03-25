@@ -38,68 +38,68 @@ export default {
         };
     },
     onLoad() {
-		uni.request({
-		    url: baseUrl + "/v1/orders/user/" + this.$userData.openId, // 你的登录API地址
-		    method: 'GET',
-		    success: (res) => {
-		        console.log(res.data);
-		        var item;
-		        for (item in res.data) {
-		            console.log(res.data[item]);
-		            var data = res.data[item];
-		            var order = {
-		                "title": "",
-		                "order_image": "/static/logo.png",
-		                "location": "",
-		                "price": "",
-		                "time": data.data.date + " " + data.data.time,
-		                "step": 0,
-		                "id": data._id
-		            }
-		
-		            order.title = (function () {
-		                if (data.title) {
-		                    return data.title;
-		                }
-		                return "未匹配的服务"
-		            })()
-		
-		            order.location = (function () {
-		                if (data.location) {
-		                    return data.location;
-		                }
-		                return "未确定"
-		            })()
-		
-		            order.price = (function () {
-		                if (data.price) {
-		                    return data.price;
-		                }
-		                return "待议"
-		            })()
-		
-		            order.step = (function () {
-		                if (data.status == 'pending') {
-		                    return 0;
-		                } else if (data.status == 'selecting') {
-		                    return 1;
-		                }
-		                else if (data.status == 'upcoming') {
-		                    return 2;
-		                }
-		                else if (data.status == 'reviewing') {
-		                    return 3;
-		                }
-		                return 4;
-		            })()
-		
-		            this.order_list.push(order);
-		        }
-		    },
-		    fail: () => {
-		        console.log("fuck")
-		    }
-		})
+        uni.request({
+            url: baseUrl + "/v1/orders/user/" + this.$userData.openId, // 你的登录API地址
+            method: 'GET',
+            success: (res) => {
+                console.log(res.data);
+                var item;
+                for (item in res.data) {
+                    console.log(res.data[item]);
+                    var data = res.data[item];
+                    var order = {
+                        "title": "",
+                        "order_image": "/static/logo.png",
+                        "location": "",
+                        "price": "",
+                        "time": data.data.date + " " + data.data.time,
+                        "step": 0,
+                        "id": data._id
+                    }
+
+                    order.title = (function () {
+                        if (data.title) {
+                            return data.title;
+                        }
+                        return "未匹配的服务"
+                    })()
+
+                    order.location = (function () {
+                        if (data.location) {
+                            return data.location;
+                        }
+                        return "未确定"
+                    })()
+
+                    order.price = (function () {
+                        if (data.price) {
+                            return data.price;
+                        }
+                        return "待议"
+                    })()
+
+                    order.step = (function () {
+                        if (data.status == 'pending') {
+                            return 0;
+                        } else if (data.status == 'selecting') {
+                            return 1;
+                        }
+                        else if (data.status == 'upcoming') {
+                            return 2;
+                        }
+                        else if (data.status == 'reviewing') {
+                            return 3;
+                        }
+                        return 4;
+                    })()
+
+                    this.order_list.push(order);
+                }
+            },
+            fail: () => {
+                console.log("fuck")
+            }
+        })
     },
     methods: {
         jump_to_order(order) {
