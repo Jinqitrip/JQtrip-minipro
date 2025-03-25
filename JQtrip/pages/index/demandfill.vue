@@ -77,6 +77,8 @@ import TnCalendar from '@/uni_modules/tuniaoui-vue3/components/calendar/src/cale
 import TnPopup from '@/uni_modules/tuniaoui-vue3/components/popup/src/popup.vue'
 import TnButton from '@/uni_modules/tuniaoui-vue3/components/button/src/button.vue'
 
+import { baseUrl } from '@/config';
+
 export default {
   components: {
     TnDateTimePicker,
