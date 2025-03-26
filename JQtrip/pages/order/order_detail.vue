@@ -40,7 +40,7 @@
         <view class="info-grid">
             <view class="info-item">
                 <text class="info-label">服务人数</text>
-                <text class="info-value">{{order.people}}</text>
+                <text class="info-value">{{ order.people }}</text>
             </view>
             <view class="info-item">
                 <text class="info-label">联系方式</text>
@@ -80,12 +80,12 @@ export default defineComponent({
                 price: "200",
                 time: "2025/3/1 14:00",
                 step: 1,
-				people: NaN,
-                detail: "专业导游服务包含：\n· 景点深度讲解\n· 游览路线规划\n· 文化历史介绍\n· 全程陪同服务\n· 基础摄影指导"
+                people: NaN,
+                detail: "加载中"
             },
-			guild:{
-				
-			},
+            guild: {
+
+            },
             stepsData: [
                 {
                     title: '已下单',
@@ -102,11 +102,11 @@ export default defineComponent({
                     icon: 'success-circle',
                     activeIcon: 'success-circle-fill',
                 },
-				{
-				    title: '待评价',
-				    icon: 'success-circle',
-				    activeIcon: 'success-circle-fill',
-				},
+                {
+                    title: '待评价',
+                    icon: 'success-circle',
+                    activeIcon: 'success-circle-fill',
+                },
                 {
                     title: '已完成',
                     icon: 'success-circle',
@@ -121,24 +121,24 @@ export default defineComponent({
         }
     },
     onLoad(option: any) {
-		const data = JSON.parse(option.index)
+        const data = JSON.parse(option.index)
         try {
             this.order = Object.assign({}, this.order, data)
         } catch (e) {
             console.error('数据解析失败:', e)
         }
-		uni.request({
-		    url: baseUrl + "/v1/orders/" + data.id, 
-		    method: 'GET',
-		    success: (res) => {
-		        console.log(res.data);
-				this.order.people = res.data.data.people;
-				this.order.detail = res.data.data.note;
-		    },
-		    fail: () => {
-		        console.log("fuck")
-		    }
-		})
+        uni.request({
+            url: baseUrl + "/v1/orders/" + data.id,
+            method: 'GET',
+            success: (res) => {
+                console.log(res.data);
+                this.order.people = res.data.data.people;
+                this.order.detail = res.data.data.note;
+            },
+            fail: () => {
+                console.log("fuck")
+            }
+        })
     },
     methods: {
         jump_to_select(order) {

@@ -144,7 +144,7 @@ export default {
       })
 
       uni.request({
-        url: baseUrl + "/v1/orders", 
+        url: baseUrl + "/v1/orders",
         method: 'POST',
         data: {
           "openID": this.$userData.openId,

@@ -16,11 +16,14 @@
 	</wd-card>
 
 	<wd-cell title="账号管理" is-link @click.native="jump"></wd-cell>
-	<wd-cell title="邀请新用户" is-link to="/pages/index/index"></wd-cell>
-	<wd-cell title="联系客服" is-link to="/pages/index/index"></wd-cell>
-	<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>
-	<wd-cell title="测试" is-link @click="test"></wd-cell>
+	<view class="cell-wrapper">
+		<wd-cell title="邀请新用户" is-link></wd-cell>
+		<button open-type="share" class="overlay-button"></button>
+		<!--这是真的石山-->
+	</view>
+	<wd-cell title="联系客服" is-link to="" @click="contact"></wd-cell>
 
+	<!--<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>-->
 
 </template>
 
@@ -28,15 +31,21 @@
 import { useToast } from '@/uni_modules/wot-design-uni'
 
 export default {
+	created() {
+		//#ifdef MP-WEIXIN
+		wx.showShareMenu({
+			withShareTicket: true,
+			menus: ['shareAppMessage', 'shareTimeline']
+		});
+		//#endif
+
+		this.toast = useToast() // 在 created 钩子中初始化
+	},
 	data() {
 
 		return {
 			toast: null as any,// 初始化 toast 实例
 		}
-	},
-
-	created() {
-		this.toast = useToast() // 在 created 钩子中初始化
 	},
 	onLoad() {
 		console.log(this.nickName);
@@ -55,13 +64,10 @@ export default {
 			})
 			console.log(423)
 		},
+		contact() {
+			// 这个等审核通过了再写吧
 
-		// 测试方法
-		test() {
-			console.log(this.$userData);
-			console.log(this.$userData.nickName);
 		},
-
 		// 跳转到登录页面
 		jump_to_login() {
 			if (this.$userData.nickName == "") {
@@ -150,5 +156,32 @@ page {
 .custom-sub {
 	color: rgba(0, 0, 0, 0.25);
 	font-size: 12px;
+}
+
+.cell-wrapper {
+	position: relative;
+	/* Crucial for positioning the overlay */
+	width: 100%;
+}
+
+.overlay-button {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	/* Make it completely transparent */
+	z-index: 1;
+	/* Ensure it's above the wd-cell */
+	/* Reset any potential default button styling */
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 0;
+}
+
+.cell-wrapper /deep/ .no-pointer-events {
+	pointer-events: none;
 }
 </style>

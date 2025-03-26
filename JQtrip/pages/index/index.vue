@@ -27,7 +27,7 @@
   -->
 
     <!-- 添加需求模块 -->
-    <view class="demand-card" @click="handleAddDemand">
+    <view v-if="!order_activated" class="demand-card" @click="handleAddDemand">
       <view class="demand-content">
         <image class="add-icon" src="/static/plus-circle-filled.svg"></image>
         <text class="demand-title">创建个性游览需求</text>
@@ -35,6 +35,7 @@
       </view>
       <image class="decorative-pattern" src="/static/wave-pattern.png"></image>
     </view>
+
 
     <!-- 登录提示模态框 -->
     <view v-if="showLoginModal" class="login-modal-mask">
@@ -48,6 +49,32 @@
         </view>
       </view>
     </view>
+
+
+    <wd-card v-if="order_activated" @click="jump_to_order(order_activated)">
+      <view style="height:20px"></view>
+      <view class="content" @click="jump_to_order(order_activated)">
+        <image :src="order_activated.order_image" alt="joy"
+          style="width: 70px; height: 70px; border-radius: 4px; margin-right: 12px" />
+        <view>
+          <view>{{ order_activated.title }}</view>
+          <view>地址：{{ order_activated.location }}</view>
+          <view>金额：{{ order_activated.price }}</view>
+          <view>时间：{{ order_activated.time }}</view>
+        </view>
+      </view>
+      <template #footer>
+        <wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 0" type="primary"
+          round>已下单</wd-tag>
+        <wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 1" type="warning"
+          round>待选择</wd-tag>
+        <wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 2" type="success"
+          round>待开始</wd-tag>
+        <wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 4" round>已完成</wd-tag>
+        <wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 3" type="danger"
+          round>待评价</wd-tag>
+      </template>
+    </wd-card>
 
     <!-- 帖子列表区域 -->
     <view class="post-list-container">
@@ -66,10 +93,13 @@
 </template>
 
 <script>
+import { baseUrl } from '@/config';
+
 export default {
   data() {
     return {
       searchText: '',
+      order_activated: "",
       postList: [{
         id: 4,
         authoravatar: "/static/my.png",
@@ -134,6 +164,12 @@ export default {
     };
   },
   methods: {
+    jump_to_order(order) {
+      var mynavData = JSON.stringify(order);
+      uni.navigateTo({
+        url: "/pages/order/order_detail?index=" + mynavData
+      });
+    },
     onAreaChange(e) {
       this.areaIndex = e.detail.value;
     },
@@ -177,6 +213,67 @@ export default {
         });
       }
       return filteredList;
+    }
+  },
+  onLoad() {
+    if (this.$userData.openId) {
+      uni.request({
+        url: baseUrl + "/v1/orders/user/" + this.$userData.openId + "/active",
+        method: 'GET',
+        success: (res) => {
+          console.log(res);
+          if (res.statusCode == 200) {
+            var data = res.data;
+            var order = {
+              "title": "",
+              "order_image": "/static/logo.png",
+              "location": "",
+              "price": "",
+              "time": data.data.date + " " + data.data.time,
+              "step": 0,
+              "id": data._id
+            }
+            order.title = (function () {
+              if (data.title) {
+                return data.title;
+              }
+              return "未匹配的服务"
+            })()
+            order.location = (function () {
+              if (data.location) {
+                return data.location;
+              }
+              return "未确定"
+            })()
+
+            order.price = (function () {
+              if (data.price) {
+                return data.price;
+              }
+              return "待议"
+            })()
+
+            order.step = (function () {
+              if (data.status == 'pending') {
+                return 0;
+              } else if (data.status == 'selecting') {
+                return 1;
+              }
+              else if (data.status == 'upcoming') {
+                return 2;
+              }
+              else if (data.status == 'reviewing') {
+                return 3;
+              }
+              return 4;
+            })()
+            this.order_activated = order;
+          }
+        },
+        fail: () => {
+          console.log("fuck")
+        }
+      })
     }
   }
 }
@@ -483,5 +580,26 @@ export default {
   font-size: 12px;
   color: #666;
   padding: 0 5px 5px 5px;
+}
+
+.content,
+.title {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.content {
+  justify-content: flex-start;
+}
+
+.title {
+  justify-content: space-between;
+}
+
+.title-tip {
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 12px;
 }
 </style>
