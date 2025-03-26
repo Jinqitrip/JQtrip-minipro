@@ -184,5 +184,4 @@ page {
 .cell-wrapper /deep/ .no-pointer-events {
 	pointer-events: none;
 }
-
 </style>
