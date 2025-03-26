@@ -157,9 +157,7 @@ page {
 	color: rgba(0, 0, 0, 0.25);
 	font-size: 12px;
 }
-</style>
 
-<style scoped>
 .cell-wrapper {
 	position: relative;
 	/* Crucial for positioning the overlay */
@@ -183,12 +181,8 @@ page {
 	margin: 0;
 }
 
-/* Optional: Prevent wd-cell itself from reacting to clicks if overlay handles it */
-/* Note: custom-class might apply differently depending on wd-cell version */
-/* /deep/ or >>> might be needed if scoped styles don't penetrate */
 .cell-wrapper /deep/ .no-pointer-events {
 	pointer-events: none;
 }
 
-/* ... other styles ... */
 </style>
