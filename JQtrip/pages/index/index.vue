@@ -2,7 +2,6 @@
   <view class="container">
 
     <!-- 顶部导航栏 -->
-    <!--
     <view class="search-container">
       <view class="area-filter-box">
         <picker @change="onAreaChange" :value="areaIndex" :range="areaList">
@@ -13,7 +12,7 @@
       </view>
 
       <view class="logobox">
-        <image class="search-icon" src="/static/logo.png" mode="aspectFit"></image>
+        <image class="logo-icon" src="/static/logo.png" mode="aspectFit"></image>
       </view>
 
       <view class="search-input-box">
@@ -24,7 +23,7 @@
         <image class="search-icon" src="/static/search_icon.png" mode="aspectFit"></image>
       </view>
     </view>
-  -->
+
 
     <!-- 添加需求模块 -->
     <view v-if="!order_activated" class="demand-card" @click="handleAddDemand">
@@ -49,7 +48,6 @@
         </view>
       </view>
     </view>
-
 
     <wd-card v-if="order_activated" @click="jump_to_order(order_activated)">
       <view style="height:20px"></view>
@@ -80,12 +78,14 @@
     <view class="post-list-container">
       <view class="post-item-small" v-for="(post, index) in filteredPostList" :key="index"
         @click="goToPostDetail(post)">
-        <!-- 确保图片完整显示 -->
-        <image :src="post.images && post.images[0] || '/static/order.png'" class="post-small-img" mode="aspectFit">
+        <image :src="post.images && post.images[0] " class="post-small-img" mode="aspectFit">
         </image>
         <view class="post-abb-desc">
           <text class="post-small-title">{{ post.title }}</text>
-          <text class="post-small-author">{{ post.author }}</text>
+          <view class="post-writter-box">
+            <image :src="post.authoravatar" class="postauavt" mode="aspectFill"></image>
+            <text class="post-small-author">{{ post.author }}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -93,513 +93,533 @@
 </template>
 
 <script>
-import { baseUrl } from '@/config';
+  import {
+    baseUrl
+  } from '@/config';
 
-export default {
-  data() {
-    return {
-      searchText: '',
-      order_activated: "",
-      postList: [{
-        id: 4,
-        authoravatar: "/static/my.png",
-        author: "Harry",
-        guideavatar: "/static/my.png",
-        guide: "Andy",
-        title: "游园武大",
-        briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
-        desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
-        locationName: "武汉大学",
-        address: "湖北省武汉市武昌区八一路299号",
-        time: "2小时",
-        images: ["/static/my.png", "/static/order.png", "/static/order.png"]
+  export default {
+    data() {
+      return {
+        searchText: '',
+        order_activated: "",
+        postList: [{
+            id: 1,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Andy",
+            title: "游园武大",
+            desc: "本科生 校园地陪 图书馆宿舍无法进入111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
+          },
+          {
+            id: 2,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Andy",
+            title: "游园武大",
+            desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
+          }, {
+            id: 3,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Andy",
+            title: "游园武大",
+            desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
+          },
+          {
+            id: 4,
+            authoravatar: "/static/my.png",
+            author: "Harry",
+            guideavatar: "/static/my.png",
+            guide: "Cindy",
+            title: "游园武大",
+            desc: "11111111111111111111111111111111",
+            locationName: "武汉大学",
+            address: "湖北省武汉市武昌区八一路299号",
+            time: "2小时",
+            images: ["/static/home.png"]
+          },
+        ],
+        areaIndex: '0',
+        areaList: ['全部', '武汉大学', '华中科技大学', '中国地质大学'],
+        currentPost: null,
+        showDetail: false,
+        showLoginModal: false
+      };
+    },
+    methods: {
+      jump_to_order(order) {
+        var mynavData = JSON.stringify(order);
+        uni.navigateTo({
+          url: "/pages/order/order_detail?index=" + mynavData
+        });
       },
-      {
-        id: 3,
-        authoravatar: "/static/my.png",
-        author: "Harry",
-        guideavatar: "/static/my.png",
-        guide: "Andy",
-        title: "游园武大",
-        briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
-        desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
-        locationName: "武汉大学",
-        address: "湖北省武汉市武昌区八一路299号",
-        time: "2小时",
-        images: ["/static/my.png", "/static/order.png", "/static/order.png"]
-      }, {
-        id: 1,
-        authoravatar: "/static/my.png",
-        author: "Harry",
-        guideavatar: "/static/my.png",
-        guide: "Andy",
-        title: "游园武大",
-        briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
-        desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
-        locationName: "武汉大学",
-        address: "湖北省武汉市武昌区八一路299号",
-        time: "2小时",
-        images: ["/static/my.png", "/static/order.png", "/static/order.png"]
+      onAreaChange(e) {
+        this.areaIndex = e.detail.value;
       },
-      {
-        id: 2,
-        authoravatar: "/static/my.png",
-        author: "Harry",
-        guideavatar: "/static/my.png",
-        guide: "Cindy",
-        title: "游园武大",
-        briefdesc: "本科生 校园地陪 图书馆宿舍无法进入",
-        desc: "11111111111111111111111111111111",
-        locationName: "武汉大学",
-        address: "湖北省武汉市武昌区八一路299号",
-        time: "2小时",
-        images: ["/static/home.png"]
+      gotodemand() {
+        uni.navigateTo({
+          url: '/pages/index/demandfill'
+        });
       },
-      ],
-      areaIndex: '0',
-      areaList: ['全部', '武汉大学', '华中科技大学', '中国地质大学'],
-      currentPost: null,
-      showDetail: false,
-      showLoginModal: false
-    };
-  },
-  methods: {
-    jump_to_order(order) {
-      var mynavData = JSON.stringify(order);
-      uni.navigateTo({
-        url: "/pages/order/order_detail?index=" + mynavData
-      });
-    },
-    onAreaChange(e) {
-      this.areaIndex = e.detail.value;
-    },
-    gotodemand() {
-      uni.navigateTo({
-        url: '/pages/index/demandfill'
-      });
-    },
-    handleAddDemand() {
-      if (this.$userData.openId == "") {
-        this.showLoginModal = true;
-        return;
-      }
-      uni.navigateTo({
-        url: '/pages/index/demandfill'
-      });
-    },
-    gotoLogin() {
-      uni.navigateTo({ url: '/pages/my/login_wx' });
-      this.showLoginModal = false;
-    },
+      handleAddDemand() {
+        if (this.$userData.openId == "") {
+          this.showLoginModal = true;
+          return;
+        }
+        uni.navigateTo({
+          url: '/pages/index/demandfill'
+        });
+      },
+      gotoLogin() {
+        uni.navigateTo({
+          url: '/pages/my/login_wx'
+        });
+        this.showLoginModal = false;
+      },
 
-    goToPostDetail(post) {
-      uni.navigateTo({
-        url: `/pages/index/postdetail?postData=${JSON.stringify(post)}`
-      });
-    }
-  },
-  computed: {
-    filteredPostList() {
-      let filteredList = this.postList;
-      // 地区筛选
-      if (this.areaIndex !== '0') {
-        const selectedArea = this.areaList[this.areaIndex];
-        filteredList = filteredList.filter(post => post.locationName === selectedArea);
-      }
-      // 文本筛选
-      if (this.searchText) {
-        filteredList = filteredList.filter(post => {
-          return post.title.includes(this.searchText) || post.desc.includes(this.searchText);
+      goToPostDetail(post) {
+        uni.navigateTo({
+          url: `/pages/index/postdetail?postData=${JSON.stringify(post)}`
         });
       }
-      return filteredList;
-    }
-  },
-  onLoad() {
-    if (this.$userData.openId) {
-      uni.request({
-        url: baseUrl + "/v1/orders/user/" + this.$userData.openId + "/active",
-        method: 'GET',
-        success: (res) => {
-          console.log(res);
-          if (res.statusCode == 200) {
-            var data = res.data;
-            var order = {
-              "title": "",
-              "order_image": "/static/logo.png",
-              "location": "",
-              "price": "",
-              "time": data.data.date + " " + data.data.time,
-              "step": 0,
-              "id": data._id
-            }
-            order.title = (function () {
-              if (data.title) {
-                return data.title;
-              }
-              return "未匹配的服务"
-            })()
-            order.location = (function () {
-              if (data.location) {
-                return data.location;
-              }
-              return "未确定"
-            })()
-
-            order.price = (function () {
-              if (data.price) {
-                return data.price;
-              }
-              return "待议"
-            })()
-
-            order.step = (function () {
-              if (data.status == 'pending') {
-                return 0;
-              } else if (data.status == 'selecting') {
-                return 1;
-              }
-              else if (data.status == 'upcoming') {
-                return 2;
-              }
-              else if (data.status == 'reviewing') {
-                return 3;
-              }
-              return 4;
-            })()
-            this.order_activated = order;
-          }
-        },
-        fail: () => {
-          console.log("fuck")
+    },
+    computed: {
+      filteredPostList() {
+        let filteredList = this.postList;
+        // 地区筛选
+        if (this.areaIndex !== '0') {
+          const selectedArea = this.areaList[this.areaIndex];
+          filteredList = filteredList.filter(post => post.locationName === selectedArea);
         }
-      })
+        // 文本筛选
+        if (this.searchText) {
+          filteredList = filteredList.filter(post => {
+            return post.title.includes(this.searchText) || post.desc.includes(this.searchText);
+          });
+        }
+        return filteredList;
+      }
+    },
+    onLoad() {
+      if (this.$userData.openId) {
+        uni.request({
+          url: baseUrl + "/v1/orders/user/" + this.$userData.openId + "/active",
+          method: 'GET',
+          success: (res) => {
+            console.log(res);
+            if (res.statusCode == 200) {
+              var data = res.data;
+              var order = {
+                "title": "",
+                "order_image": "/static/logo.png",
+                "location": "",
+                "price": "",
+                "time": data.data.date + " " + data.data.time,
+                "step": 0,
+                "id": data._id
+              }
+              order.title = (function() {
+                if (data.title) {
+                  return data.title;
+                }
+                return "未匹配的服务"
+              })()
+              order.location = (function() {
+                if (data.location) {
+                  return data.location;
+                }
+                return "未确定"
+              })()
+
+              order.price = (function() {
+                if (data.price) {
+                  return data.price;
+                }
+                return "待议"
+              })()
+
+              order.step = (function() {
+                if (data.status == 'pending') {
+                  return 0;
+                } else if (data.status == 'selecting') {
+                  return 1;
+                } else if (data.status == 'upcoming') {
+                  return 2;
+                } else if (data.status == 'reviewing') {
+                  return 3;
+                }
+                return 4;
+              })()
+              this.order_activated = order;
+            }
+          },
+          fail: () => {
+            console.log("fuck")
+          }
+        })
+      }
     }
   }
-}
 </script>
 
 <style>
-.container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.search-container {
-  position: fixed;
-  display: flex;
-  flex-direction: row-reverse;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background-color: #ffffff;
-  align-items: center;
-  padding: 0 15px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-}
-
-.area-filter-box {
-  margin-right: 5px;
-}
-
-.area-filter {
-  padding: 5px 10px;
-  background-color: #f5f5f5;
-  border-radius: 5px;
-}
-
-.logobox {
-  display: flex;
-  width: 10%;
-}
-
-.search-input-box {
-  display: flex;
-  width: 50%;
-  flex-direction: row;
-  align-items: left;
-  text-align: left;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  padding: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 5px;
-}
-
-.search-input {
-  flex: 1;
-  height: 35px;
-  border: none;
-  outline: none;
-  background-color: transparent;
-}
-
-.search-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: 5px;
-}
-
-.needframe {
-  height: 240px;
-  margin-top: 70px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.3);
-  background: #3A92AF;
-  background: linear-gradient(to top right, #00ffff 0%, #ffffff 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3A92AF', endColorstr='#5CA05A', GradientType=1);
-  color: #fff;
-  font-family: 'Open Sans', Helvetica, sans-serif;
-}
-
-.center {
-  height: 200px;
-  margin-top: 20px;
-  margin-left: 20px;
-  margin-right: 20px;
-  background: #fff;
-  box-shadow: 8px 10px 15px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-}
-
-.title {
-  font-size: 16px;
-  color: #676767;
-  line-height: 50px;
-  height: 50px;
-  border-bottom: 1px solid #D8D8D8;
-  text-align: center;
-}
-
-.addzone {
-  box-sizing: border-box;
-  width: 100px;
-  height: 100px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
-  border: 1px dashed #A4A4A4;
-  border-radius: 3px;
-  text-align: center;
-}
-
-.plusicon {
-  width: 98px;
-  height: 98px;
-}
-
-.post-list-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-.post-item-small {
-  width: calc(50% - 5px);
-  margin-bottom: 10px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.post-abb-desc {
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
-}
-
-/* 添加需求卡片样式 */
-.demand-card {
-  position: relative;
-  height: 180rpx;
-  margin: 30rpx;
-  border-radius: 24rpx;
-  background: linear-gradient(135deg, #7FD2F6 0%, #5AA7EB 100%);
-  box-shadow: 0 8rpx 24rpx rgba(90, 167, 235, 0.3);
-  overflow: hidden;
-  transition: transform 0.2s ease;
-}
-
-.demand-card:active {
-  transform: scale(0.98);
-}
-
-.demand-content {
-  position: absolute;
-  z-index: 2;
-  padding: 40rpx;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.add-icon {
-  width: 60rpx;
-  height: 60rpx;
-  margin-bottom: 20rpx;
-  filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.1));
-}
-
-.demand-title {
-  font-size: 36rpx;
-  color: #FFFFFF;
-  font-weight: 600;
-  margin-bottom: 12rpx;
-}
-
-.demand-subtitle {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.decorative-pattern {
-  position: absolute;
-  right: -40rpx;
-  bottom: -40rpx;
-  width: 240rpx;
-  height: 240rpx;
-  opacity: 0.1;
-}
-
-/* 登录提示模态框样式 */
-.login-modal-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.login-modal {
-  width: 600rpx;
-
-  background: #FFFFFF;
-  border-radius: 32rpx;
-  padding: 50rpx;
-  text-align: center;
-  animation: modalShow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-@keyframes modalShow {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
+  .container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
   }
 
-  to {
-    transform: scale(1);
-    opacity: 1;
+  .search-container {
+    position: fixed;
+    display: flex;
+    flex-direction: row-reverse;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #ffffff;
+    align-items: center;
+    padding: 0 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    z-index: 100;
   }
-}
 
-.modal-icon {
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 32rpx;
-}
+  .area-filter-box {
+    margin-right: 5px;
+  }
 
-.modal-title {
-  display: block;
-  font-size: 36rpx;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 16rpx;
-}
+  .area-filter {
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+  }
 
-.modal-desc {
-  display: block;
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 48rpx;
-}
+  .logobox {
+    display: flex;
+    width: 10%;
+  }
 
-.button-group {
-  display: flex;
-  gap: 30rpx;
-  justify-content: center;
-}
+  .search-input-box {
+    display: flex;
+    width: 50%;
+    flex-direction: row;
+    align-items: left;
+    text-align: left;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+  }
 
-.modal-btn {
-  flex: 1;
-  height: 80rpx;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30rpx;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
+  .search-input {
+    flex: 1;
+    height: 25px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+  }
 
-.cancel-btn {
-  background: #F5F5F5;
-  color: #666;
-}
+  .logo-icon {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+  }
 
-.cancel-btn:active {
-  background: #E0E0E0;
-}
+  .search-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+  }
 
-.confirm-btn {
-  background: #5AA7EB;
-  color: #FFFFFF;
-}
+  .needframe {
+    height: 240px;
+    margin-top: 70px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.3);
+    background: #3A92AF;
+    background: linear-gradient(to top right, #00ffff 0%, #ffffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3A92AF', endColorstr='#5CA05A', GradientType=1);
+    color: #fff;
+    font-family: 'Open Sans', Helvetica, sans-serif;
+  }
 
-.confirm-btn:active {
-  background: #4A97DB;
-}
+  .center {
+    height: 200px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    background: #fff;
+    box-shadow: 8px 10px 15px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
 
-.post-small-img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
+  .title {
+    font-size: 16px;
+    color: #676767;
+    line-height: 50px;
+    height: 50px;
+    border-bottom: 1px solid #D8D8D8;
+    text-align: center;
+  }
 
-.post-small-title {
-  font-size: 14px;
-  font-weight: 600;
-  padding: 5px;
-}
+  .addzone {
+    box-sizing: border-box;
+    width: 100px;
+    height: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border: 1px dashed #A4A4A4;
+    border-radius: 3px;
+    text-align: center;
+  }
 
-.post-small-author {
-  font-size: 12px;
-  color: #666;
-  padding: 0 5px 5px 5px;
-}
+  .plusicon {
+    width: 98px;
+    height: 98px;
+  }
 
-.content,
-.title {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-}
+  .post-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+  }
 
-.content {
-  justify-content: flex-start;
-}
+  .post-item-small {
+    width: calc(50% - 5px);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
 
-.title {
-  justify-content: space-between;
-}
+  .post-abb-desc {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
 
-.title-tip {
-  color: rgba(0, 0, 0, 0.25);
-  font-size: 12px;
-}
+  .post-writter-box {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .postauavt {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 1px;
+  }
+
+  /* 添加需求卡片样式 */
+  .demand-card {
+    position: relative;
+    height: 180rpx;
+    margin-top: 120rpx;
+    margin-bottom: 30rpx;
+    margin-left: 30rpx;
+    margin-right: 30rpx;
+    border-radius: 24rpx;
+    background: linear-gradient(135deg, #7FD2F6 0%, #5AA7EB 100%);
+    box-shadow: 0 8rpx 24rpx rgba(90, 167, 235, 0.3);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+  }
+
+  .demand-card:active {
+    transform: scale(0.98);
+  }
+
+  .demand-content {
+    position: absolute;
+    z-index: 2;
+    padding: 40rpx;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .add-icon {
+    width: 60rpx;
+    height: 60rpx;
+    margin-bottom: 20rpx;
+    filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.1));
+  }
+
+  .demand-title {
+    font-size: 36rpx;
+    color: #FFFFFF;
+    font-weight: 600;
+    margin-bottom: 12rpx;
+  }
+
+  .demand-subtitle {
+    font-size: 26rpx;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .decorative-pattern {
+    position: absolute;
+    right: -40rpx;
+    bottom: -40rpx;
+    width: 240rpx;
+    height: 240rpx;
+    opacity: 0.1;
+  }
+
+  /* 登录提示模态框样式 */
+  .login-modal-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .login-modal {
+    width: 600rpx;
+
+    background: #FFFFFF;
+    border-radius: 32rpx;
+    padding: 50rpx;
+    text-align: center;
+    animation: modalShow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+
+  @keyframes modalShow {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .modal-icon {
+    width: 120rpx;
+    height: 120rpx;
+    margin-bottom: 32rpx;
+  }
+
+  .modal-title {
+    display: block;
+    font-size: 36rpx;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 16rpx;
+  }
+
+  .modal-desc {
+    display: block;
+    font-size: 28rpx;
+    color: #666;
+    margin-bottom: 48rpx;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 30rpx;
+    justify-content: center;
+  }
+
+  .modal-btn {
+    flex: 1;
+    height: 80rpx;
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30rpx;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .cancel-btn {
+    background: #F5F5F5;
+    color: #666;
+  }
+
+  .cancel-btn:active {
+    background: #E0E0E0;
+  }
+
+  .confirm-btn {
+    background: #5AA7EB;
+    color: #FFFFFF;
+  }
+
+  .confirm-btn:active {
+    background: #4A97DB;
+  }
+
+  .post-small-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .post-small-title {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px;
+  }
+
+  .post-small-author {
+    font-size: 12px;
+    color: #666;
+    padding: 0 5px 5px 5px;
+  }
+
+  .content,
+  .title {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .content {
+    justify-content: flex-start;
+  }
+
+  .title {
+    justify-content: space-between;
+  }
+
+  .title-tip {
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 12px;
+  }
 </style>
