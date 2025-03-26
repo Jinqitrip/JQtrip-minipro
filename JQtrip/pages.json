@@ -53,6 +53,12 @@
       "style": {
         "navigationBarTitleText": "微信登录"
       }
+    },
+    {
+      "path": "pages/index/postdetail",
+      "style": {
+        "navigationBarTitleText": "帖子详情"
+      }
     }
   ],
   "tabBar": {
