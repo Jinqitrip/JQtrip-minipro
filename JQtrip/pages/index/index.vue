@@ -50,7 +50,7 @@
     </view>
 
     <wd-card v-if="order_activated" @click="jump_to_order(order_activated)">
-      <view style="height:20px"></view>
+      <view style="height:120rpx"></view>
       <view class="content" @click="jump_to_order(order_activated)">
         <image :src="order_activated.order_image" alt="joy"
           style="width: 70px; height: 70px; border-radius: 4px; margin-right: 12px" />
@@ -348,57 +348,6 @@
     margin-left: 5px;
   }
 
-  .needframe {
-    height: 240px;
-    margin-top: 70px;
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.3);
-    background: #3A92AF;
-    background: linear-gradient(to top right, #00ffff 0%, #ffffff 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3A92AF', endColorstr='#5CA05A', GradientType=1);
-    color: #fff;
-    font-family: 'Open Sans', Helvetica, sans-serif;
-  }
-
-  .center {
-    height: 200px;
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    background: #fff;
-    box-shadow: 8px 10px 15px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }
-
-  .title {
-    font-size: 16px;
-    color: #676767;
-    line-height: 50px;
-    height: 50px;
-    border-bottom: 1px solid #D8D8D8;
-    text-align: center;
-  }
-
-  .addzone {
-    box-sizing: border-box;
-    width: 100px;
-    height: 100px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    border: 1px dashed #A4A4A4;
-    border-radius: 3px;
-    text-align: center;
-  }
-
-  .plusicon {
-    width: 98px;
-    height: 98px;
-  }
-
   .post-list-container {
     display: flex;
     flex-wrap: wrap;
@@ -602,7 +551,7 @@
     padding: 0 5px 5px 5px;
   }
 
-  .content,
+
   .title {
     display: flex;
     flex-direction: row;
@@ -612,6 +561,7 @@
 
   .content {
     justify-content: flex-start;
+
   }
 
   .title {
