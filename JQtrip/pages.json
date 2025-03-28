@@ -19,6 +19,12 @@
       }
     },
     {
+      "path": "pages/index/postdetail",
+      "style": {
+        "navigationBarTitleText": "帖子详情"
+      }
+    },
+    {
       "path": "pages/order/order",
       "style": {
         "navigationBarTitleText": "订单"
@@ -54,12 +60,6 @@
         "navigationBarTitleText": "微信登录"
       }
     },
-    {
-      "path": "pages/index/postdetail",
-      "style": {
-        "navigationBarTitleText": "帖子详情"
-      }
-    }
   ],
   "tabBar": {
     "color": "#000000",
