@@ -76,7 +76,7 @@
 
     <!-- 帖子列表区域 -->
     <view class="post-list-container">
-      <view class="post-item-small" v-for="(post, index) in filteredPostList" :key="index"
+      <view class="post-item-small " v-for="(post, index) in filteredPostList" :key="index"
         @click="goToPostDetail(post)">
         <image :src="post.images && post.images[0] " class="post-small-img" mode="aspectFit">
         </image>
@@ -102,71 +102,9 @@
       return {
         searchText: '',
         order_activated: "",
-        postList: [{
-            id: 1,
-            authoravatar: "/static/my.png",
-            author: "Harry",
-            title: "游园武大",
-            desc: "本科生 校园地陪 图书馆宿舍无法进入111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
-            locationName: "武汉大学",
-            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
-          },
-          {
-            id: 2,
-            authoravatar: "/static/my.png",
-            author: "Harry",
-            title: "游园武大",
-            desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
-            locationName: "武汉大学",
-            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
-          }, {
-            id: 3,
-            authoravatar: "/static/my.png",
-            author: "Harry",
-            title: "游园武大",
-            desc: "111111111111111111111111113zhehshdifhsfjdjkdjksjksjfisadjsaifjsafjsdfjfhsdfhfoiaw",
-            locationName: "武汉大学",
-            images: ["/static/my.png", "/static/order.png", "/static/order.png"]
-          },
-          {
-            id: 4,
-            authoravatar: "/static/my.png",
-            author: "Harry",
-            title: "游园武大",
-            desc: "11111111111111111111111111111111",
-            locationName: "武汉大学",
-            images: ["/static/home.png"]
-          },
-          {
-            id: 5,
-            authoravatar: "/static/my.png",
-            author: "Harry",
-            title: "HUST_TEST",
-            desc: "11111111111111111111111111111111",
-            locationName: "华中科技大学",
-            images: ["/static/home.png"]
-          },
-          {
-            id: 6,
-            authoravatar: "/static/my.png",
-            author: "Harry",
-            title: "地大_TEST",
-            desc: "11111111111111111111111111111111",
-            locationName: "中国地质大学",
-            images: ["/static/home.png"]
-          },
-          {
-            id: 7,
-            authoravatar: "/static/my.png",
-            author: "Harry",
-            title: "中南财_TEST",
-            desc: "11111111111111111111111111111111",
-            locationName: "中南财经政法大学",
-            images: ["/static/home.png"]
-          },
-        ],
+        postList: [],
         areaIndex: '0',
-        areaList: ['全部', '武汉大学', '华中科技大学', '中国地质大学', '中南财经政法大学'],
+        areaList: ['全部', '官方', '武汉大学', '华中科技大学', '中国地质大学', '中南财经政法大学'],
         currentPost: null,
         showDetail: false,
         showLoginModal: false
@@ -207,6 +145,12 @@
         uni.navigateTo({
           url: `/pages/index/postdetail?postData=${JSON.stringify(post)}`
         });
+      },
+
+      getPostitemBorder() {
+        const borderClasses = ['postborder1', 'postborder2', 'postborder3'];
+        const randomIndex = Math.random(0, 2);
+        return borderClasses[randomIndex];
       }
     },
     computed: {
@@ -359,40 +303,6 @@
     margin-left: 5px;
   }
 
-  .post-list-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 10px;
-  }
-
-  .post-item-small {
-    width: calc(50% - 5px);
-    margin-bottom: 10px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .post-abb-desc {
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-  }
-
-  .post-writter-box {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .postauavt {
-    border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    margin-left: 5px;
-    margin-top: 1px;
-  }
-
   /* 添加需求卡片样式 */
   .demand-card {
     position: relative;
@@ -543,26 +453,6 @@
     background: #4A97DB;
   }
 
-  .post-small-img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-  }
-
-  .post-small-title {
-    font-size: 14px;
-    font-weight: 600;
-    padding: 5px;
-  }
-
-  .post-small-author {
-    font-size: 12px;
-    color: #666;
-    padding: 0 5px 5px 5px;
-  }
-
-
   .title {
     display: flex;
     flex-direction: row;
@@ -582,5 +472,78 @@
   .title-tip {
     color: rgba(0, 0, 0, 0.25);
     font-size: 12px;
+  }
+
+  /* 帖子 */
+  .post-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+    /* background-image: url(/static/sakuraborder.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: left top; */
+  }
+
+  .postborder1 {
+    border: solid 7px #41403E;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  }
+
+  .postborder2 {
+    border: dashed 5px #41403E;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  }
+
+  .postborder3 {
+    border: dotted 5px #41403E;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  }
+
+  .post-item-small {
+    width: calc(50% - 5px);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .post-abb-desc {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  .post-writter-box {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .postauavt {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: 1px;
+  }
+
+  .post-small-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .post-small-title {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px;
+  }
+
+  .post-small-author {
+    font-size: 12px;
+    color: #666;
+    padding: 0 5px 5px 5px;
   }
 </style>

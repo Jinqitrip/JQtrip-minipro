@@ -47,8 +47,7 @@
       return {
         postData: {},
         postId: null,
-        // 模拟登录
-        loggedInUser: 'user123',
+        loggedInUser: this.$userData.openId,
         comments: [],
         newComment: '',
         hasLiked: false,
@@ -65,20 +64,7 @@
       async loadComments() {
         // 从本地存储或后端API获取对应帖子的评论
         const savedComments = uni.getStorageSync(`comments_${this.postId}`) || [];
-        // 为每条评论添加用户头像和昵称信息
-        const commentsWithUserInfo = await Promise.all(
-          savedComments.map(async (comment) => {
-            const userInfo = await this.fetchUserInfo(comment.userId);
-            return {
-              ...comment,
-              userAvatar: userInfo.avatar,
-              userNickname: userInfo.nickname,
-              likes: comment.likes || 0,
-              likedBy: comment.likedBy || []
-            };
-          })
-        );
-        this.comments = commentsWithUserInfo;
+        this.comments = savedComments;
       },
       saveComments() {
         // 将评论保存到本地存储或后端API
@@ -86,14 +72,13 @@
       },
       async addComment() {
         if (this.newComment.trim() !== '') {
-          const userInfo = await this.fetchUserInfo(this.loggedInUser);
           this.comments.push({
             content: this.newComment,
             likes: 0,
             likedBy: [],
-            userId: this.loggedInUser,
-            userAvatar: userInfo.avatar,
-            userNickname: userInfo.nickname
+            userId: this.$userData.openId,
+            userAvatar: this.$userData.avatarUrl,
+            userNickname: this.$userData.nickName
           });
           this.newComment = '';
           this.saveComments();
@@ -132,22 +117,6 @@
           hasLiked: this.hasLiked,
           likeCount: this.likeCount
         });
-      },
-      async fetchUserInfo(userId) {
-        try {
-          // 这里需要替换为实际的 API 请求地址
-          const response = await uni.request({
-            url: `https://your-api-url.com/users/${userId}`,
-            method: 'GET'
-          });
-          return response.data;
-        } catch (error) {
-          console.error('获取用户信息失败:', error);
-          return {
-            avatar: '/static/my.png',
-            nickname: '未知用户'
-          };
-        }
       }
     }
   };
