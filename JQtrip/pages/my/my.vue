@@ -21,7 +21,11 @@
 		<button open-type="share" class="overlay-button"></button>
 		<!--这是真的石山-->
 	</view>
-	<wd-cell title="联系客服" is-link to="" @click="contact"></wd-cell>
+	<view class="cell-wrapper">
+		<wd-cell title="联系客服" is-link to="" @click="contact"></wd-cell>
+		<button open-type='contact' session-from='' class="overlay-button">联系我们</button>
+	</view>
+
 
 	<!--<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>-->
 
