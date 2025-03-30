@@ -29,6 +29,10 @@
 
 <script lang="ts">
 import { useToast } from '@/uni_modules/wot-design-uni'
+import {
+	customerServiceUrl,
+	corpId
+} from '@/config';
 
 export default {
 	created() {
@@ -65,8 +69,20 @@ export default {
 			console.log(423)
 		},
 		contact() {
-			// 这个等审核通过了再写吧
-
+			//#ifdef  MP-WEIXIN  
+			wx.openCustomerServiceChat({
+				extInfo: {
+					url: customerServiceUrl
+				},
+				corpId: corpId,
+				success(res) {
+					console.log(res, 1)
+				},
+				fail(res) {
+					console.log(res, 2)
+				},
+			})
+			//#endif
 		},
 		// 跳转到登录页面
 		jump_to_login() {
