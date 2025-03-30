@@ -21,11 +21,7 @@
 		<button open-type="share" class="overlay-button"></button>
 		<!--这是真的石山-->
 	</view>
-	<view class="cell-wrapper">
-		<wd-cell title="联系客服" is-link to="" @click="contact"></wd-cell>
-		<button open-type='contact' session-from='' class="overlay-button">联系我们</button>
-	</view>
-
+	<wd-cell title="联系客服" is-link to="" @click="contact"></wd-cell>
 
 	<!--<wd-cell title="反馈与投诉" is-link to="/pages/index/index"></wd-cell>-->
 
@@ -33,6 +29,10 @@
 
 <script lang="ts">
 import { useToast } from '@/uni_modules/wot-design-uni'
+import {
+	customerServiceUrl,
+	corpId
+} from '@/config';
 
 export default {
 	created() {
@@ -69,8 +69,20 @@ export default {
 			console.log(423)
 		},
 		contact() {
-			// 这个等审核通过了再写吧
-
+			//#ifdef  MP-WEIXIN  
+			wx.openCustomerServiceChat({
+				extInfo: {
+					url: customerServiceUrl
+				},
+				corpId: corpId,
+				success(res) {
+					console.log(res, 1)
+				},
+				fail(res) {
+					console.log(res, 2)
+				},
+			})
+			//#endif
 		},
 		// 跳转到登录页面
 		jump_to_login() {
