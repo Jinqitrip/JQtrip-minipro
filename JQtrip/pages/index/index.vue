@@ -112,7 +112,8 @@
             ],
             author: '锦麒行',
             authoravatar: '/static/logo.png',
-            locationName: '官方'
+            locationName: '官方',
+			initialLikes: 10 
           },
           {
             postId: 2,
@@ -121,7 +122,8 @@
             images: ['/static/01tui.png'],
             author: '锦麒行',
             authoravatar: '/static/logo.png', // 假设默认头像路径
-            locationName: '官方'
+            locationName: '官方',
+			initialLikes: 10 
           }
         ],
         areaIndex: '0',
