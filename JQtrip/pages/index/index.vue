@@ -106,9 +106,15 @@
 						postId: 1,
 						title: '锦麒行校园引路人来啦',
 						desc: '什么是锦麒行校园引路人计划：\n\n锦麒行校园引路人项目是由一个轻商业化校园体验项目，不同于校园导游，我们旨在通过"校友向导"角色帮助各年龄段的同学及家长深度探索校园文化。负责导览的同学会为游客提供2小时导览服务，导览过程中根据参观家长、同学的提问，结合个人经历分享选课备考攻略，以个人真实故事激励学弟学妹，或提供校园生活介绍等。后续，我们也将建立锦麒行陪伴社群，n对1为孩子的成长问题解答。\n300元/2h：您将获得：\n🔸【各学校优质向导】保研学霸/竞赛大神/活动达人亲自带队，每一名同学均经过严格选拔，面试淘汰率66.67%\n🔸【课本没有的生存秘笈】独家整理高效备考攻略/选课指南/社交资源库，涵盖时间管理、竞赛选择等实战技巧，由各校在读学子亲自讲授，助力快速适应中学、高中、大学等校园生态\n🔸【沉浸式名校体验】深度参访各名校核心场景，匹配孩子兴趣的1v1定制路线，真实感知顶尖学府学术氛围\n🔸【长期社群陪伴】每一名客户均可获享引路人社群联结体验包，在完成您的校园导领订单后，您后续可在随时在客户群中就孩子成长问题提问（体验限2次）或预约一次15分钟语音答疑。用朋辈的视角，为您与孩子解惑\n\n校园引路人计划支持院校：\n武汉地区：\n华中科技大学\n武汉大学\n中南财经政法大学\n中国地质大学\n成都地区：\n西南财经大学\n快来私信预约吧！还有想去的学校，在评论区留言吧！\n关键词：校园导游 成长陪伴 升学规划 武汉游览 华中科技大学 武汉大学 同济大学 西南财经大学 中南财经政法大学 中国地质大学\n#校园导游 #成长陪伴 #升学规划  #武汉游览  #答疑解惑 #华中科技大学 #武汉大学 #同济大学 #西南财经大学 #中南财经政法大学 #中国地质大学',
-						images: ['http://image.jinqitrip.com.cn/official/011.jpg', 'http://image.jinqitrip.com.cn/official/012.jpg', 'http://image.jinqitrip.com.cn/official/013.jpg',
-							'http://image.jinqitrip.com.cn/official/014.jpg', 'http://image.jinqitrip.com.cn/official/015.jpg', 'http://image.jinqitrip.com.cn/official/016.jpg',
-							'http://image.jinqitrip.com.cn/official/017.jpg', 'http://image.jinqitrip.com.cn/official/018.jpg', 'http://image.jinqitrip.com.cn/official/019.jpg'
+						images: ['http://image.jinqitrip.com.cn/official/011.jpg',
+							'http://image.jinqitrip.com.cn/official/012.jpg',
+							'http://image.jinqitrip.com.cn/official/013.jpg',
+							'http://image.jinqitrip.com.cn/official/014.jpg',
+							'http://image.jinqitrip.com.cn/official/015.jpg',
+							'http://image.jinqitrip.com.cn/official/016.jpg',
+							'http://image.jinqitrip.com.cn/official/017.jpg',
+							'http://image.jinqitrip.com.cn/official/018.jpg',
+							'http://image.jinqitrip.com.cn/official/019.jpg'
 						],
 						author: '锦麒行',
 						authoravatar: 'http://image.jinqitrip.com.cn/logo.png',
