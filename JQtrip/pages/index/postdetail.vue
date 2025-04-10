@@ -1,6 +1,5 @@
 <template>
   <view class="post-detail-page">
-    <!-- Swiper for Images -->
     <swiper
       v-if="postData.images && postData.images.length > 0"
       class="post-swiper"
@@ -13,23 +12,18 @@
       :circular="postData.images.length > 1"
     >
       <swiper-item v-for="(image, index) in postData.images" :key="image" class="swiper-item-container">
-        <!-- Use aspectFit to show the whole image, background handles empty space -->
         <image :src="image" mode="aspectFit" class="post-image" @click="previewImage(index)" />
       </swiper-item>
     </swiper>
      <view v-else class="post-swiper-placeholder">
-        <!-- Optional: Placeholder if no images -->
-        <!-- <text>No Image Available</text> -->
      </view>
 
 
     <view class="post-content-wrapper">
-      <!-- Post Header Info -->
       <view class="post-header">
         <view class="post-meta">
           <view class="post-title">{{ postData.title }}</view>
           <view class="post-author">By {{ postData.author }}</view>
-          <!-- Add timestamp if available: <view class="post-timestamp">Posted on {{ formattedTimestamp }}</view> -->
         </view>
         <view class="post-like-section" @click="toggleLike">
           <image :src="hasLiked ? '/static/redaixin.png' : '/static/aixin.png'" class="post-like-icon" />
@@ -37,13 +31,10 @@
         </view>
       </view>
 
-      <!-- Post Description -->
       <view class="post-description">{{ postData.desc }}</view>
 
-      <!-- Divider -->
       <view class="divider"></view>
 
-      <!-- Comment Section -->
       <view class="comment-section">
         <view class="comment-section-title">评论区</view>
         <view v-if="comments.length === 0" class="no-comments">
@@ -51,13 +42,10 @@
         </view>
         <view v-else class="comments-list">
           <view v-for="(comment, index) in comments" :key="index" class="comment-item">
-             <!-- Using comment index as key is okay if comments aren't reordered/deleted frequently without full refresh -->
             <image :src="comment.userAvatar" class="user-avatar" mode="aspectFill" />
             <view class="comment-main">
               <view class="comment-header">
                 <text class="user-nickname">{{ comment.userNickname }}</text>
-                <!-- Add comment timestamp if available -->
-                <!-- <text class="comment-timestamp">{{ comment.timestamp }}</text> -->
                 <view class="comment-like-wrapper" @click="likeComment(index)">
                   <image :src="comment.likedBy.includes(loggedInUser) ? '/static/redaixin.png' : '/static/aixin.png'" class="comment-like-icon" />
                   <text class="comment-like-count">{{ comment.likes }}</text>
@@ -70,7 +58,6 @@
       </view>
     </view>
 
-    <!-- Fixed Comment Input Bar -->
     <view class="fixed-comment-input-bar">
       <input v-model="newComment" type="text" placeholder="说点什么..." class="comment-input-field" :cursor-spacing="20" confirm-type="send" @confirm="addComment"/>
       <button class="submit-button" @click="addComment" :disabled="!newComment.trim()">发送</button>
@@ -84,7 +71,6 @@
     data() {
       return {
         postData: {
-            // Initialize with default structure to prevent template errors before load
             id: null,
             title: 'Loading...',
             author: '',
@@ -93,7 +79,7 @@
             initialLikes: 0
         },
         postId: null,
-        loggedInUser: null, // Initialize as null, set in onLoad
+        loggedInUser: null,
         comments: [],
         newComment: '',
         hasLiked: false,
@@ -101,48 +87,41 @@
       };
     },
     onLoad(options) {
-      // Simulate getting loggedInUser (replace with your actual logic)
       if (this.$userData && this.$userData.openId) {
           this.loggedInUser = this.$userData.openId;
       } else {
           console.warn("User data not available on load!");
-          this.loggedInUser = null; // Explicitly set to null or a guest ID
+          this.loggedInUser = null;
       }
 
       try {
         if (options.postData) {
-           // Decode URI Component first
            const decodedData = options.postData;
            const parsedData = JSON.parse(decodedData);
 
-           // **Robustness Check:** Ensure images is an array
            if (parsedData && !Array.isArray(parsedData.images)) {
                console.warn("Parsed postData.images is not an array, defaulting to empty. Received:", parsedData.images);
                parsedData.images = [];
            }
 
-           this.postData = parsedData; // Assign parsed data
+           this.postData = parsedData;
            this.postId = this.postData.id;
 
-           // Log for debugging multi-image issues
            console.log('Successfully parsed postData:', JSON.stringify(this.postData, null, 2));
 
            this.loadComments();
-           this.loadLikes(); // Load likes based on the now available postId
+           this.loadLikes();
 
         } else {
             console.error("No postData received in options!");
             uni.showToast({ title: '加载帖子失败', icon: 'error' });
-            // Maybe set postData to an error state or navigate back
             this.postData.title = "Error Loading Post";
-            // uni.navigateBack();
         }
       } catch (e) {
          console.error("Error parsing postData:", e);
-         console.error("Received options.postData:", options.postData); // Log raw data on error
+         console.error("Received options.postData:", options.postData);
          uni.showToast({ title: '加载帖子数据出错', icon: 'error' });
           this.postData.title = "Error Loading Post Data";
-         // uni.navigateBack();
       }
     },
     methods: {
@@ -157,7 +136,7 @@
         });
       },
       loadComments() {
-        if (!this.postId) return; // Don't load if postId isn't set
+        if (!this.postId) return;
         const savedComments = uni.getStorageSync(`comments_${this.postId}`) || [];
         this.comments = savedComments;
       },
@@ -167,12 +146,10 @@
       },
       addComment() {
         if (this.newComment.trim() === '') {
-             return; // Don't add empty comments
+             return;
         }
         if (!this.loggedInUser) {
              uni.showToast({ title: '请先登录后评论', icon: 'none' });
-             // Optionally: Redirect to login page
-             // uni.navigateTo({ url: '/pages/login/login' });
              return;
          }
 
@@ -186,11 +163,9 @@
           userId: this.loggedInUser,
           userAvatar: userAvatar,
           userNickname: userNickname,
-          // timestamp: new Date().toISOString() // Consider adding a timestamp
         });
         this.newComment = '';
         this.saveComments();
-        // Consider scrolling to the new comment if the list is long
       },
       likeComment(index) {
          if (!this.loggedInUser) {
@@ -198,12 +173,10 @@
              return;
          }
         const comment = this.comments[index];
-        if (!comment) return; // Safety check
+        if (!comment) return;
 
         const userIndex = comment.likedBy.indexOf(this.loggedInUser);
 
-        // Use Vue.$set or array spread for better reactivity if direct mutation issues arise
-        // For example: const updatedComment = { ...comment };
         if (userIndex === -1) {
           comment.likes++;
           comment.likedBy.push(this.loggedInUser);
@@ -211,8 +184,6 @@
           comment.likes--;
           comment.likedBy.splice(userIndex, 1);
         }
-        // Trigger reactivity if needed (though usually direct modify works)
-        // this.$set(this.comments, index, comment);
         this.saveComments();
       },
       toggleLike() {
@@ -220,42 +191,36 @@
              uni.showToast({ title: '请先登录', icon: 'none' });
              return;
          }
-         if (!this.postId) return; // Ensure postId is available
+         if (!this.postId) return;
 
         this.hasLiked = !this.hasLiked;
         if (this.hasLiked) {
           this.likeCount++;
         } else {
-          // Prevent count from going below zero locally
           this.likeCount = Math.max(0, this.likeCount - 1);
         }
         this.saveLikes();
       },
       loadLikes() {
-         if (!this.postId) return; // Don't load if postId isn't set
+         if (!this.postId) return;
 
-         // Load total count from postData initially if available, otherwise from storage
          const initialCountSource = this.postData.initialLikes !== undefined ? this.postData.initialLikes : 0;
          const savedLikesData = uni.getStorageSync(`likes_post_${this.postId}`);
 
          if (savedLikesData) {
-             // Prefer stored count if it exists (might be more up-to-date locally)
              this.likeCount = savedLikesData.totalCount !== undefined ? savedLikesData.totalCount : initialCountSource;
-             // Load like status for the current logged-in user
              this.hasLiked = this.loggedInUser && savedLikesData.likedByUsers ? savedLikesData.likedByUsers.includes(this.loggedInUser) : false;
          } else {
-            // Initialize from postData if no storage exists
             this.likeCount = initialCountSource;
-            this.hasLiked = false; // Assume not liked initially if no data stored
+            this.hasLiked = false;
          }
       },
       saveLikes() {
-         if (!this.postId || !this.loggedInUser) { return; } // Need postId and user to save specific like state
+         if (!this.postId || !this.loggedInUser) { return; }
 
         const currentLikesData = uni.getStorageSync(`likes_post_${this.postId}`) || { likedByUsers: [], totalCount: 0 };
         let likedByUsers = currentLikesData.likedByUsers || [];
 
-        // Update the list of users who liked
         if (this.hasLiked) {
             if (!likedByUsers.includes(this.loggedInUser)) {
                 likedByUsers.push(this.loggedInUser);
@@ -264,10 +229,9 @@
             likedByUsers = likedByUsers.filter(id => id !== this.loggedInUser);
         }
 
-        // Save the updated list and the *current* optimistic count
         uni.setStorageSync(`likes_post_${this.postId}`, {
             likedByUsers: likedByUsers,
-            totalCount: this.likeCount // Save the locally tracked count
+            totalCount: this.likeCount
         });
       }
     }
@@ -275,28 +239,23 @@
 </script>
 
 <style scoped>
-  /* Page Container */
   .post-detail-page {
     background-color: #f8f8f8;
     min-height: 100vh;
-    padding-bottom: 160rpx; /* Ensure space for fixed input bar */
+    padding-bottom: 160rpx;
     box-sizing: border-box;
   }
 
-  /* Swiper Styles */
   .post-swiper {
     width: 100%;
-    /* Use viewport height for responsiveness, adjust as needed */
     height: 65vh;
-    /* Add a max-height to prevent extremely tall images from dominating */
-    max-height: 900rpx; /* Adjust this limit */
-    background-color: #f0f0f0; /* Fallback background */
+    max-height: 900rpx;
+    background-color: #f0f0f0;
   }
 
-   /* Placeholder style if needed */
   .post-swiper-placeholder {
       width: 100%;
-      height: 65vh; /* Match swiper height */
+      height: 65vh;
       max-height: 900rpx;
       display: flex;
       justify-content: center;
@@ -311,31 +270,26 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    /* Background for letterboxing when using aspectFit */
     background-color: #FFFFFF;
-     /* Or a neutral grey: background-color: #e0e0e0; */
-    height: 100%; /* Ensure item fills swiper height */
+    height: 100%;
   }
 
   .post-image {
     width: 100%;
     height: 100%;
-    /* mode="aspectFit" is set in template - ensures whole image visible */
   }
 
-  /* Content Area Below Swiper */
   .post-content-wrapper {
-    padding: 30rpx 30rpx 40rpx 30rpx; /* Added bottom padding */
+    padding: 30rpx 30rpx 40rpx 30rpx;
     background-color: #ffffff;
-    margin-top: -20rpx; /* Overlap slightly */
+    margin-top: -20rpx;
     border-top-left-radius: 20rpx;
     border-top-right-radius: 20rpx;
     position: relative;
     z-index: 1;
-    min-height: 30vh; /* Ensure content area has some minimum height */
+    min-height: 30vh;
   }
 
-  /* Post Header */
   .post-header {
     display: flex;
     justify-content: space-between;
@@ -349,7 +303,7 @@
   }
 
   .post-title {
-    font-size: 42rpx; /* Slightly larger title */
+    font-size: 42rpx;
     font-weight: bold;
     color: #2c2c2c;
     margin-bottom: 10rpx;
@@ -385,26 +339,23 @@
     color: #666666;
   }
 
-  /* Post Description */
   .post-description {
     font-size: 30rpx;
-    color: #444444; /* Slightly darker text */
-    line-height: 1.75; /* Increased line height */
+    color: #444444;
+    line-height: 1.75;
     white-space: pre-wrap;
     word-wrap: break-word;
     margin-bottom: 40rpx;
   }
 
-  /* Divider */
   .divider {
     height: 1px;
-    background-color: #f0f0f0; /* Lighter divider */
+    background-color: #f0f0f0;
     margin: 40rpx 0;
   }
 
-  /* Comment Section */
   .comment-section {
-    /* No changes needed here unless desired */
+
   }
 
   .comment-section-title {
@@ -430,7 +381,7 @@
   .comment-item {
     display: flex;
     gap: 20rpx;
-    padding: 25rpx 20rpx; /* Slightly more padding */
+    padding: 25rpx 20rpx;
     background-color: #f9f9f9;
     border-radius: 16rpx;
   }
@@ -440,7 +391,7 @@
     height: 64rpx;
     border-radius: 50%;
     flex-shrink: 0;
-    background-color: #eee; /* Placeholder bg for avatar */
+    background-color: #eee;
   }
 
   .comment-main {
@@ -485,14 +436,13 @@
   }
 
   .comment-content {
-    font-size: 29rpx; /* Slightly larger comment text */
+    font-size: 29rpx;
     color: #333333;
     line-height: 1.65;
     word-wrap: break-word;
     margin: 0;
   }
 
-  /* Fixed Comment Input Bar */
   .fixed-comment-input-bar {
     position: fixed;
     bottom: 0;
@@ -501,8 +451,8 @@
     display: flex;
     align-items: center;
     padding: 15rpx 20rpx;
-    padding-bottom: calc(15rpx + constant(safe-area-inset-bottom)); /* iOS safe area */
-	  padding-bottom: calc(15rpx + env(safe-area-inset-bottom)); /* Standard safe area */
+    padding-bottom: calc(15rpx + constant(safe-area-inset-bottom));
+	  padding-bottom: calc(15rpx + env(safe-area-inset-bottom));
     background-color: #ffffff;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
     z-index: 100;
