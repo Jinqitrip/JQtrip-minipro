@@ -1,60 +1,60 @@
 <template>
 
-    <wd-card>
-        <view class="content" @click.native="jump_to_order">
-            <image :src="order.order_image" alt="joy"
-                style="width: 100px; height: 100px; border-radius: 4px; margin-right: 12px" />
+	<wd-card>
+		<view class="content" @click.native="jump_to_order">
+			<image :src="order.order_image" alt="joy"
+				style="width: 100px; height: 100px; border-radius: 4px; margin-right: 12px" />
 
-            <view class="info-container">
-                <text class="title">{{ order.title }}</text>
+			<view class="info-container">
+				<text class="title">{{ order.title }}</text>
 
-                <view class="detail-row">
-                    <view class="detail-item">
-                        <tn-icon name="location" size="16" color="#666"></tn-icon>
-                        <text class="detail-text">{{ order.location }}</text>
-                    </view>
-                    <view class="detail-item">
-                        <tn-icon name="money" size="16" color="#666"></tn-icon>
-                        <text class="detail-text">¥{{ order.price }}</text>
-                    </view>
-                </view>
+				<view class="detail-row">
+					<view class="detail-item">
+						<tn-icon name="location" size="16" color="#666"></tn-icon>
+						<text class="detail-text">{{ order.location }}</text>
+					</view>
+					<view class="detail-item">
+						<tn-icon name="money" size="16" color="#666"></tn-icon>
+						<text class="detail-text">¥{{ order.price }}</text>
+					</view>
+				</view>
 
-                <view class="detail-row">
-                    <view class="detail-item">
-                        <tn-icon name="time" size="16" color="#666"></tn-icon>
-                        <text class="detail-text">{{ order.time }}</text>
-                    </view>
-                </view>
-            </view>
-        </view>
-    </wd-card>
+				<view class="detail-row">
+					<view class="detail-item">
+						<tn-icon name="time" size="16" color="#666"></tn-icon>
+						<text class="detail-text">{{ order.time }}</text>
+					</view>
+				</view>
+			</view>
+		</view>
+	</wd-card>
 
-    <TnSteps v-model="currentStep" mode="dotIcon" style="width: 85%;margin: auto" disabled>
-        <TnStepsItem v-for="(item, index) in stepsData" :key="index" :title="item.title" :icon="item.icon"
-            :active-icon="item.activeIcon" />
-    </TnSteps>
+	<TnSteps v-model="currentStep" mode="dotIcon" style="width: 85%;margin: auto" disabled>
+		<TnStepsItem v-for="(item, index) in stepsData" :key="index" :title="item.title" :icon="item.icon"
+			:active-icon="item.activeIcon" />
+	</TnSteps>
 
-    <view class="content-box">
+	<view class="content-box">
 
 
-        <view class="info-grid">
-            <view class="info-item">
-                <text class="info-label">服务人数</text>
-                <text class="info-value">{{ order.people }}</text>
-            </view>
-            <view class="info-item">
-                <text class="info-label">联系方式</text>
-                <text class="info-value">{{ guild.phone || '暂无' }}</text>
-            </view>
-        </view>
+		<view class="info-grid">
+			<view class="info-item">
+				<text class="info-label">服务人数</text>
+				<text class="info-value">{{ order.people }}</text>
+			</view>
+			<view class="info-item">
+				<text class="info-label">联系方式</text>
+				<text class="info-value">{{ guild.phone || '暂无' }}</text>
+			</view>
+		</view>
 
-        <text class="detail-content">
-            {{ order.detail || '暂无详细信息' }}
-        </text>
+		<text class="detail-content">
+			{{ order.detail || '暂无详细信息' }}
+		</text>
 
-    </view>
+	</view>
 
-    <wd-button block plain v-if="order.step == 1" @click="jump_to_select">选择导游</wd-button>
+	<wd-button block plain v-if="order.step == 1" @click="jump_to_select">选择导游</wd-button>
 
 </template>
 
@@ -67,219 +67,219 @@ import TnStepsItem from '@/uni_modules/tuniaoui-vue3/components/steps/src/steps-
 import { baseUrl } from '@/config';
 
 export default defineComponent({
-    components: {
-        TnSteps,
-        TnStepsItem
-    },
-    data() {
-        return {
-            order: {
-                title: "AA专业导游",
-                order_image: "/static/logo.png",
-                location: "南二门",
-                price: "200",
-                time: "2025/3/1 14:00",
-                step: 1,
-                people: NaN,
-                detail: "加载中"
-            },
-            guild: {
+	components: {
+		TnSteps,
+		TnStepsItem
+	},
+	data() {
+		return {
+			order: {
+				title: "AA专业导游",
+				order_image: "/static/logo.png",
+				location: "南二门",
+				price: "200",
+				time: "2025/3/1 14:00",
+				step: 1,
+				people: NaN,
+				detail: "加载中"
+			},
+			guild: {
 
-            },
-            stepsData: [
-                {
-                    title: '已下单',
-                    icon: 'success-circle',
-                    activeIcon: 'success-circle-fill',
-                },
-                {
-                    title: '待选择',
-                    icon: 'success-circle',
-                    activeIcon: 'success-circle-fill',
-                },
-                {
-                    title: '待开始',
-                    icon: 'success-circle',
-                    activeIcon: 'success-circle-fill',
-                },
-                {
-                    title: '待评价',
-                    icon: 'success-circle',
-                    activeIcon: 'success-circle-fill',
-                },
-                {
-                    title: '已完成',
-                    icon: 'success-circle',
-                    activeIcon: 'success-circle-fill',
-                },
-            ]
-        }
-    },
-    computed: {
-        currentStep(): number {
-            return this.order.step
-        }
-    },
-    onLoad(option: any) {
-        const data = JSON.parse(option.index)
-        try {
-            this.order = Object.assign({}, this.order, data)
-        } catch (e) {
-            console.error('数据解析失败:', e)
-        }
-        uni.request({
-            url: baseUrl + "/v1/orders/" + data.id,
-            method: 'GET',
-            success: (res) => {
-                console.log(res.data);
-                this.order.people = res.data.data.people;
-                this.order.detail = res.data.data.note;
-            },
-            fail: () => {
-                console.log("fuck")
-            }
-        })
-    },
-    methods: {
-        jump_to_select(order) {
-            var mynavData = JSON.stringify(order);
-            uni.navigateTo({
-                url: "/pages/order/order-select?index=" + mynavData
-            });
-            console.log(321);
-        }
+			},
+			stepsData: [
+				{
+					title: '已下单',
+					icon: 'success-circle',
+					activeIcon: 'success-circle-fill',
+				},
+				{
+					title: '待选择',
+					icon: 'success-circle',
+					activeIcon: 'success-circle-fill',
+				},
+				{
+					title: '待开始',
+					icon: 'success-circle',
+					activeIcon: 'success-circle-fill',
+				},
+				{
+					title: '待评价',
+					icon: 'success-circle',
+					activeIcon: 'success-circle-fill',
+				},
+				{
+					title: '已完成',
+					icon: 'success-circle',
+					activeIcon: 'success-circle-fill',
+				},
+			]
+		}
+	},
+	computed: {
+		currentStep(): number {
+			return this.order.step
+		}
+	},
+	onLoad(option: any) {
+		const data = JSON.parse(option.index)
+		try {
+			this.order = Object.assign({}, this.order, data)
+		} catch (e) {
+			console.error('数据解析失败:', e)
+		}
+		uni.request({
+			url: baseUrl + "/v1/orders/" + data.id,
+			method: 'GET',
+			success: (res) => {
+				console.log(res.data);
+				this.order.people = res.data.data.people;
+				this.order.detail = res.data.data.note;
+			},
+			fail: () => {
+				console.log("fuck")
+			}
+		})
+	},
+	methods: {
+		jump_to_select(order) {
+			var mynavData = JSON.stringify(order);
+			uni.navigateTo({
+				url: "/pages/order/order-select?index=" + mynavData
+			});
+			console.log(321);
+		}
 
-    }
+	}
 })
 </script>
 
 <style>
 .detail-section {
-    padding: 16px;
+	padding: 16px;
 }
 
 .section-title {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
 }
 
 .title-text {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    margin-left: 8px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #333;
+	margin-left: 8px;
 }
 
 .content-box {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 12px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	padding: 12px;
 }
 
 .detail-content {
-    font-size: 14px;
-    color: #666;
-    line-height: 1.6;
-    white-space: pre-wrap;
+	font-size: 14px;
+	color: #666;
+	line-height: 1.6;
+	white-space: pre-wrap;
 }
 
 .info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+	margin-top: 15px;
+	padding-top: 15px;
+	border-top: 1px solid #eee;
 }
 
 .info-item {
-    background: white;
-    border-radius: 6px;
-    padding: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	background: white;
+	border-radius: 6px;
+	padding: 10px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .info-label {
-    font-size: 12px;
-    color: #999;
-    display: block;
-    margin-bottom: 4px;
+	font-size: 12px;
+	color: #999;
+	display: block;
+	margin-bottom: 4px;
 }
 
 .info-value {
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
+	font-size: 14px;
+	color: #333;
+	font-weight: 500;
 }
 
 .content {
-    display: flex;
-    padding: 16px;
-    align-items: flex-start;
+	display: flex;
+	padding: 16px;
+	align-items: flex-start;
 }
 
 .info-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
 .title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    line-height: 1.4;
+	font-size: 16px;
+	font-weight: 500;
+	color: #333;
+	line-height: 1.4;
 }
 
 .detail-row {
-    display: flex;
-    gap: 20px;
+	display: flex;
+	gap: 20px;
 }
 
 .detail-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
 }
 
 .detail-text {
-    font-size: 14px;
-    color: #666;
-    line-height: 1.4;
+	font-size: 14px;
+	color: #666;
+	line-height: 1.4;
 }
 
 .content,
 .title {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
 }
 
 .content {
-    justify-content: flex-start;
+	justify-content: flex-start;
 }
 
 .title {
-    justify-content: space-between;
+	justify-content: space-between;
 }
 
 .title-tip {
-    color: rgba(0, 0, 0, 0.25);
-    font-size: 12px;
+	color: rgba(0, 0, 0, 0.25);
+	font-size: 12px;
 }
 
 .custom-main {
-    color: rgba(0, 0, 0, 0.85);
-    font-size: 16px;
+	color: rgba(0, 0, 0, 0.85);
+	font-size: 16px;
 }
 
 .custom-sub {
-    color: rgba(0, 0, 0, 0.25);
-    font-size: 12px;
+	color: rgba(0, 0, 0, 0.25);
+	font-size: 12px;
 }
 </style>

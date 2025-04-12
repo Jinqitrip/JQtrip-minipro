@@ -4,18 +4,18 @@ import App from './App'
 import { createSSRApp } from 'vue'
 
 export function createApp() {
-  const app = createSSRApp(App);
-  app.config.globalProperties.$userData = {
-  	"userInfo": {},
-  	"openId": '',
-  	"sessionKey": '',
-  	"unionId": '',
+	const app = createSSRApp(App);
+	app.config.globalProperties.$userData = {
+		"userInfo": {},
+		"openId": '',
+		"sessionKey": '',
+		"unionId": '',
 	"avatarUrl": '',
 	"nickName": ''
-  } ;
-  return {
-    app
-  }
+	} ;
+	return {
+		app
+	}
 }
 
 // #endif

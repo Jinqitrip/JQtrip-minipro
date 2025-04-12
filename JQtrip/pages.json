@@ -1,90 +1,90 @@
 {
-  "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app x",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
-  },
-  "uniIdRouter": {},
-  "pages": [{
-      "path": "pages/index/index",
-      "style": {
-        "navigationBarTitleText": "首页"
-      }
-    },
-    {
-      "path": "pages/index/demandfill",
-      "style": {
-        "navigationBarTitleText": "表单填写"
-      }
-    },
-    {
-      "path": "pages/index/postdetail",
-      "style": {
-        "navigationBarTitleText": "帖子详情"
-      }
-    },
-    {
-      "path": "pages/order/order",
-      "style": {
-        "navigationBarTitleText": "订单"
-      }
-    },
-    {
-      "path": "pages/my/my",
-      "style": {
-        "navigationBarTitleText": "我的"
-      }
-    },
-    {
-      "path": "pages/order/order-select",
-      "style": {
-        "navigationBarTitleText": "选择"
-      }
-    },
-    {
-      "path": "pages/order/order_detail",
-      "style": {
-        "navigationBarTitleText": "订单详情"
-      }
-    },
-    {
-      "path": "pages/my/account_manage",
-      "style": {
-        "navigationBarTitleText": "账号管理"
-      }
-    },
-    {
-      "path": "pages/my/login_wx",
-      "style": {
-        "navigationBarTitleText": "微信登录"
-      }
-    }
-  ],
-  "tabBar": {
-    "color": "#000000",
-    "selectedColor": "#007aff",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
-    "list": [{
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "/static/house-door.png",
-        "selectedIconPath": "/static/house-door-fill.png"
-      },
-      {
-        "pagePath": "pages/order/order",
-        "text": "订单",
-        "iconPath": "/static/file-text.png",
-        "selectedIconPath": "/static/file-text-fill.png"
-      },
-      {
-        "pagePath": "pages/my/my",
-        "text": "我的",
-        "iconPath": "/static/person.png",
-        "selectedIconPath": "/static/person-fill.png"
-      }
-    ]
-  }
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app x",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+	"pages": [{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/index/demandfill",
+			"style": {
+				"navigationBarTitleText": "表单填写"
+			}
+		},
+		{
+			"path": "pages/index/postdetail",
+			"style": {
+				"navigationBarTitleText": "帖子详情"
+			}
+		},
+		{
+			"path": "pages/order/order",
+			"style": {
+				"navigationBarTitleText": "订单"
+			}
+		},
+		{
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/order/order-select",
+			"style": {
+				"navigationBarTitleText": "选择"
+			}
+		},
+		{
+			"path": "pages/order/order_detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+			}
+		},
+		{
+			"path": "pages/my/account_manage",
+			"style": {
+				"navigationBarTitleText": "账号管理"
+			}
+		},
+		{
+			"path": "pages/my/login_wx",
+			"style": {
+				"navigationBarTitleText": "微信登录"
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#000000",
+		"selectedColor": "#007aff",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "/static/house-door.png",
+				"selectedIconPath": "/static/house-door-fill.png"
+			},
+			{
+				"pagePath": "pages/order/order",
+				"text": "订单",
+				"iconPath": "/static/file-text.png",
+				"selectedIconPath": "/static/file-text-fill.png"
+			},
+			{
+				"pagePath": "pages/my/my",
+				"text": "我的",
+				"iconPath": "/static/person.png",
+				"selectedIconPath": "/static/person-fill.png"
+			}
+		]
+	}
 
 }
