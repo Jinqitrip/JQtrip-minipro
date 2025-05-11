@@ -1,6 +1,35 @@
 <template>
-	<view>
-		<button @click="login">微信登录</button>
+	<view class="login-container">
+		<view class="logo-container">
+			<image class="logo" src="http://image.jinqitrip.com.cn/logo.png" mode="aspectFit"></image>
+			<text class="app-name">锦麒行</text>
+			<text class="app-slogan">探索校园、定制旅程</text>
+		</view>
+		
+		<view class="login-card">
+			<view class="welcome-text">
+				<text class="welcome-title">欢迎使用锦麒行</text>
+				<text class="welcome-desc">登录后即可体验全部功能</text>
+			</view>
+			
+			<view class="login-btn-container">
+				<button class="login-btn wx-login-btn" @click="login">
+					<image class="wx-icon" src="/static/wechat-icon.png" mode="aspectFit"></image>
+					<text>微信一键登录</text>
+				</button>
+			</view>
+			
+			<view class="policy-agreement">
+				<text class="policy-text">登录即表示您同意</text>
+				<text class="policy-link">《用户协议》</text>
+				<text class="policy-text">和</text>
+				<text class="policy-link">《隐私政策》</text>
+			</view>
+		</view>
+		
+		<view class="footer">
+			<text class="copyright">© 2023 锦麒行 All Rights Reserved</text>
+		</view>
 	</view>
 </template>
 
@@ -63,19 +92,18 @@ export default {
 
 								console.log(res);
 
-								uni.reLaunch({
-									url: '/pages/my/my',
-									success() {
-
-									},
-									fail() {
-										uni.showToast({
-											title: '登录失败',
-											icon: 'none'
-										});
+								uni.showToast({
+									title: '登录成功',
+									icon: 'success',
+									duration: 1500,
+									success: () => {
+										setTimeout(() => {
+											uni.reLaunch({
+												url: '/pages/my/my'
+											});
+										}, 1500);
 									}
-								})
-
+								});
 
 							} else {
 								uni.showToast({
@@ -105,4 +133,114 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.login-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 100vh;
+	background-color: #f8f8f8;
+	padding: 60rpx 40rpx;
+	box-sizing: border-box;
+}
+
+.logo-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 80rpx;
+}
+
+.logo {
+	width: 180rpx;
+	height: 180rpx;
+	border-radius: 24rpx;
+	margin-bottom: 30rpx;
+	box-shadow: 0 10rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.app-name {
+	font-size: 48rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 10rpx;
+}
+
+.app-slogan {
+	font-size: 28rpx;
+	color: #666;
+}
+
+.login-card {
+	width: 100%;
+	background-color: #fff;
+	border-radius: 24rpx;
+	padding: 50rpx 40rpx;
+	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.05);
+	margin: 60rpx 0;
+}
+
+.welcome-text {
+	text-align: center;
+	margin-bottom: 50rpx;
+}
+
+.welcome-title {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 10rpx;
+	display: block;
+}
+
+.welcome-desc {
+	font-size: 28rpx;
+	color: #666;
+}
+
+.login-btn-container {
+	margin-bottom: 40rpx;
+}
+
+.login-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 90rpx;
+	border-radius: 45rpx;
+	font-size: 32rpx;
+	font-weight: 500;
+}
+
+.wx-login-btn {
+	background-color: #07c160;
+	color: white;
+}
+
+.wx-icon {
+	width: 40rpx;
+	height: 40rpx;
+	margin-right: 15rpx;
+}
+
+.policy-agreement {
+	text-align: center;
+	font-size: 24rpx;
+	color: #999;
+}
+
+.policy-link {
+	color: #007aff;
+}
+
+.footer {
+	margin-top: auto;
+	padding: 30rpx 0;
+}
+
+.copyright {
+	font-size: 24rpx;
+	color: #999;
+}
+</style>

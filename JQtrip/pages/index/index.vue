@@ -1,40 +1,107 @@
 <template>
-	<view class="container">
-
+	<view class="home-container">
 		<!-- 顶部导航栏 -->
-		<view class="search-container">
-			<view class="area-filter-box">
-				<picker @change="onAreaChange" :value="areaIndex" :range="areaList">
-					<view class="area-filter">
-						{{ areaList[areaIndex] }}
+		<view class="header-container">
+			<view class="status-bar-placeholder"></view>
+			<view class="search-bar">
+				<view class="area-filter-box">
+					<picker @change="onAreaChange" :value="areaIndex" :range="areaList">
+						<view class="area-filter">
+							<text class="area-text">{{ areaList[areaIndex] }}</text>
+							<text class="area-icon">▼</text>
+						</view>
+					</picker>
+				</view>
+
+				<view class="logo-box">
+					<image class="logo-icon" src="http://image.jinqitrip.com.cn/logo.png" mode="aspectFit"></image>
+				</view>
+
+				<view class="search-input-box">
+					<input v-model="searchText" class="search-input" placeholder="搜索校园导览..." />
+					<image class="search-icon" src="http://image.jinqitrip.com.cn/search_icon.png" mode="aspectFit"></image>
+				</view>
+			</view>
+		</view>
+
+		<!-- 内容区域 -->
+		<scroll-view scroll-y class="content-scroll" refresher-enabled @refresherrefresh="onRefresh" :refresher-triggered="isRefreshing">
+			<!-- 广告轮播图 -->
+			<swiper class="banner-swiper" indicator-dots autoplay :interval="3000" :duration="500" circular>
+				<swiper-item>
+					<image src="http://image.jinqitrip.com.cn/official/011.jpg" mode="aspectFill" class="banner-image"></image>
+				</swiper-item>
+				<swiper-item>
+					<image src="http://image.jinqitrip.com.cn/official/012.jpg" mode="aspectFill" class="banner-image"></image>
+				</swiper-item>
+				<swiper-item>
+					<image src="http://image.jinqitrip.com.cn/official/013.jpg" mode="aspectFill" class="banner-image"></image>
+				</swiper-item>
+			</swiper>
+
+			<!-- 活跃订单卡片 -->
+			<view v-if="order_activated" class="active-order-card" @click="jump_to_order(order_activated)">
+				<view class="order-status-badge" :class="getOrderStatusClass(order_activated.step)">
+					{{ getOrderStatusText(order_activated.step) }}
+				</view>
+				<view class="order-content">
+					<image :src="order_activated.order_image" alt="order" class="order-image" />
+					<view class="order-info">
+						<view class="order-title">{{ order_activated.title || '校园导览服务' }}</view>
+						<view class="order-detail">
+							<text class="order-location">{{ order_activated.location }}</text>
+							<text class="order-price">￥{{ order_activated.price }}</text>
+						</view>
+						<view class="order-time">{{ order_activated.time }}</view>
 					</view>
-				</picker>
+					<view class="order-arrow">
+						<text class="arrow-icon">→</text>
+					</view>
+				</view>
 			</view>
 
-			<view class="logobox">
-				<image class="logo-icon" src="http://image.jinqitrip.com.cn/logo.png" mode="aspectFit"></image>
+			<!-- 添加需求卡片 -->
+			<view v-if="!order_activated" class="demand-card" @click="handleAddDemand">
+				<view class="demand-content">
+					<image class="add-icon" src="http://image.jinqitrip.com.cn/plus-circle-filled.svg"></image>
+					<view class="demand-text">
+						<text class="demand-title">创建个性游览需求</text>
+						<text class="demand-subtitle">点击定制专属旅程体验</text>
+					</view>
+				</view>
+				<image class="decorative-pattern" src="http://image.jinqitrip.com.cn/wave-pattern.png"></image>
 			</view>
 
-			<view class="search-input-box">
-				<input v-model="searchText" class="search-input" placeholder="搜索..." />
+			<!-- 内容分类导航 -->
+			<view class="category-nav">
+				<view v-for="(category, index) in categories" :key="index" class="category-item" @click="selectCategory(index)">
+					<image :src="category.icon" class="category-icon"></image>
+					<text class="category-name">{{ category.name }}</text>
+				</view>
 			</view>
 
-			<view class="logobox">
-				<image class="search-icon" src="http://image.jinqitrip.com.cn/search_icon.png" mode="aspectFit"></image>
+			<!-- 帖子列表区域 -->
+			<view class="section-title">
+				<text class="title-text">热门内容</text>
+				<text class="title-more">查看更多 ></text>
 			</view>
-		</view>
 
-
-		<!-- 添加需求模块 -->
-		<view v-if="!order_activated" class="demand-card" @click="handleAddDemand">
-			<view class="demand-content">
-				<image class="add-icon" src="http://image.jinqitrip.com.cn/plus-circle-filled.svg"></image>
-				<text class="demand-title">创建个性游览需求</text>
-				<text class="demand-subtitle">点击定制专属旅程体验</text>
+			<view class="post-list">
+				<view class="post-item" v-for="(post, index) in filteredPostList" :key="index" @click="goToPostDetail(post)">
+					<image :src="post.images && post.images[0]" class="post-image" mode="aspectFill"></image>
+					<view class="post-info">
+						<text class="post-title">{{ post.title }}</text>
+						<view class="post-meta">
+							<view class="post-author">
+								<image :src="post.authoravatar" class="author-avatar"></image>
+								<text class="author-name">{{ post.author }}</text>
+							</view>
+							<view class="post-location">{{ post.locationName }}</view>
+						</view>
+					</view>
+				</view>
 			</view>
-			<image class="decorative-pattern" src="http://image.jinqitrip.com.cn/wave-pattern.png"></image>
-		</view>
-
+		</scroll-view>
 
 		<!-- 登录提示模态框 -->
 		<view v-if="showLoginModal" class="login-modal-mask">
@@ -45,47 +112,6 @@
 				<view class="button-group">
 					<view class="modal-btn cancel-btn" @click="showLoginModal = false">稍后再说</view>
 					<view class="modal-btn confirm-btn" @click="gotoLogin">立即登录</view>
-				</view>
-			</view>
-		</view>
-
-		<wd-card v-if="order_activated" @click="jump_to_order(order_activated)">
-			<view style="height:120rpx"></view>
-			<view class="content" @click="jump_to_order(order_activated)">
-				<image :src="order_activated.order_image" alt="joy"
-					style="width: 70px; height: 70px; border-radius: 4px; margin-right: 12px" />
-				<view>
-					<view>{{ order_activated.title }}</view>
-					<view>地址：{{ order_activated.location }}</view>
-					<view>金额：{{ order_activated.price }}</view>
-					<view>时间：{{ order_activated.time }}</view>
-				</view>
-			</view>
-			<template #footer>
-				<wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 0" type="primary"
-					round>已下单</wd-tag>
-				<wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 1" type="warning"
-					round>待选择</wd-tag>
-				<wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 2" type="success"
-					round>待开始</wd-tag>
-				<wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 4" round>已完成</wd-tag>
-				<wd-tag @click="jump_to_order(order_activated)" v-if="order_activated.step == 3" type="danger"
-					round>待评价</wd-tag>
-			</template>
-		</wd-card>
-
-		<!-- 帖子列表区域 -->
-		<view class="post-list-container">
-			<view class="post-item-small " v-for="(post, index) in filteredPostList" :key="index"
-				@click="goToPostDetail(post)">
-				<image :src="post.images && post.images[0]" class="post-small-img" mode="aspectFit">
-				</image>
-				<view class="post-abb-desc">
-					<text class="post-small-title">{{ post.title }}</text>
-					<view class="post-writter-box">
-						<image :src="post.authoravatar" class="postauavt" mode="aspectFill"></image>
-						<text class="post-small-author">{{ post.author }}</text>
-					</view>
 				</view>
 			</view>
 		</view>
@@ -102,6 +128,13 @@ export default {
 		return {
 			searchText: '',
 			order_activated: "",
+			isRefreshing: false,
+			categories: [
+				{ name: '名校游览', icon: 'http://image.jinqitrip.com.cn/category-school.png' },
+				{ name: '学长带路', icon: 'http://image.jinqitrip.com.cn/category-guide.png' },
+				{ name: '专属定制', icon: 'http://image.jinqitrip.com.cn/category-custom.png' },
+				{ name: '升学规划', icon: 'http://image.jinqitrip.com.cn/category-plan.png' }
+			],
 			postList: [{
 				postId: 1,
 				title: '锦麒行校园引路人来啦',
@@ -127,12 +160,12 @@ export default {
 				desc: '锦麒行校园引路人项目是由一个轻商业化校园体验项目，不同于校园导游，我们旨在通过"校友向导"角色帮助各年龄段的同学及家长深度探索校园文化。负责导览的同学会为游客提供2小时导览服务，导览过程中根据参观家长、同学的提问，结合个人经历分享选课备考攻略，以个人真实故事激励学弟学妹，或提供校园生活介绍等。后续，我们也将建立锦麒行陪伴社群，n对1为孩子的成长问题解答。\n\n目前我们已将小程序源码开源，欢迎各个学校的团队自行搭建部署，亦可选择直接接入锦麒行中心平台\n\n详情请Github搜索：\nJinqitrip\nJQX_campus_guide\nJQtrip-minipro\n#创业 #校园导游 #校园团队',
 				images: ['http://image.jinqitrip.com.cn/official/01tui.png'],
 				author: '锦麒行',
-				authoravatar: 'http://image.jinqitrip.com.cn/logo.png', // 假设默认头像路径
+				authoravatar: 'http://image.jinqitrip.com.cn/logo.png',
 				locationName: '官方',
 				initialLikes: 10
 			}
 			],
-			areaIndex: '0',
+			areaIndex: 0,
 			areaList: ['全部', '官方', '武汉大学', '华中科技大学', '中国地质大学', '中南财经政法大学'],
 			currentPost: null,
 			showDetail: false,
@@ -140,19 +173,104 @@ export default {
 		};
 	},
 	methods: {
+		onRefresh() {
+			this.isRefreshing = true;
+			// 模拟刷新操作
+			setTimeout(() => {
+				this.loadActiveOrder();
+				this.isRefreshing = false;
+			}, 1000);
+		},
+		loadActiveOrder() {
+			if (this.$userData.openId) {
+				uni.request({
+					url: baseUrl + "/v1/orders/user/" + this.$userData.openId + "/active",
+					method: 'GET',
+					success: (res) => {
+						console.log(res);
+						if (res.statusCode == 200) {
+							var data = res.data;
+							var order = {
+								"title": "",
+								"order_image": "http://image.jinqitrip.com.cn/logo.png",
+								"location": "",
+								"price": "",
+								"time": data.data.date + " " + data.data.time,
+								"step": 0,
+								"id": data._id
+							}
+							order.title = (function() {
+								if (data.title) {
+									return data.title;
+								}
+								return "未匹配的服务"
+							})()
+							order.location = (function() {
+								if (data.location) {
+									return data.location;
+								}
+								return "未确定"
+							})()
+
+							order.price = (function() {
+								if (data.price) {
+									return data.price;
+								}
+								return "待议"
+							})()
+
+							order.step = (function() {
+								if (data.status == 'pending') {
+									return 0;
+								} else if (data.status == 'selecting') {
+									return 1;
+								} else if (data.status == 'upcoming') {
+									return 2;
+								} else if (data.status == 'reviewing') {
+									return 3;
+								}
+								return 4;
+							})()
+							this.order_activated = order;
+						}
+					}
+				});
+			}
+		},
 		jump_to_order(order) {
 			var mynavData = JSON.stringify(order);
 			uni.navigateTo({
 				url: "/pages/order/order_detail?index=" + mynavData
 			});
 		},
+		getOrderStatusClass(step) {
+			const statusClasses = {
+				0: 'status-pending',
+				1: 'status-selecting',
+				2: 'status-upcoming',
+				3: 'status-reviewing',
+				4: 'status-completed'
+			};
+			return statusClasses[step] || 'status-pending';
+		},
+		getOrderStatusText(step) {
+			const statusTexts = {
+				0: '已下单',
+				1: '待选择',
+				2: '待开始',
+				3: '待评价',
+				4: '已完成'
+			};
+			return statusTexts[step] || '处理中';
+		},
+		selectCategory(index) {
+			uni.showToast({
+				title: `选择了${this.categories[index].name}`,
+				icon: 'none'
+			});
+		},
 		onAreaChange(e) {
 			this.areaIndex = e.detail.value;
-		},
-		gotodemand() {
-			uni.navigateTo({
-				url: '/pages/index/demandfill'
-			});
 		},
 		handleAddDemand() {
 			if (this.$userData.openId == "") {
@@ -169,24 +287,17 @@ export default {
 			});
 			this.showLoginModal = false;
 		},
-
 		goToPostDetail(post) {
 			uni.navigateTo({
 				url: `/pages/index/postdetail?postData=${JSON.stringify(post)}`
 			});
-		},
-
-		getPostitemBorder() {
-			const borderClasses = ['postborder1', 'postborder2', 'postborder3'];
-			const randomIndex = Math.random(0, 2);
-			return borderClasses[randomIndex];
 		}
 	},
 	computed: {
 		filteredPostList() {
 			let filteredList = this.postList;
 			// 地区筛选
-			if (this.areaIndex !== '0') {
+			if (this.areaIndex !== 0) {
 				const selectedArea = this.areaList[this.areaIndex];
 				filteredList = filteredList.filter(post => post.locationName === selectedArea);
 			}
@@ -200,375 +311,447 @@ export default {
 		}
 	},
 	onLoad() {
-		if (this.$userData.openId) {
-			uni.request({
-				url: baseUrl + "/v1/orders/user/" + this.$userData.openId + "/active",
-				method: 'GET',
-				success: (res) => {
-					console.log(res);
-					if (res.statusCode == 200) {
-						var data = res.data;
-						var order = {
-							"title": "",
-							"order_image": "http://image.jinqitrip.com.cn/logo.png",
-							"location": "",
-							"price": "",
-							"time": data.data.date + " " + data.data.time,
-							"step": 0,
-							"id": data._id
-						}
-						order.title = (function () {
-							if (data.title) {
-								return data.title;
-							}
-							return "未匹配的服务"
-						})()
-						order.location = (function () {
-							if (data.location) {
-								return data.location;
-							}
-							return "未确定"
-						})()
-
-						order.price = (function () {
-							if (data.price) {
-								return data.price;
-							}
-							return "待议"
-						})()
-
-						order.step = (function () {
-							if (data.status == 'pending') {
-								return 0;
-							} else if (data.status == 'selecting') {
-								return 1;
-							} else if (data.status == 'upcoming') {
-								return 2;
-							} else if (data.status == 'reviewing') {
-								return 3;
-							}
-							return 4;
-						})()
-						this.order_activated = order;
-					}
-				},
-				fail: () => {
-					console.log("fuck")
-				}
-			})
-		}
+		this.loadActiveOrder();
+	},
+	onPullDownRefresh() {
+		this.loadActiveOrder();
+		setTimeout(() => {
+			uni.stopPullDownRefresh();
+		}, 1000);
 	}
-}
+};
 </script>
 
 <style>
-.container {
-	display: flex;
-	flex-direction: column;
+.home-container {
+	background-color: #f5f7fa;
 	min-height: 100vh;
 }
 
-.search-container {
-	position: fixed;
-	display: flex;
-	flex-direction: row-reverse;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 50px;
+/* 顶部导航栏 */
+.header-container {
 	background-color: #ffffff;
-	align-items: center;
-	padding: 0 15px;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0;
 	z-index: 100;
+	box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.status-bar-placeholder {
+	height: var(--status-bar-height);
+}
+
+.search-bar {
+	display: flex;
+	align-items: center;
+	height: 88rpx;
+	padding: 0 24rpx;
 }
 
 .area-filter-box {
-	margin-right: 5px;
+	flex-shrink: 0;
+	padding-right: 20rpx;
 }
 
 .area-filter {
-	padding: 5px 10px;
-	background-color: #f5f5f5;
-	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	font-size: 28rpx;
+	color: #333;
 }
 
-.logobox {
-	display: flex;
-	width: 10%;
+.area-text {
+	max-width: 130rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.area-icon {
+	font-size: 24rpx;
+	margin-left: 8rpx;
+	color: #999;
+}
+
+.logo-box {
+	margin-right: 20rpx;
+}
+
+.logo-icon {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 12rpx;
 }
 
 .search-input-box {
+	flex: 1;
+	position: relative;
+	background-color: #f5f7fa;
+	height: 60rpx;
+	border-radius: 30rpx;
+	padding: 0 20rpx 0 60rpx;
 	display: flex;
-	width: 50%;
-	flex-direction: row;
-	align-items: left;
-	text-align: left;
-	background-color: #f5f5f5;
-	border-radius: 20px;
-	padding: 10px;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	margin-left: 5px;
+	align-items: center;
+}
+
+.search-icon {
+	position: absolute;
+	left: 20rpx;
+	width: 32rpx;
+	height: 32rpx;
 }
 
 .search-input {
 	flex: 1;
-	height: 25px;
-	border: none;
-	outline: none;
-	background-color: transparent;
-}
-
-.logo-icon {
-	width: 50px;
-	height: 50px;
-	margin: 5px;
-}
-
-.search-icon {
-	width: 20px;
-	height: 20px;
-	margin-left: 5px;
-}
-
-/* 添加需求卡片样式 */
-.demand-card {
-	position: relative;
-	height: 180rpx;
-	margin-top: 120rpx;
-	margin-bottom: 30rpx;
-	margin-left: 30rpx;
-	margin-right: 30rpx;
-	border-radius: 24rpx;
-	background: linear-gradient(135deg, #7FD2F6 0%, #5AA7EB 100%);
-	box-shadow: 0 8rpx 24rpx rgba(90, 167, 235, 0.3);
-	overflow: hidden;
-	transition: transform 0.2s ease;
-}
-
-.demand-card:active {
-	transform: scale(0.98);
-}
-
-.demand-content {
-	position: absolute;
-	z-index: 2;
-	padding: 40rpx;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-
-.add-icon {
-	width: 60rpx;
 	height: 60rpx;
-	margin-bottom: 20rpx;
-	filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.1));
+	font-size: 26rpx;
 }
 
-.demand-title {
-	font-size: 36rpx;
-	color: #FFFFFF;
-	font-weight: 600;
+/* 内容区域 */
+.content-scroll {
+	height: calc(100vh - 88rpx - var(--status-bar-height));
+}
+
+/* 轮播图 */
+.banner-swiper {
+	width: 100%;
+	height: 320rpx;
+}
+
+.banner-image {
+	width: 100%;
+	height: 100%;
+}
+
+/* 活跃订单卡片 */
+.active-order-card {
+	position: relative;
+	margin: 20rpx;
+	background-color: #ffffff;
+	border-radius: 16rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+	overflow: hidden;
+}
+
+.order-status-badge {
+	position: absolute;
+	top: 20rpx;
+	right: 20rpx;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	font-size: 24rpx;
+	color: white;
+	z-index: 1;
+}
+
+.status-pending {
+	background-color: #2196f3;
+}
+
+.status-selecting {
+	background-color: #ff9800;
+}
+
+.status-upcoming {
+	background-color: #4caf50;
+}
+
+.status-reviewing {
+	background-color: #f44336;
+}
+
+.status-completed {
+	background-color: #9e9e9e;
+}
+
+.order-content {
+	padding: 30rpx;
+	display: flex;
+	align-items: center;
+}
+
+.order-image {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 12rpx;
+	margin-right: 20rpx;
+}
+
+.order-info {
+	flex: 1;
+}
+
+.order-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
 	margin-bottom: 12rpx;
 }
 
-.demand-subtitle {
+.order-detail {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 8rpx;
+}
+
+.order-location {
 	font-size: 26rpx;
+	color: #666;
+}
+
+.order-price {
+	font-size: 26rpx;
+	color: #f44336;
+	font-weight: bold;
+}
+
+.order-time {
+	font-size: 24rpx;
+	color: #999;
+}
+
+.order-arrow {
+	padding-left: 20rpx;
+}
+
+.arrow-icon {
+	font-size: 36rpx;
+	color: #ccc;
+}
+
+/* 需求卡片 */
+.demand-card {
+	margin: 20rpx;
+	background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+	border-radius: 16rpx;
+	padding: 30rpx;
+	position: relative;
+	overflow: hidden;
+	box-shadow: 0 4rpx 16rpx rgba(79, 172, 254, 0.3);
+}
+
+.demand-content {
+	display: flex;
+	align-items: center;
+	position: relative;
+	z-index: 2;
+}
+
+.add-icon {
+	width: 80rpx;
+	height: 80rpx;
+	margin-right: 20rpx;
+}
+
+.demand-text {
+	flex: 1;
+}
+
+.demand-title {
+	color: #ffffff;
+	font-size: 32rpx;
+	font-weight: bold;
+	display: block;
+	margin-bottom: 8rpx;
+}
+
+.demand-subtitle {
 	color: rgba(255, 255, 255, 0.9);
+	font-size: 26rpx;
+	display: block;
 }
 
 .decorative-pattern {
 	position: absolute;
-	right: -40rpx;
-	bottom: -40rpx;
-	width: 240rpx;
-	height: 240rpx;
-	opacity: 0.1;
+	right: 0;
+	bottom: 0;
+	width: 200rpx;
+	height: 200rpx;
+	opacity: 0.2;
+	z-index: 1;
 }
 
-/* 登录提示模态框样式 */
+/* 分类导航 */
+.category-nav {
+	display: flex;
+	justify-content: space-between;
+	padding: 30rpx 20rpx;
+	background-color: #ffffff;
+	margin: 20rpx;
+	border-radius: 16rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.03);
+}
+
+.category-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 25%;
+}
+
+.category-icon {
+	width: 80rpx;
+	height: 80rpx;
+	margin-bottom: 12rpx;
+}
+
+.category-name {
+	font-size: 26rpx;
+	color: #333;
+}
+
+/* 帖子列表 */
+.section-title {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20rpx 30rpx;
+}
+
+.title-text {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+}
+
+.title-more {
+	font-size: 26rpx;
+	color: #999;
+}
+
+.post-list {
+	padding: 0 20rpx 30rpx;
+}
+
+.post-item {
+	background-color: #ffffff;
+	border-radius: 16rpx;
+	overflow: hidden;
+	margin-bottom: 20rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.03);
+}
+
+.post-image {
+	width: 100%;
+	height: 320rpx;
+}
+
+.post-info {
+	padding: 20rpx;
+}
+
+.post-title {
+	font-size: 30rpx;
+	font-weight: bold;
+	color: #333;
+	line-height: 1.4;
+	margin-bottom: 16rpx;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.post-meta {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.post-author {
+	display: flex;
+	align-items: center;
+}
+
+.author-avatar {
+	width: 40rpx;
+	height: 40rpx;
+	border-radius: 50%;
+	margin-right: 10rpx;
+}
+
+.author-name {
+	font-size: 24rpx;
+	color: #666;
+}
+
+.post-location {
+	font-size: 24rpx;
+	color: #999;
+	background-color: #f5f7fa;
+	padding: 4rpx 12rpx;
+	border-radius: 20rpx;
+}
+
+/* 登录模态框 */
 .login-modal-mask {
 	position: fixed;
 	top: 0;
-	left: 0;
 	right: 0;
 	bottom: 0;
-	background: rgba(0, 0, 0, 0.5);
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	z-index: 1000;
+	z-index: 999;
 }
 
 .login-modal {
-	width: 600rpx;
-
-	background: #FFFFFF;
-	border-radius: 32rpx;
-	padding: 50rpx;
-	text-align: center;
-	animation: modalShow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-@keyframes modalShow {
-	from {
-		transform: scale(0.8);
-		opacity: 0;
-	}
-
-	to {
-		transform: scale(1);
-		opacity: 1;
-	}
+	width: 560rpx;
+	background-color: #ffffff;
+	border-radius: 24rpx;
+	padding: 40rpx;
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .modal-icon {
 	width: 120rpx;
 	height: 120rpx;
-	margin-bottom: 32rpx;
+	margin-bottom: 20rpx;
 }
 
 .modal-title {
-	display: block;
 	font-size: 36rpx;
+	font-weight: bold;
 	color: #333;
-	font-weight: 600;
 	margin-bottom: 16rpx;
 }
 
 .modal-desc {
-	display: block;
 	font-size: 28rpx;
 	color: #666;
-	margin-bottom: 48rpx;
+	text-align: center;
+	margin-bottom: 30rpx;
 }
 
 .button-group {
 	display: flex;
-	gap: 30rpx;
-	justify-content: center;
+	width: 100%;
+	gap: 20rpx;
 }
 
 .modal-btn {
 	flex: 1;
 	height: 80rpx;
-	border-radius: 16rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 30rpx;
-	font-weight: 500;
-	transition: all 0.2s ease;
+	line-height: 80rpx;
+	text-align: center;
+	border-radius: 40rpx;
+	font-size: 28rpx;
 }
 
 .cancel-btn {
-	background: #F5F5F5;
+	background-color: #f5f5f5;
 	color: #666;
-}
-
-.cancel-btn:active {
-	background: #E0E0E0;
 }
 
 .confirm-btn {
-	background: #5AA7EB;
-	color: #FFFFFF;
-}
-
-.confirm-btn:active {
-	background: #4A97DB;
-}
-
-.title {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: center;
-}
-
-.content {
-	justify-content: flex-start;
-
-}
-
-.title {
-	justify-content: space-between;
-}
-
-.title-tip {
-	color: rgba(0, 0, 0, 0.25);
-	font-size: 12px;
-}
-
-/* 帖子 */
-.post-list-container {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	padding: 10px;
-}
-
-.postborder1 {
-	border: solid 7px #41403E;
-	border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-}
-
-.postborder2 {
-	border: dashed 5px #41403E;
-	border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-}
-
-.postborder3 {
-	border: dotted 5px #41403E;
-	border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-}
-
-.post-item-small {
-	width: calc(50% - 5px);
-	margin-bottom: 10px;
-	border-radius: 8px;
-	overflow: hidden;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.post-abb-desc {
-	display: flex;
-	flex-direction: column;
-	margin-top: 10px;
-}
-
-.post-writter-box {
-	display: flex;
-	flex-direction: row;
-}
-
-.postauavt {
-	border-radius: 50%;
-	width: 15px;
-	height: 15px;
-	margin-left: 5px;
-	margin-top: 1px;
-}
-
-.post-small-img {
-	width: 100%;
-	height: auto;
-	aspect-ratio: 1 / 1;
-	object-fit: cover;
-}
-
-.post-small-title {
-	font-size: 14px;
-	font-weight: 600;
-	padding: 5px;
-}
-
-.post-small-author {
-	font-size: 12px;
-	color: #666;
-	padding: 0 5px 5px 5px;
+	background-color: #2196f3;
+	color: #ffffff;
 }
 </style>

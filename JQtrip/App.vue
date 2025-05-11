@@ -1,5 +1,9 @@
 <script>
 	export default {
+		globalData: {
+			comments: {},  // 存储评论数据
+			likes: {}      // 存储点赞数据
+		},
 		onLaunch: function() {
 			console.log('App Launch');
 			

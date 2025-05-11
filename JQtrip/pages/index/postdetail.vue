@@ -101,7 +101,7 @@
 					}
 
 					this.postData = parsedData;
-					this.postId = this.postData.id;
+					this.postId = this.postData.postId;
 
 					console.log('Successfully parsed postData:', JSON.stringify(this.postData, null, 2));
 
@@ -139,12 +139,42 @@
 			},
 			loadComments() {
 				if (!this.postId) return;
-				const savedComments = uni.getStorageSync(`comments_${this.postId}`) || [];
-				this.comments = savedComments;
+				
+				// 尝试从getApp().globalData中获取评论数据
+				const app = getApp();
+				if (!app.globalData) {
+					app.globalData = {};
+				}
+				if (!app.globalData.comments) {
+					app.globalData.comments = {};
+				}
+				
+				// 如果全局变量中有这个帖子的评论，则使用全局变量中的数据
+				if (app.globalData.comments[this.postId]) {
+					this.comments = app.globalData.comments[this.postId];
+				} else {
+					// 如果全局变量中没有，则尝试从本地存储加载
+					const savedComments = uni.getStorageSync(`comments_${this.postId}`) || [];
+					this.comments = savedComments;
+					// 并更新到全局变量
+					app.globalData.comments[this.postId] = this.comments;
+				}
 			},
 			saveComments() {
 				if (!this.postId) return;
+				
+				// 保存到本地存储
 				uni.setStorageSync(`comments_${this.postId}`, this.comments);
+				
+				// 同时更新到全局变量
+				const app = getApp();
+				if (!app.globalData) {
+					app.globalData = {};
+				}
+				if (!app.globalData.comments) {
+					app.globalData.comments = {};
+				}
+				app.globalData.comments[this.postId] = this.comments;
 			},
 			addComment() {
 				if (this.newComment.trim() === '') {
@@ -216,16 +246,40 @@
 				if (!this.postId) return;
 
 				const initialCountSource = this.postData.initialLikes !== undefined ? this.postData.initialLikes : 0;
-				const savedLikesData = uni.getStorageSync(`likes_post_${this.postId}`);
-
-				if (savedLikesData) {
-					this.likeCount = savedLikesData.totalCount !== undefined ? savedLikesData.totalCount :
-						initialCountSource;
-					this.hasLiked = this.loggedInUser && savedLikesData.likedByUsers ? savedLikesData.likedByUsers
-						.includes(this.loggedInUser) : false;
+				
+				// 从全局变量获取点赞数据
+				const app = getApp();
+				if (!app.globalData) {
+					app.globalData = {};
+				}
+				if (!app.globalData.likes) {
+					app.globalData.likes = {};
+				}
+				
+				if (app.globalData.likes[this.postId]) {
+					const likeData = app.globalData.likes[this.postId];
+					this.likeCount = likeData.totalCount;
+					this.hasLiked = this.loggedInUser && likeData.likedByUsers.includes(this.loggedInUser);
 				} else {
-					this.likeCount = initialCountSource;
-					this.hasLiked = false;
+					// 如果全局变量中没有，则从本地存储获取
+					const savedLikesData = uni.getStorageSync(`likes_post_${this.postId}`);
+					
+					if (savedLikesData) {
+						this.likeCount = savedLikesData.totalCount !== undefined ? savedLikesData.totalCount : initialCountSource;
+						this.hasLiked = this.loggedInUser && savedLikesData.likedByUsers ? savedLikesData.likedByUsers.includes(this.loggedInUser) : false;
+						
+						// 更新到全局变量
+						app.globalData.likes[this.postId] = savedLikesData;
+					} else {
+						this.likeCount = initialCountSource;
+						this.hasLiked = false;
+						
+						// 初始化全局变量
+						app.globalData.likes[this.postId] = {
+							likedByUsers: [],
+							totalCount: initialCountSource
+						};
+					}
 				}
 			},
 			saveLikes() {
@@ -233,11 +287,25 @@
 					return;
 				}
 
-				const currentLikesData = uni.getStorageSync(`likes_post_${this.postId}`) || {
-					likedByUsers: [],
-					totalCount: 0
-				};
-				let likedByUsers = currentLikesData.likedByUsers || [];
+				// 获取全局变量中的点赞数据
+				const app = getApp();
+				if (!app.globalData) {
+					app.globalData = {};
+				}
+				if (!app.globalData.likes) {
+					app.globalData.likes = {};
+				}
+				
+				// 如果全局变量中没有该帖子的点赞数据，则初始化
+				if (!app.globalData.likes[this.postId]) {
+					app.globalData.likes[this.postId] = {
+						likedByUsers: [],
+						totalCount: 0
+					};
+				}
+				
+				let likeData = app.globalData.likes[this.postId];
+				let likedByUsers = likeData.likedByUsers || [];
 
 				if (this.hasLiked) {
 					if (!likedByUsers.includes(this.loggedInUser)) {
@@ -247,10 +315,14 @@
 					likedByUsers = likedByUsers.filter(id => id !== this.loggedInUser);
 				}
 
-				uni.setStorageSync(`likes_post_${this.postId}`, {
+				// 更新全局变量
+				app.globalData.likes[this.postId] = {
 					likedByUsers: likedByUsers,
 					totalCount: this.likeCount
-				});
+				};
+				
+				// 同时更新本地存储
+				uni.setStorageSync(`likes_post_${this.postId}`, app.globalData.likes[this.postId]);
 			}
 		}
 	};
