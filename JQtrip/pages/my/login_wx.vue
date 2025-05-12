@@ -21,9 +21,9 @@
 			
 			<view class="policy-agreement">
 				<text class="policy-text">登录即表示您同意</text>
-				<text class="policy-link">《用户协议》</text>
+				<text class="policy-link" @click="jump('user-agreement')">《用户协议》</text>
 				<text class="policy-text">和</text>
-				<text class="policy-link">《隐私政策》</text>
+				<text class="policy-link" @click="jump(privacy-policy)">《隐私政策》</text>
 			</view>
 		</view>
 		
@@ -45,6 +45,13 @@ export default {
 		}
 	},
 	methods: {
+		jump(url){
+			uni.navigateTo({
+				url: 'agreement/'+url
+			})
+			console.log('agreement/'+url)
+		},
+		
 		// 登录并获取用户信息
 		login() {
 			uni.getUserInfo({

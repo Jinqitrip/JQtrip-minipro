@@ -59,6 +59,20 @@
 			"style": {
 				"navigationBarTitleText": "微信登录"
 			}
+		},
+		{
+			"path" : "pages/my/agreement/user-agreement",
+			"style" : 
+			{
+				"navigationBarTitleText" : "用户协议"
+			}
+		},
+		{
+			"path" : "pages/my/agreement/privacy-policy",
+			"style" : 
+			{
+				"navigationBarTitleText" : "隐私政策"
+			}
 		}
 	],
 	"tabBar": {

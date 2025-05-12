@@ -1,8 +1,15 @@
 {
-  "hash": "4ba807c8",
+  "hash": "aec11ac2",
   "configHash": "1eda2b0c",
-  "lockfileHash": "e3b0c442",
-  "browserHash": "850c1de9",
-  "optimized": {},
+  "lockfileHash": "cc6d0d82",
+  "browserHash": "8e9e54db",
+  "optimized": {
+    "marked": {
+      "src": "../../../../../../node_modules/marked/lib/marked.esm.js",
+      "file": "marked.js",
+      "fileHash": "1ec6bc28",
+      "needsInterop": false
+    }
+  },
   "chunks": {}
 }
