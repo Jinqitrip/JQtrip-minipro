@@ -5,28 +5,37 @@
 			<text class="app-name">锦麒行</text>
 			<text class="app-slogan">探索校园、定制旅程</text>
 		</view>
-		
+
 		<view class="login-card">
 			<view class="welcome-text">
 				<text class="welcome-title">欢迎使用锦麒行</text>
 				<text class="welcome-desc">登录后即可体验全部功能</text>
 			</view>
-			
+
 			<view class="login-btn-container">
-				<button class="login-btn wx-login-btn" @click="login">
-					<image class="wx-icon" src="/static/wechat-icon.png" mode="aspectFit"></image>
+				<button
+                    class="login-btn wx-login-btn"
+                    @click="login"
+                    :disabled="!isAgreed"
+                    :class="{ 'disabled-btn': !isAgreed }"
+                >
+					<image class="wx-icon" src="https://img.icons8.com/?size=200&id=fxuaZJkYPodW&format=png&color=FFFFFF" mode="aspectFit"></image>
 					<text>微信一键登录</text>
 				</button>
 			</view>
-			
-			<view class="policy-agreement">
-				<text class="policy-text">登录即表示您同意</text>
-				<text class="policy-link" @click="jump('user-agreement')">《用户协议》</text>
-				<text class="policy-text">和</text>
-				<text class="policy-link" @click="jump(privacy-policy)">《隐私政策》</text>
+
+			<view class="policy-agreement" @click="toggleAgreement">
+                <checkbox class="agreement-checkbox" :checked="isAgreed" value="agree" />
+                <view class="policy-text-container">
+                    <text class="policy-text">我已阅读并同意</text>
+                    <text class="policy-link" @click.stop="jump('user-agreement')">《用户协议》</text>
+                    <text class="policy-text">和</text>
+                    <text class="policy-link" @click.stop="jump('privacy-policy')">《隐私政策》</text>
+                </view>
 			</view>
+
 		</view>
-		
+
 		<view class="footer">
 			<text class="copyright">© 2024-{{currentYear}} 锦麒行 All Rights Reserved</text>
 		</view>
@@ -36,12 +45,12 @@
 <script>
 import { baseUrl } from '@/config';
 export default {
-
 	data() {
 		return {
 			userInfo: null,
 			hasUserInfo: false,
-			currentYear : new Date().getFullYear()
+			currentYear: new Date().getFullYear(),
+            isAgreed: false 
 		}
 	},
 	methods: {
@@ -49,11 +58,25 @@ export default {
 			uni.navigateTo({
 				url: 'agreement/'+url
 			})
-			console.log('agreement/'+url)
 		},
+
+        // 并非只有复选框可以点击
+        toggleAgreement() {
+            this.isAgreed = !this.isAgreed;
+        },
+
 		
-		// 登录并获取用户信息
 		login() {
+            if (!this.isAgreed) {
+                uni.showToast({
+                    title: '请先阅读并同意用户协议和隐私政策',
+                    icon: 'none',
+                    duration: 2000
+                });
+                return; 
+            }
+			
+			// 登录并获取用户信息
 			uni.getUserInfo({
 				provider: 'weixin',
 				success: (infoRes) => {
@@ -64,42 +87,50 @@ export default {
 					uni.setStorageSync('userInfo', this.$userData.userInfo);
 					uni.setStorageSync('nickName', this.$userData.nickName);
 					uni.setStorageSync('avatarUrl', this.$userData.avatarUrl);
-
 				},
 				fail: () => {
 					uni.showToast({
 						title: '用户信息获取失败',
 						icon: 'none'
 					});
-				}
+				},
+                complete: () => {
+                    if (!this.loginInitiated) { 
+                       this.proceedWithUniLogin();
+                    }
+                }
 			});
+			
+            this.loginInitiated = false;
+		},
 
-			uni.login({
+        proceedWithUniLogin() {
+            if (this.loginInitiated) return;
+            this.loginInitiated = true;
+
+            uni.login({
 				provider: 'weixin',
 				success: (loginRes) => {
-					// 登录成功，获取用户code
 					const { code } = loginRes;
 					console.log(code);
 					// 发送code到后台换取openId, sessionKey, unionId
 					uni.request({
-						url: baseUrl + "/v1/auth/wxLogin", // 你的登录API地址
+						url: baseUrl + "/v1/auth/wxLogin",
 						method: 'POST',
 						data: {
 							"code": code
 						},
 						success: (res) => {
+                            this.loginInitiated = false;
 							if (res.data && res.data.success) {
-
-								//  载入全局变量
-								this.$userData.openId = res.data.openId;
-								this.$userData.sessionKey = res.data.sessionKey;
-
-								// 将用户信息和session存储到本地
-								uni.setStorageSync('openId', this.$userData.openId);
-								uni.setStorageSync('sessionKey', this.$userData.sessionKey);
-
+																//  载入全局变量
+																this.$userData.openId = res.data.openId;
+																this.$userData.sessionKey = res.data.sessionKey;
+								
+																// 将用户信息和session存储到本地
+																uni.setStorageSync('openId', this.$userData.openId);
+																uni.setStorageSync('sessionKey', this.$userData.sessionKey);
 								console.log(res);
-
 								uni.showToast({
 									title: '登录成功',
 									icon: 'success',
@@ -112,15 +143,15 @@ export default {
 										}, 1500);
 									}
 								});
-
 							} else {
 								uni.showToast({
-									title: '登录失败',
+									title: res.data.message || '登录失败', 
 									icon: 'none'
 								});
 							}
 						},
-						fail: () => {
+						fail: (err) => {
+                            this.loginInitiated = false;
 							uni.showToast({
 								title: '请求失败',
 								icon: 'none'
@@ -129,15 +160,20 @@ export default {
 					});
 				},
 				fail: (err) => {
+                    this.loginInitiated = false;
 					console.log('uni.login 接口调用失败，将无法正常使用开放接口等服务', err);
 					uni.showToast({
-						title: '登录失败',
+						title: '微信登录调用失败',
 						icon: 'none'
 					});
 				}
 			});
-		}
-	}
+        }
+	},
+
+    onShow() {
+        this.loginInitiated = false;
+    }
 }
 </script>
 
@@ -186,7 +222,8 @@ export default {
 	border-radius: 24rpx;
 	padding: 50rpx 40rpx;
 	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.05);
-	margin: 60rpx 0;
+	margin: 60rpx 0; /* Adjusted margin */
+    margin-bottom: auto;
 }
 
 .welcome-text {
@@ -219,12 +256,25 @@ export default {
 	border-radius: 45rpx;
 	font-size: 32rpx;
 	font-weight: 500;
+    transition: background-color 0.3s, opacity 0.3s;
 }
 
 .wx-login-btn {
 	background-color: #07c160;
 	color: white;
 }
+
+.wx-login-btn.disabled-btn {
+    background-color: #a0e7ae; 
+    opacity: 0.7; 
+}
+
+.wx-login-btn[disabled] {
+     background-color: #a0e7ae !important; 
+     opacity: 0.7 !important;
+     color: #ffffff !important;
+}
+
 
 .wx-icon {
 	width: 40rpx;
@@ -233,18 +283,41 @@ export default {
 }
 
 .policy-agreement {
-	text-align: center;
+	display: flex;
+	align-items: center; 
+	justify-content: center;
+	text-align: left;
 	font-size: 24rpx;
 	color: #999;
+	cursor: pointer; 
+    padding: 10rpx 0; 
+}
+
+.agreement-checkbox {
+    transform: scale(0.7); 
+    margin-right: 10rpx;
+    position: relative;
+    top: -2rpx;
+}
+
+.policy-text-container {
+    line-height: 1.5; 
+}
+
+
+.policy-text {
+    color: #999;
 }
 
 .policy-link {
 	color: #007aff;
+    margin: 0 4rpx;
 }
 
 .footer {
-	margin-top: auto;
 	padding: 30rpx 0;
+    width: 100%;
+    text-align: center; 
 }
 
 .copyright {

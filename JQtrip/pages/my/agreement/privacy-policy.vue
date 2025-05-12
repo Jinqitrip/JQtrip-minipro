@@ -16,7 +16,6 @@
 			return {
 				// 存储HTML内容的字符串
 				policyContentHtml: `
-<body>
     <h1 id='锦麒行隐私政策'>《锦麒行隐私政策》</h1>
     <p><strong>发布日期：2025-05-12</strong>
         <strong>生效日期：2025-05-12</strong>
