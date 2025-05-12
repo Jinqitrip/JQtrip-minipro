@@ -28,7 +28,7 @@
 		</view>
 		
 		<view class="footer">
-			<text class="copyright">© 2023 锦麒行 All Rights Reserved</text>
+			<text class="copyright">© 2024-{{currentYear}} 锦麒行 All Rights Reserved</text>
 		</view>
 	</view>
 </template>
@@ -40,7 +40,8 @@ export default {
 	data() {
 		return {
 			userInfo: null,
-			hasUserInfo: false
+			hasUserInfo: false,
+			currentYear : new Date().getFullYear()
 		}
 	},
 	methods: {

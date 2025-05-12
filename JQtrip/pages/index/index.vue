@@ -13,10 +13,6 @@
 					</picker>
 				</view>
 
-				<view class="logo-box">
-					<image class="logo-icon" src="http://image.jinqitrip.com.cn/logo.png" mode="aspectFit"></image>
-				</view>
-
 				<view class="search-input-box">
 					<input v-model="searchText" class="search-input" placeholder="搜索校园导览..." />
 					<image class="search-icon" src="http://image.jinqitrip.com.cn/search_icon.png" mode="aspectFit">
