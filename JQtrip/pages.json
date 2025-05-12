@@ -62,15 +62,15 @@
 		}
 	],
 	"tabBar": {
-		"color": "#000000",
-		"selectedColor": "#007aff",
+		"color": "#909090",
+		"selectedColor": "#4a6bff",
 		"backgroundColor": "#ffffff",
 		"borderStyle": "black",
 		"list": [{
 				"pagePath": "pages/index/index",
 				"text": "首页",
-				"iconPath": "/static/house-door.png",
-				"selectedIconPath": "/static/house-door-fill.png"
+				"iconPath": "/static/house.png",
+				"selectedIconPath": "/static/house-fill.png"
 			},
 			{
 				"pagePath": "pages/order/order",
