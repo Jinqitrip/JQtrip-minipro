@@ -72,6 +72,7 @@
 			</view>
 
 			<!-- 内容分类导航 -->
+			<!--
 			<view class="category-nav">
 				<view v-for="(category, index) in categories" :key="index" class="category-item"
 					@click="selectCategory(index)">
@@ -79,6 +80,7 @@
 					<text class="category-name">{{ category.name }}</text>
 				</view>
 			</view>
+			-->
 
 			<!-- 帖子列表区域 -->
 			<view class="section-title">
