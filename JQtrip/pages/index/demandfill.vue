@@ -239,7 +239,9 @@ export default {
 					});
 					
 					setTimeout(() => {
-						uni.navigateBack();
+						uni.navigateTo({
+							url: "/pages/index/customer-service"
+						})
 					}, 1500);
 				},
 				fail: () => {

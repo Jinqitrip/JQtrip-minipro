@@ -25,6 +25,12 @@
 			}
 		},
 		{
+			"path": "pages/index/customer-service",
+			"style": {
+				"navigationBarTitleText": "联系客服"
+			}
+		},
+		{
 			"path": "pages/order/order",
 			"style": {
 				"navigationBarTitleText": "订单"

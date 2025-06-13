@@ -25,7 +25,8 @@
 		<scroll-view scroll-y class="content-scroll" refresher-enabled @refresherrefresh="onRefresh"
 			:refresher-triggered="isRefreshing">
 			<!-- 广告轮播图 -->
-			<swiper class="banner-swiper" indicator-dots autoplay :interval="3000" :duration="500" circular>
+			
+			<!--<swiper class="banner-swiper" indicator-dots autoplay :interval="3000" :duration="500" circular>
 				<swiper-item>
 					<image src="http://image.jinqitrip.com.cn/official/011.jpg" mode="aspectFill" class="banner-image">
 					</image>
@@ -39,6 +40,7 @@
 					</image>
 				</swiper-item>
 			</swiper>
+			-->
 
 			<!-- 活跃订单卡片 -->
 			<view v-if="order_activated" class="active-order-card" @click="jump_to_order(order_activated)">

@@ -54,7 +54,9 @@
 
 	</view>
 
-	<wd-button block plain v-if="order.step == 1" @click="jump_to_select">选择导游</wd-button>
+	<!--<wd-button block plain v-if="order.step == 1" @click="jump_to_select">选择导游</wd-button>-->
+	<wd-button block  @click="jump_to_customer_service">联系客服</wd-button>
+	
 
 </template>
 
@@ -147,6 +149,11 @@ export default defineComponent({
 				url: "/pages/order/order-select?index=" + mynavData
 			});
 			console.log(321);
+		},
+		jump_to_customer_service(){
+			uni.navigateTo({
+				url: "/pages/index/customer-service"
+			});
 		}
 
 	}
